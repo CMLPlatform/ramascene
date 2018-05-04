@@ -13,7 +13,7 @@ class IndicatorFilterableSingleSelectDropdownTree extends FilterableSingleSelect
 
     componentWillMount() {
         //https://www.papaparse.com/doc#config
-        Papa.parse('mod_indicators.csv', {
+        Papa.parse('../static/mod_indicators.csv', {
             delimiter: '\t',
             // newline
             // quoteChar

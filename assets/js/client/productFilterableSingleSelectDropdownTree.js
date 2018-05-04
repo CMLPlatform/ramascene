@@ -12,7 +12,7 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
 
     componentWillMount() {
         //https://www.papaparse.com/docs#config
-        Papa.parse('final_productTree_exiovisuals.csv', {
+        Papa.parse('../static/final_productTree_exiovisuals.csv', {
             delimiter: '\t',
             // newline
             // quoteChar

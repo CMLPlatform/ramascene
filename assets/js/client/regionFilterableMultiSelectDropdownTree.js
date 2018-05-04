@@ -12,7 +12,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
 
     componentWillMount() {
         //https://www.papaparse.com/docs#config
-        Papa.parse('final_countryTree_exiovisuals.csv', {
+        Papa.parse('../static/final_countryTree_exiovisuals.csv', {
             delimiter: '\t',
             // newline
             // quoteChar
