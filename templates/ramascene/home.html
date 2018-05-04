@@ -1,0 +1,50 @@
+{% extends 'ramasceneMasterProject/baseHome.html' %}
+
+
+{% load render_bundle from webpack_loader %}
+
+
+{% load static %}
+{% block title %}RaMA-Scene{% endblock %}
+
+
+
+{% block speciality %}
+    <!--js-cookie for storing cookie information of trees
+    -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">
+
+
+<style type="text/css">
+   body { background: #1B262D !important;   } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+</style>
+
+
+
+
+{% endblock %}
+
+
+<!-- Add code to initialize the product tree when the document is loaded: -->
+
+
+
+{% block content %}
+
+
+
+<br>
+
+<div id="container">
+
+{% render_bundle 'main' %}
+
+
+</div>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,60 @@
+Name	Unit	Global_id	Parent_id	Local_id	Level
+Value Added: Total	M.EUR	1	0	1	1
+Employment: Total	1000 p	2	0	2	1
+Employment hours: Total	M.hr	3	0	3	1
+GHG emissions: Total	kg CO2 eq	4	0	4	1
+Domestic Extraction Used - Total	kt	5	0	5	1
+Domestic Extraction Used - Metal Ores - Total	kt	6	0	6	1
+Domestic Extraction Used - Non-Metallic Minerals - Total	kt	7	0	7	1
+Taxes less subsidies on products purchased	M.EUR	8	1	1	2
+Other net taxes on production	M.EUR	9	1	2	2
+Compensation of employees; wages, salaries, & employers' social contributions: Low-skilled	M.EUR	10	1	3	2
+Compensation of employees; wages, salaries, & employers' social contributions: Medium-skilled	M.EUR	11	1	4	2
+Compensation of employees; wages, salaries, & employers' social contributions: High-skilled	M.EUR	12	1	5	2
+Operating surplus: Consumption of fixed capital	M.EUR	13	1	6	2
+Operating surplus: Remaining net operating surplus	M.EUR	14	1	7	2
+Employment: Low-skilled male	1000 p	15	2	8	2
+Employment: Low-skilled female	1000 p	16	2	9	2
+Employment: Medium-skilled male	1000 p	17	2	10	2
+Employment: Medium-skilled female	1000 p	18	2	11	2
+Employment: High-skilled male	1000 p	19	2	12	2
+Employment: High-skilled female	1000 p	20	2	13	2
+Employment hours: Low-skilled male	M.hr	21	3	14	2
+Employment hours: Low-skilled female	M.hr	22	3	15	2
+Employment hours: Medium-skilled male	M.hr	23	3	16	2
+Employment hours: Medium-skilled female	M.hr	24	3	17	2
+Employment hours: High-skilled male	M.hr	25	3	18	2
+Employment hours: High-skilled female	M.hr	26	3	19	2
+Employment: Vulnerable employment	1000 p	27	0	8	1
+Employment hours: Vulnerable employment	M.hr	28	0	9	1
+CO2 - combustion	kg	29	4	20	2
+CH4 - combustion	kg	30	4	21	2
+N2O - combustion	kg	31	4	22	2
+CO2 - waste	kg	32	4	23	2
+CH4 - Waste	kg	33	4	24	2
+CO2 - non combustion	kg	34	4	25	2
+CH4 - non combustion	kg	35	4	26	2
+N2O - non - combustion	kg	36	4	27	2
+SF6	kg	37	4	28	2
+HFC	kg CO2-eq	38	4	29	2
+PFC	kg CO2-eq	39	4	30	2
+Domestic Extraction Used - Metal Ores - Uranium and thorium ores	kt	40	6	31	2
+Domestic Extraction Used - Metal Ores - Iron ores	kt	41	6	32	2
+Domestic Extraction Used - Metal Ores - Copper ores	kt	42	6	33	2
+Domestic Extraction Used - Metal Ores - Nickel ores	kt	43	6	34	2
+Domestic Extraction Used - Metal Ores - Bauxite and aluminium ores	kt	44	6	35	2
+Domestic Extraction Used - Metal Ores - Gold ores	kt	45	6	36	2
+Domestic Extraction Used - Metal Ores - PGM ores	kt	46	6	37	2
+Domestic Extraction Used - Metal Ores - Silver ores	kt	47	6	38	2
+Domestic Extraction Used - Metal Ores - Lead ores	kt	48	6	39	2
+Domestic Extraction Used - Metal Ores - Tin ores	kt	49	6	40	2
+Domestic Extraction Used - Metal Ores - Zinc ores	kt	50	6	41	2
+Domestic Extraction Used - Metal Ores - Other non-ferrous metal ores	kt	51	6	42	2
+Domestic Extraction Used - Non-Metallic Minerals - Other minerals	kt	52	7	43	2
+Domestic Extraction Used - Non-Metallic Minerals - Limestone, gypsum, chalk, dolomite	kt	53	7	44	2
+Domestic Extraction Used - Non-Metallic Minerals - Slate	kt	54	7	45	2
+Domestic Extraction Used - Non-Metallic Minerals - Building stones	kt	55	7	46	2
+Domestic Extraction Used - Non-Metallic Minerals - Clays and kaolin	kt	56	7	47	2
+Domestic Extraction Used - Non-Metallic Minerals - Gravel and sand	kt	57	7	48	2
+Domestic Extraction Used - Non-Metallic Minerals - Salt	kt	58	7	49	2
+Domestic Extraction Used - Non-Metallic Minerals - Chemical and fertilizer minerals	kt	59	7	50	2

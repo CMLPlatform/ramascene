@@ -1,0 +1,56 @@
+name	code	global_id	parent_id	local_id	level	identifier	leaf_children_global	leaf_children_local
+Total	total	1	0	1	1	TOTAL	7#8#9#10#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#28#29#30#31#32#33#34#35#36#37#38#39#40#41#42#43#44#45#46#47#48#49#50#51#52#53#54#55	0#1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#28#29#30#31#32#33#34#35#36#37#38#39#40#41#42#43#44#45#46#47#48
+Europe	T_WE	2	1	1	2	AGG	7#8#9#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#28#29#30#31#32#33#34#43#45#48#53	0#1#2#4#5#6#7#8#9#10#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#36#38#41#46
+Middle-East	T_WM	3	1	2	2	AGG	10#46#55	3#39#48
+America	T_WL	4	1	3	2	AGG	35#38#40#42#52	28#31#33#35#45
+Asia-Pacific	T_WA	5	1	4	2	AGG	36#37#39#41#44#47#49#51	29#30#32#34#37#40#42#44
+Africa	T_WF	6	1	5	2	AGG	50#54	43#47
+Austria	AT	7	2	1	3	LEAF	None	None
+Belgium	BE	8	2	2	3	LEAF	None	None
+Bulgaria	BG	9	2	3	3	LEAF	None	None
+Cyprus	CY	10	3	4	3	LEAF	None	None
+Czech Republic	CZ	11	2	5	3	LEAF	None	None
+Germany	DE	12	2	6	3	LEAF	None	None
+Denmark	DK	13	2	7	3	LEAF	None	None
+Estonia	EE	14	2	8	3	LEAF	None	None
+Spain	ES	15	2	9	3	LEAF	None	None
+Finland	FI	16	2	10	3	LEAF	None	None
+France	FR	17	2	11	3	LEAF	None	None
+Greece	GR	18	2	12	3	LEAF	None	None
+Croatia	HR	19	2	13	3	LEAF	None	None
+Hungary	HU	20	2	14	3	LEAF	None	None
+Ireland	IE	21	2	15	3	LEAF	None	None
+Italy	IT	22	2	16	3	LEAF	None	None
+Lithuania	LT	23	2	17	3	LEAF	None	None
+Luxembourg	LU	24	2	18	3	LEAF	None	None
+Latvia	LV	25	2	19	3	LEAF	None	None
+Malta	MT	26	2	20	3	LEAF	None	None
+Netherlands	NL	27	2	21	3	LEAF	None	None
+Poland	PL	28	2	22	3	LEAF	None	None
+Portugal	PT	29	2	23	3	LEAF	None	None
+Romania	RO	30	2	24	3	LEAF	None	None
+Sweden	SE	31	2	25	3	LEAF	None	None
+Slovenia	SI	32	2	26	3	LEAF	None	None
+Slovakia	SK	33	2	27	3	LEAF	None	None
+United Kingdom	GB	34	2	28	3	LEAF	None	None
+United States	US	35	4	29	3	LEAF	None	None
+Japan	JP	36	5	30	3	LEAF	None	None
+China	CN	37	5	31	3	LEAF	None	None
+Canada	CA	38	4	32	3	LEAF	None	None
+South Korea	KR	39	5	33	3	LEAF	None	None
+Brazil	BR	40	4	34	3	LEAF	None	None
+India	IN	41	5	35	3	LEAF	None	None
+Mexico	MX	42	4	36	3	LEAF	None	None
+Russia	RU	43	2	37	3	LEAF	None	None
+Australia	AU	44	5	38	3	LEAF	None	None
+Switzerland	CH	45	2	39	3	LEAF	None	None
+Turkey	TR	46	3	40	3	LEAF	None	None
+Taiwan	TW	47	5	41	3	LEAF	None	None
+Norway	NO	48	2	42	3	LEAF	None	None
+Indonesia	ID	49	5	43	3	LEAF	None	None
+South Africa	ZA	50	6	44	3	LEAF	None	None
+Rest of Asia and Pacific	WA	51	5	45	3	LEAF	None	None
+Rest of America	WL	52	4	46	3	LEAF	None	None
+Rest of Europe	WE	53	2	47	3	LEAF	None	None
+Rest of Africa	WF	54	6	48	3	LEAF	None	None
+Rest of Middle East	WM	55	3	49	3	LEAF	None	None

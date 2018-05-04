@@ -1,0 +1,33 @@
+
+$body-bg: #333;
+
+@import '_bootstrap';
+
+.panel {
+  color: #333;
+}
+
+.rc-tree-select-not-found {
+  color: #000;
+}
+
+.rc-tree-select-search__field {
+  color: #000;
+}
+
+.rc-tree-select-tree-title {
+  color: #000;
+}
+
+.row {
+  border-bottom: #fff solid 1px;
+  padding: 10px;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.visualization-panel {
+  height: 600px;
+}
