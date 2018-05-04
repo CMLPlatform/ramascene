@@ -194,7 +194,7 @@ class Visualization extends Component {
                         topojson: topoJson,
                         tooltipConfig: {
                             body: function(d) {
-                                var found_item = props.data.find(function(p) {
+                                var found_item = nextProps.data.find(function(p) {
                                     return p.id === d.id;
                                 });
                                 return found_item.value;
