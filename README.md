@@ -37,6 +37,8 @@ Start Celery: $celery -A ramasceneMasterProject worker -l info  --concurrency=2
 
 Start the development server: $python3 manage.py runserver
 
+Access the app on: http://127.0.0.1:8000/ramascene/
+
 **Core dependencies**
 ---
 The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.0.2] (https://channels.readthedocs.io/en/latest/) and React [16.2.0] (https://reactjs.org/)
