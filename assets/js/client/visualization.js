@@ -11,9 +11,9 @@ class Visualization extends Component {
         this.DETAIL_CONTINENT = 'continent';
         this.DETAIL_COUNTRY = 'country';
 
-        this.TOPOJSON_TOTAL = '../static/working_total.json';
-        this.TOPOJSON_CONTINENT = '../static/working_continent.json';
-        this.TOPOJSON_COUNTRY = '../static/working_low_lvl.json';
+        this.TOPOJSON_TOTAL = 'working_total.json';
+        this.TOPOJSON_CONTINENT = 'working_continent.json';
+        this.TOPOJSON_COUNTRY = 'working_low_lvl.json';
 
         var topoJson = null;
         switch (props.detailLevel) {
@@ -33,67 +33,62 @@ class Visualization extends Component {
                 this.state = {
                     type: props.type,
                     geoconfig: {
-                      //workaround for scale (make white -> not visible),because set to 'value' renders wrong numberic scale values
-                      colorScaleConfig: {
-                        axisConfig: {
-                          shapeConfig: {
-                            labelConfig: {
-                              fontColor: "white"
-                            },
-                          }
-                        },
-                        //scale_colors are changed in colorScaleConfig
-                        color: ["#000000"
-                            ,"#080000"
-                            ,"#100000"
-                            ,"#180000"
-                            ,"#300000"
-                            ,"#200000"
-                            ,"#280000"
-                            ,"#380000"
-                            ,"#400000"
-                            ,"#480000"
-                            ,"#500000"
-                            ,"#580000"
-                            ,"#600000"
-                            ,"#780000"
-                            ,"#680000"
-                            ,"#700000"
-                            ,"#800000"
-                            ,"#870000"
-                            ,"#970000"
-                            ,"#8f0000"
-                            ,"#9f0000"
-                            ,"#b70000"
-                            ,"#a70000"
-                            ,"#af0000"
-                            ,"#bf0000"
-                            ,"#c70000"
-                            ,"#cf0000"
-                            ,"#d70000"
-                            ,"#df0000"
-                            ,"#e70000"
-                            ,"#ef0000"
-                            ,"#ff0000"],
+                        colorScaleConfig: {
+                            // axisConfig: {
+                            //     shapeConfig: {
+                            //         labelConfig: {
+                            //             fontColor: "white"
+                            //         }
+                            //     }
+                            // },
+                            color: ["#000000"
+                                ,"#080000"
+                                ,"#100000"
+                                ,"#180000"
+                                ,"#300000"
+                                ,"#200000"
+                                ,"#280000"
+                                ,"#380000"
+                                ,"#400000"
+                                ,"#480000"
+                                ,"#500000"
+                                ,"#580000"
+                                ,"#600000"
+                                ,"#780000"
+                                ,"#680000"
+                                ,"#700000"
+                                ,"#800000"
+                                ,"#870000"
+                                ,"#970000"
+                                ,"#8f0000"
+                                ,"#9f0000"
+                                ,"#b70000"
+                                ,"#a70000"
+                                ,"#af0000"
+                                ,"#bf0000"
+                                ,"#c70000"
+                                ,"#cf0000"
+                                ,"#d70000"
+                                ,"#df0000"
+                                ,"#e70000"
+                                ,"#ef0000"
+                                ,"#ff0000"]
                         },
                         data: props.data,
-                        //removing downloadbutton func. because it does not render well with geomap
-                        ///downloadButton: {type: "jpeg"},
+                        // removing downloadButton because it does not render well with geomap
+                        // downloadButton: {type: "png"},
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         //add to tooltip the actual value
                         tooltipConfig: {
-                                body: function(d){
-                                  const test = props.data
-                                  const arrayLength = test.length;
-                                  for (var i = 0; i < arrayLength; i++) {
-                                    if (test[i].id == d.id){
-                                        return test[i].value
-                                    }
-                                  }
-                                }
-                              },
-                              colorScale: 'value',
+                            body: function(d) {
+                                var found_item = props.data.find(function(p) {
+                                    return p.id === d.id;
+                                });
+                                return found_item.value;
+                            }
+                        },
+                        colorScale: 'value',
                         // TODO how can we get filter to work when dynamically changing topojson and data ?
                         // fitFilter: function(d) {
                         //      return props.data.find(function(p) {
@@ -113,12 +108,12 @@ class Visualization extends Component {
                     type: props.type,
                     treeconfig: {
                         tooltipConfig: {
-                              body: function(d){
-                                return d.value
-                              }
-                            },
+                            body: function(d) {
+                                return d.value;
+                            }
+                        },
                         data: props.data,
-                        //downloadButton: {type: "png"},
+                        downloadButton: {type: "png"},
                         groupBy: 'id',
                         size: d => d.value
                     }
@@ -152,64 +147,60 @@ class Visualization extends Component {
                 this.setState({
                     type: nextProps.type,
                     geoconfig: {
-                      colorScaleConfig: {
-                        axisConfig: {
-                          shapeConfig: {
-                            labelConfig: {
-                              fontColor: "white"
-                            },
-
-                          }
-                        },
-                        color: ["#000000"
-                            ,"#080000"
-                            ,"#100000"
-                            ,"#180000"
-                            ,"#300000"
-                            ,"#200000"
-                            ,"#280000"
-                            ,"#380000"
-                            ,"#400000"
-                            ,"#480000"
-                            ,"#500000"
-                            ,"#580000"
-                            ,"#600000"
-                            ,"#780000"
-                            ,"#680000"
-                            ,"#700000"
-                            ,"#800000"
-                            ,"#870000"
-                            ,"#970000"
-                            ,"#8f0000"
-                            ,"#9f0000"
-                            ,"#b70000"
-                            ,"#a70000"
-                            ,"#af0000"
-                            ,"#bf0000"
-                            ,"#c70000"
-                            ,"#cf0000"
-                            ,"#d70000"
-                            ,"#df0000"
-                            ,"#e70000"
-                            ,"#ef0000"
-                            ,"#ff0000"],
+                        colorScaleConfig: {
+                            // axisConfig: {
+                            //     shapeConfig: {
+                            //         labelConfig: {
+                            //             fontColor: "white"
+                            //         }
+                            //     }
+                            // },
+                            color: ["#000000"
+                                , "#080000"
+                                , "#100000"
+                                , "#180000"
+                                , "#300000"
+                                , "#200000"
+                                , "#280000"
+                                , "#380000"
+                                , "#400000"
+                                , "#480000"
+                                , "#500000"
+                                , "#580000"
+                                , "#600000"
+                                , "#780000"
+                                , "#680000"
+                                , "#700000"
+                                , "#800000"
+                                , "#870000"
+                                , "#970000"
+                                , "#8f0000"
+                                , "#9f0000"
+                                , "#b70000"
+                                , "#a70000"
+                                , "#af0000"
+                                , "#bf0000"
+                                , "#c70000"
+                                , "#cf0000"
+                                , "#d70000"
+                                , "#df0000"
+                                , "#e70000"
+                                , "#ef0000"
+                                , "#ff0000"]
                         },
                         data: nextProps.data,
-                        //downloadButton: {type: "png"},
+                        // downloadButton: {type: "png"},
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         tooltipConfig: {
-                                body: function(d){
-                                  const test = nextProps.data
-                                  const arrayLength = test.length;
-                                  for (var i = 0; i < arrayLength; i++) {
-                                      if (test[i].id == d.id){
-                                          return test[i].value
-                                      }
-                                  }
-                                }
-                              },
-                      colorScale: 'value',
+                            body: function(d) {
+                                var found_item = props.data.find(function(p) {
+                                    return p.id === d.id;
+                                });
+                                return found_item.value;
+                            }
+                        },
+                        colorScale: 'value',
                         // fitFilter: function(d) {
                         //     return nextProps.data.find(function(p) {
                         //         return p.id === d.id;
@@ -228,12 +219,12 @@ class Visualization extends Component {
                     type: nextProps.type,
                     treeconfig: {
                         tooltipConfig: {
-                              body: function(d){
-                                return d.value
-                              }
+                            body: function(d) {
+                                return d.value;
+                            }
                         },
                         data: nextProps.data,
-                        //downloadButton: {type: "png"},
+                        downloadButton: {type: "png"},
                         groupBy: 'id',
                         size: d => d.value
                     }

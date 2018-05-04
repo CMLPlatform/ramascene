@@ -1,8 +1,9 @@
 // @flow
 import Papa from 'papaparse';
 import FilterableSingleSelectDropdownTree from './filterableSingleSelectDropdownTree';
+import TreeSelect from "rc-tree-select";
 
-class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDropdownTree {
+class IndicatorFilterableSingleSelectDropdownTree extends FilterableSingleSelectDropdownTree {
 
     constructor(props) {
         super(props);
@@ -11,8 +12,8 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
     }
 
     componentWillMount() {
-        //https://www.papaparse.com/docs#config
-        Papa.parse('final_productTree_exiovisuals.csv', {
+        //https://www.papaparse.com/doc#config
+        Papa.parse('mod_indicators.csv', {
             delimiter: '\t',
             // newline
             // quoteChar
@@ -38,11 +39,11 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
     updateTreeData(result/*, file*/) {
         // result = {data, errors, meta}
         var data = [];
-        for (var product of result.data) {
-            data.push({id: product.Global_id, pId: product.Parent_Id, value: product.Global_id, label: product.Name});
+        for (var indicator of result.data) {
+            data.push({id: indicator.Global_id, pId: indicator.Parent_id, value: indicator.Global_id, label: indicator.Name})
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select product", callback: this.state.callback});
+        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select indicator", callback: this.state.callback});
     }
 }
 
-export default ProductFilterableSingleSelectDropdownTree;
+export default IndicatorFilterableSingleSelectDropdownTree;

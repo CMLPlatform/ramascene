@@ -13,7 +13,7 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
 
     componentWillMount() {
         //https://www.papaparse.com/docs#config
-        Papa.parse('../static/final_productTree_exiovisuals.csv', {
+        Papa.parse('final_productTree_exiovisuals.csv', {
             delimiter: '\t',
             // newline
             // quoteChar

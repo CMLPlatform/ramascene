@@ -12,7 +12,7 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
 
     componentWillMount() {
         //https://www.papaparse.com/docs#config
-        Papa.parse('../static/final_countryTree_exiovisuals.csv', {
+        Papa.parse('final_countryTree_exiovisuals.csv', {
             delimiter: '\t',
             // newline
             // quoteChar
@@ -41,7 +41,7 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
         for (var region of result.data) {
             data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id, label: region.Name});
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select region(s)", callback: this.state.callback});
+        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select region", callback: this.state.callback});
     }
 }
 

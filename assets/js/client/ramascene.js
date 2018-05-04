@@ -1,7 +1,7 @@
+// @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import { Button, ButtonGroup, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
-import Select from 'react-select';
 import 'react-select/scss/default.scss';
 import './stylesheets/ramascene.scss';
 import registerServiceWorker from './registerServiceWorker';
@@ -10,7 +10,7 @@ import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSe
 import ProductFilterableSingleSelectDropdownTree from './productFilterableSingleSelectDropdownTree';
 import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
 import RegionFilterableMultiSelectDropdownTree from './regionFilterableMultiSelectDropdownTree';
-import IndicatorFilterableMultiSelectDropdownTree from './indicatorFilterableMultiSelectDropdownTree';
+import IndicatorFilterableSingleSelectDropdownTree from './indicatorFilterableSingleSelectDropdownTree';
 import AnalysisJob from './analysisJob';
 import TreeSelect from "rc-tree-select";
 
@@ -31,8 +31,8 @@ class App extends Component {
 
         this.state = {
             selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
-            selectedVisualizationOption: {label: 'Treemap', value: this.VIZ_TREEMAP},
-            selectedVisualizationDetailOption: this.VIZDETAIL_CONTINENT,
+            selectedVisualizationOption: this.VIZ_TREEMAP,
+            selectedVisualizationDetailOption: this.VIZDETAIL_COUNTRY,
             selectedProductOptions: [],
             selectedRegionOptions: [],
             selectedIndicatorOptions: [],
@@ -73,41 +73,34 @@ class App extends Component {
         });
     }
 
-    handleVisualizationChange(selectedOption) {
-        if (selectedOption) {
-            switch (selectedOption.value) {
-                case this.VIZ_TREEMAP:
-                    this.setState({
-                        selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-                        selectedVisualizationOption: selectedOption,
-                        selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-                        selectedProductOptions: this.state.selectedProductOptions,
-                        selectedRegionOptions: (Array.isArray(this.state.selectedRegionOptions) ? this.state.selectedRegionOptions.slice(0,1) : this.state.selectedRegionOptions),
-                        selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-                        selectMultiProduct: true,
-                        selectMultiRegion: false,
-                        busy: this.state.busy,
-                        jobs: this.state.jobs
-                    });
-                    break;
-                case this.VIZ_GEOMAP:
-                    this.setState({
-                        selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-                        selectedVisualizationOption: selectedOption,
-                        selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-                        selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
-                        selectedRegionOptions: this.state.selectedRegionOptions,
-                        selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-                        selectMultiProduct: false,
-                        selectMultiRegion: true,
-                        busy: this.state.busy,
-                        jobs: this.state.jobs
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }
+    handleTreeMapClicked() {
+        this.setState({
+            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
+            selectedVisualizationOption: this.VIZ_TREEMAP,
+            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
+            selectedProductOptions: this.state.selectedProductOptions,
+            selectedRegionOptions: (Array.isArray(this.state.selectedRegionOptions) ? this.state.selectedRegionOptions.slice(0,1) : this.state.selectedRegionOptions),
+            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
+            selectMultiProduct: true,
+            selectMultiRegion: false,
+            busy: this.state.busy,
+            jobs: this.state.jobs
+        });
+    }
+
+    handleGeoMapClicked() {
+        this.setState({
+            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
+            selectedVisualizationOption: this.VIZ_GEOMAP,
+            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
+            selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
+            selectedRegionOptions: this.state.selectedRegionOptions,
+            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
+            selectMultiProduct: false,
+            selectMultiRegion: true,
+            busy: this.state.busy,
+            jobs: this.state.jobs
+        });
     }
 
     handleTotalClicked() {
@@ -204,6 +197,7 @@ class App extends Component {
         // make sure for single select dropdown trees that value is presented as an array
         var nodesSec = null;
         var nodesReg = null;
+        var extn = null;
         if (!Array.isArray(this.state.selectedProductOptions)) {
             nodesSec = [this.state.selectedProductOptions];
         } else {
@@ -212,15 +206,21 @@ class App extends Component {
         if (!Array.isArray(this.state.selectedRegionOptions)) {
             nodesReg = [this.state.selectedRegionOptions];
         } else {
-            nodesReg = this.state.selectedRegionOptions;
+            // nodesReg = this.state.selectedRegionOptions.map(x => x.global_id);
+            nodesReg = this.state.selectedRegionOptions
+        }
+        if (!Array.isArray(this.state.selectedIndicatorOptions)) {
+            extn = [this.state.selectedIndicatorOptions];
+        } else {
+            extn = this.state.selectedIndicatorOptions;
         }
 
         const query = {
             'dimType': this.state.selectedPerspectiveOption,
-            'vizType': this.state.selectedVisualizationOption.value,
+            'vizType': this.state.selectedVisualizationOption,
             'nodesSec': nodesSec,
             'nodesReg': nodesReg,
-            'extn': this.state.selectedIndicatorOptions
+            'extn': extn
         };
 
         // this.state.jobs.push(React.createElement(AnalysisJob, {query: query, resultHandler: this.renderVisualization.bind(this), deleteHandler: this.deleteJob.bind(this)}));
@@ -322,8 +322,7 @@ class App extends Component {
 
     render() {
         const selectedPerspectiveOption = this.state.selectedPerspectiveOption;
-        const { selectedVisualizationOption } = this.state;
-        const selectedVisualizationType = selectedVisualizationOption && selectedVisualizationOption.value;
+        const selectedVisualizationOption = this.state.selectedVisualizationOption;
         const selectedVisualizationDetailOption = this.state.selectedVisualizationDetailOption;
 
         return (
@@ -354,37 +353,16 @@ class App extends Component {
                                     <Row>
                                         <Col>
                                             <div>Visualization</div>
-                                            <Select name='select visualization type'
-                                                    options={
-                                                        [
-                                                            {label: 'Treemap', value: this.VIZ_TREEMAP},
-                                                            {label: 'Geomap', value: this.VIZ_GEOMAP}
-                                                        ]
-                                                    }
-                                                    onChange={this.handleVisualizationChange.bind(this)}
-                                                    value={selectedVisualizationType}
-                                                    disabled={this.state.busy}
-                                            />
+                                            <ButtonGroup>
+                                                <Button onClick={this.handleTreeMapClicked.bind(this)}
+                                                        active={selectedVisualizationOption == this.VIZ_TREEMAP}
+                                                        disabled={this.state.busy}>TreeMap</Button>
+                                                <Button onClick={this.handleGeoMapClicked.bind(this)}
+                                                        active={selectedVisualizationOption == this.VIZ_GEOMAP}
+                                                        disabled={this.state.busy}>GeoMap</Button>
+                                            </ButtonGroup>
                                         </Col>
                                     </Row>
-                                    {(selectedVisualizationType == this.VIZ_GEOMAP) &&
-                                        <Row>
-                                            <Col>
-                                                <div>Visualization Detail</div>
-                                                <ButtonGroup>
-                                                    <Button onClick={this.handleTotalClicked.bind(this)}
-                                                            active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
-                                                            disabled={this.state.busy}>Total</Button>
-                                                    <Button onClick={this.handleContinentClicked.bind(this)}
-                                                            active={selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT}
-                                                            disabled={this.state.busy}>Continent</Button>
-                                                    <Button onClick={this.handleCountryClicked.bind(this)}
-                                                            active={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY}
-                                                            disabled={this.state.busy}>Country</Button>
-                                                </ButtonGroup>
-                                            </Col>
-                                        </Row>
-                                    }
                                     <Row>
                                         {/*<div>Products and Regions</div>*/}
                                         {/*<Col sm={6} md={6} lg={6}>*/}
@@ -405,6 +383,24 @@ class App extends Component {
                                             }
                                         </Col>
                                     </Row>
+                                    {(selectedVisualizationOption == this.VIZ_GEOMAP) &&
+                                    <Row>
+                                        <Col>
+                                            <div>Visualization Detail</div>
+                                            <ButtonGroup>
+                                                <Button onClick={this.handleTotalClicked.bind(this)}
+                                                        active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
+                                                        disabled={this.state.busy}>Total</Button>
+                                                <Button onClick={this.handleContinentClicked.bind(this)}
+                                                        active={selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT}
+                                                        disabled={this.state.busy}>Continent</Button>
+                                                <Button onClick={this.handleCountryClicked.bind(this)}
+                                                        active={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY}
+                                                        disabled={this.state.busy}>Country</Button>
+                                            </ButtonGroup>
+                                        </Col>
+                                    </Row>
+                                    }
                                     <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
@@ -427,10 +423,9 @@ class App extends Component {
                                     <Row>
                                         <Col>
                                             <div>Indicator</div>
-                                            <IndicatorFilterableMultiSelectDropdownTree disabled={this.state.busy}
+                                            <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy}
                                                                                         onChange={this.handleIndicatorChange.bind(this)}
                                                                                         value={this.state.selectedIndicatorOptions}
-                                                                                        strategy={TreeSelect.SHOW_PARENT}
                                             />
                                         </Col>
                                     </Row>
@@ -518,5 +513,5 @@ class App extends Component {
     }
 }
 
-render(<App />, document.getElementById('container'));
+render(<App />, document.getElementById('app'));
 registerServiceWorker();

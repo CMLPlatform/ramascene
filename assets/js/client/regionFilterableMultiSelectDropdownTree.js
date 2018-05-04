@@ -12,7 +12,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
 
     componentWillMount() {
         //https://www.papaparse.com/docs#config
-        Papa.parse('../static/final_countryTree_exiovisuals.csv', {
+        Papa.parse('final_countryTree_exiovisuals.csv', {
             delimiter: '\t',
             // newline
             // quoteChar
@@ -39,6 +39,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
         // result = {data, errors, meta}
         var data = [];
         for (var region of result.data) {
+            // data.push({id: region.Global_id, pId: region.Parent_id, value: {global_id: region.Global_id, parent_id: region.Parent_id}, label: region.Name});
             data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id, label: region.Name});
         }
         this.setState({disabled: this.state.disabled, strategy: this.state.strategy, data: data, value: this.state.value, placeholder: "select region(s)", callback: this.state.callback});
