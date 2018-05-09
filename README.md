@@ -39,14 +39,14 @@ $sudo apt-get install nodejs
 $sudo apt install redis-server
 ```
 
-> Perform next steps while in virtualenv and in the rootfolder of the project
+> Note: Perform all next steps in the virtualenv and in the rootfolder of the project
 
-### Prepare the database by running
+### Prepare the database
 ```
 $python3 manage.py makemigrations and $python3 manage.py migrate
 ```
 
-### Populate the database by running 
+### Populate the database 
 ```
 $python3 manage.py populateHierarchies
 ```
@@ -65,13 +65,14 @@ $./node_modules/.bin/webpack --config webpack.config.js
 ```
 $celery -A ramasceneMasterProject worker -l info  --concurrency=2 
 ```
-> Concurrency value can be tweaked
+> Note: The concurrency value can be tweaked
+
 ### Start the development server
 ```
 $python3 manage.py runserver
 ```
 
-Access the app vai the webrowser: "http://127.0.0.1:8000/ramascene/"
+Access the app via the webrowser: http://127.0.0.1:8000/ramascene/
 
 # Core dependencies
 ---
