@@ -9,36 +9,48 @@ TODO
 
 **Getting started**
 ---
-Clone the data repository: git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene_data.git
+## Clone the data repository 
+* git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene_data.git
 
-Clone the project: git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git
+## Clone the project 
+* git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git
 
-Point in settings.py to the data repository files: PATH_TO_L, PATH_TO_B, PATH_TO_Y
+## Point in settings.py to the data repository files
+Adjust PATH_TO_L, PATH_TO_B, PATH_TO_Y
 
-Create a virtual environment and install the app requirements : $pip3 install -r requirements.txt
+## Create a virtual environment and install the app requirements
+* $pip3 install -r requirements.txt
 
-Install node.js:     $sudo apt-get update
-    		     $sudo apt-get install nodejs
+## Install node.js (node version: 3.10.10 or higher)
+* $sudo apt-get update
+* $sudo apt-get install nodejs
 
-On debian install nodejslegacy: $sudo apt-get install nodejs-legacy
+> Note: On debian apt install nodejs-legacy
 
-Install redis: $sudo apt install redis-server
+## Install redis
+$sudo apt install redis-server
 
-[Perform next steps while in virtualenv and in the rootfolder of the project]
+> Perform next steps while in virtualenv and in the rootfolder of the project
 
-Prepare the database by running: $python3 manage.py makemigrations and $python3 manage.py migrate
+## Prepare the database by running
+* $python3 manage.py makemigrations and $python3 manage.py migrate
 
-Populate the database by running: $python3 manage.py populateHierarchies
+## Populate the database by running 
+* $python3 manage.py populateHierarchies
 
-Prepare static resources (node version: 3.10.10 or higher): $npm install
+## Prepare static resources
+* $npm install
 
-Built React bundle: $./node_modules/.bin/webpack --config webpack.config.js
+## Built React bundle
+* $./node_modules/.bin/webpack --config webpack.config.js
 
-Start Celery: $celery -A ramasceneMasterProject worker -l info  --concurrency=2 
+## Start Celery
+* $celery -A ramasceneMasterProject worker -l info  --concurrency=2 
 
-Start the development server: $python3 manage.py runserver
+## Start the development server
+* $python3 manage.py runserver
 
-Access the app on: http://127.0.0.1:8000/ramascene/
+Access the app vai the webrowser: "http://127.0.0.1:8000/ramascene/"
 
 **Core dependencies**
 ---
