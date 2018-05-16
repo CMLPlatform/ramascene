@@ -53,6 +53,10 @@ extensions = [
     'sphinx.ext.imgmath',
 ]
 
+suppress_warnings = ['ramascene.tasks',
+                     'ramascene.consumers',
+                     ]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['ytemplates']
 
