@@ -53,9 +53,7 @@ extensions = [
     'sphinx.ext.imgmath',
 ]
 
-suppress_warnings = ['ramascene.tasks',
-                     'ramascene.consumers',
-                     ]
+autodoc_mock_imports = ['numpy','calcOneHandler', 'B_data', 'Y_data','L_data']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['ytemplates']
