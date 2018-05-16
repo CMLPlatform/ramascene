@@ -3,9 +3,9 @@
 RaMa-Scene is a django 2.0 based web-application that allows for analyzing Environmentally Extended Input-Output (EEIO) tables. EXIOBASE v3.3 is used in this project. 
 Demo version: http://cml.liacs.nl:8080/ramascene/
 
-# Documentation
+# Developers Guide
 ---
-TODO
+http://rama-scene.readthedocs.io/en/latest/
 
 # Getting started
 ---
@@ -43,7 +43,8 @@ $sudo apt install redis-server
 
 ### Prepare the database
 ```
-$python3 manage.py makemigrations and $python3 manage.py migrate
+$python3 manage.py makemigrations
+$python3 manage.py migrate
 ```
 
 ### Populate the database 
