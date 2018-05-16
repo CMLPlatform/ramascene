@@ -3,11 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+========================
 RaMa-Scene documentation
-======================================
+========================
 
 Database and DB population
---------------------------
+==========================
 
 .. toctree::
    :maxdepth: 2
@@ -15,7 +16,7 @@ Database and DB population
    modules/models
 
 API
---------------------------
+===
 
 .. toctree::
    :maxdepth: 2
@@ -25,7 +26,7 @@ API
    modules/tasks
 
 Management of user queries
---------------------------
+==========================
 
 .. toctree::
    :maxdepth: 2
@@ -33,20 +34,19 @@ Management of user queries
    modules/querymanagement   
 
 Front-end
---------------------------
+=========
 TODO
 
 Calculations
---------------------------
+============
 TODO
 
 Relevant static files
---------------------------
-static_assets
+=====================
 TODO
 
 Deployment
---------------------------
+==========
 TODO
 
 
