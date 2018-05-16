@@ -11,7 +11,6 @@ RaMa-Scene documentation
 .. toctree::
    :maxdepth: 2
 
-   modules/models
    modules/views
    modules/consumers
    modules/tasks
