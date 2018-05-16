@@ -12,17 +12,9 @@ RaMa-Scene documentation
    :maxdepth: 2
 
    modules/models
-
-.. toctree::
-   :maxdepth: 2
-
    modules/views
    modules/consumers
    modules/tasks
-
-.. toctree::
-   :maxdepth: 2
-
    modules/querymanagement   
 
 Front-end
