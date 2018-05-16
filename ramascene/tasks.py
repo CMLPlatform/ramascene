@@ -15,16 +15,15 @@ log = logging.getLogger(__name__)
 from asgiref.sync import AsyncToSync
 from celery import shared_task
 
-from ramascene.data import B_data,L_data,Y_data
+#from ramascene.data import B_data,L_data,Y_data
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 from ramascene.models import Indicator
 
-"""
-This  file  represents  the  Celery  implementation  in  Django.
-"""
-
 def async_send(channel_name, job):
+    """
+    Sends task message to the front-end.
+    """
     channel_layer = get_channel_layer()
 
     AsyncToSync(channel_layer.send)(
@@ -40,12 +39,17 @@ def async_send(channel_name, job):
 
 
 def calcOneHandler(job_name,job_id, channel_name, ready_querySelection, querySelection):
+    """
+    Invokes Celery function.
+    """
     myTask = calcOne.delay(job_name,job_id, channel_name, ready_querySelection, querySelection)
     return myTask
 
 @shared_task
 def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection):
-
+    """
+    Performs calculations  as a Celery  Task.
+    """
     #retrieve calculation ready indices
     product_calc_indices = ready_querySelection["nodesSec"]
     country_calc_indices = ready_querySelection["nodesReg"]
