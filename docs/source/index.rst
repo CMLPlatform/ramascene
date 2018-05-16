@@ -7,16 +7,11 @@
 RaMa-Scene documentation
 ========================
 
-Database and DB population
-==========================
 
 .. toctree::
    :maxdepth: 2
 
    modules/models
-
-API
-===
 
 .. toctree::
    :maxdepth: 2
@@ -24,9 +19,6 @@ API
    modules/views
    modules/consumers
    modules/tasks
-
-Management of user queries
-==========================
 
 .. toctree::
    :maxdepth: 2
