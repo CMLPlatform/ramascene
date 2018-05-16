@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 from asgiref.sync import AsyncToSync
 from celery import shared_task
 
-#from ramascene.data import B_data,L_data,Y_data
+from ramascene.data import B_data,L_data,Y_data
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 from ramascene.models import Indicator
