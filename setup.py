@@ -8,5 +8,5 @@ setup(name='ramasceneMasterProject',
       author='RaMa-Scene',
       author_email='sidneyniccolson@gmail.com',
       url='n/a',
-      packages=['ramascene', 'ramasceneMasterproject',],
+      packages=['ramascene',],
 )
