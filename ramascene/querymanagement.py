@@ -5,9 +5,18 @@ import numpy as np
 Supporting  file  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
 """
 
-
-#this function returns the leaf nodes of a given global id in a format ready for calculation
 def get_leafs(product_global_ids, country_global_ids):
+    """    Returns the leaf nodes of a given global id
+
+        Uses the database/model to fetch leaf nodes.
+
+        Args:
+            product_global_ids (list): A list of user selected product global ids
+            country_global_ids (list): A list of user selected country global ids
+
+        Returns:
+            list: complete list of  leaf ids (minus a offset of -1 for calculation purposes)
+    """
     OFFSET = -1
     product_calc_indices = []
     country_calc_indices = []
@@ -25,7 +34,6 @@ def get_leafs(product_global_ids, country_global_ids):
             leafs = clean_local_leafs(my_local_leafs)
             product_calc_indices.append(leafs)
 
-
     # It's always a list even if it only has a single element
     for id in country_global_ids:
         # perform identification,
@@ -40,17 +48,23 @@ def get_leafs(product_global_ids, country_global_ids):
             leafs = clean_local_leafs(my_local_leafs)
             country_calc_indices.append(leafs)
 
-    #flatten lists
+    # flatten lists
     product_calc_indices = [item for sublist in product_calc_indices for item in sublist]
     country_calc_indices = [item for sublist in country_calc_indices for item in sublist]
-
-
-
     return product_calc_indices, country_calc_indices
 
-#return key/value pair product with key as name corresponding to querySelection global_id
-#expects arguments key/value pair product with key as global_id
 def get_calc_names_product(prod_result_data):
+    """Get name of products.
+
+        Uses the database/model to fetch names, used inside calculation as conversion step
+
+        Args:
+            prod_result_data (dict): key/value pair product with key as global_id
+
+        Returns:
+            dict: key/value pair product with key as name corresponding to querySelection global_id
+
+    """
     #create return dict
     product_result_named = {}
     #loop over dictionary, from key (global ID) get the name
@@ -59,9 +73,18 @@ def get_calc_names_product(prod_result_data):
         product_result_named[product_name] = value
     return product_result_named
 
-#return key/value pair product with key as name corresponding to querySelection global_id
-#expects arguments key/value pair product with key as global_id
 def get_calc_names_country(country_result_data):
+    """Get name of countries.
+
+        Uses the database/model to fetch names, used inside calculation as conversion step
+
+        Args:
+            country_result_data (dict): key/value pair product with key as global_id
+
+        Returns:
+            dict: key/value pair country with key as name corresponding to querySelection global_id
+
+    """
     #create return dict
     country_result_named = {}
     #loop over dictionary, from key (global ID) get the name
@@ -71,9 +94,20 @@ def get_calc_names_country(country_result_data):
     return country_result_named
 
 
-#returns from a list o_bnamf global_ids the corresponding names
-#expects list of global_ids
 def get_names(prod_ids, country_ids, indicator_ids):
+    """Get name of countries, products and indicators
+
+    Uses the database/model to fetch names, used for sending selection information to front-end
+
+    Args:
+        prod_ids (list): list of products by global id
+        country_ids (list): list of countries by global id
+        indicator_ids (list): list of indicators by global id
+
+    Returns:
+        list: lists of products,countries and indicators as names
+
+    """
     prod_names =[]
     country_names=[]
     indicator_names=[]
@@ -88,10 +122,19 @@ def get_names(prod_ids, country_ids, indicator_ids):
         indicator_names.append(indicator_name)
     return prod_names, country_names, indicator_names
 
-#invoked at Celery TASK, non-django function
-#return key/value pair country with key name corresponding to querySelection global_id
-#This function aggragates result data that came from calculation process (calcOne) (summing is performed only if needed)
 def get_aggregations_countries(querySelection, result_data):
+    """Sum to construct aggregates results for countries.
+
+        Invoked at Celery tasks to sum values that belong to a certain aggregate.
+
+        Args:
+            querySelection (dict): original querySelection from user
+            result_data (dict): dictionary of result_data from calculation
+
+        Returns:
+            dict: dicitonary of result_data, but with aggregations if there are any
+
+    """
     OFFSET = -1
     # make a result container
     result_container = {}
@@ -128,6 +171,18 @@ def get_aggregations_countries(querySelection, result_data):
     return result_container
 
 def get_aggregations_products(querySelection, result_data):
+    """Sum to construct aggregates results for products.
+
+        Invoked at Celery tasks to sum values that belong to a certain aggregate.
+
+        Args:
+            querySelection (dict): original querySelection from user
+            result_data (dict): dictionary of result_data from calculation
+
+        Returns:
+            dict: dicitonary of result_data, but with aggregations if there are any
+
+    """
     OFFSET = -1
     # make a result container
     result_container = {}
@@ -162,26 +217,66 @@ def get_aggregations_products(querySelection, result_data):
             result_container[global_product_id] = tmp_agg_result
     return result_container
 
-#return model identifier (check if it represent aggregations or not)
 def identify_product(prod_id):
+    """Helper function.
+
+            Does database check on products if the global_id the user selected is an aggregate or not
+
+            Args:
+                prod_id (int): global id
+
+            Returns:
+                str: identifier e.g. LEAF or AGG or TOTAL
+
+    """
     prod_identifier = (Product.objects.values_list('identifier', flat=True).get(global_id=prod_id))
     return prod_identifier
 
-#return model identifier (check if it represent aggregations or not)
 def identify_country(country_id):
+    """Helper function.
+
+            Does database check on countries if the global_id the user selected is an aggregate or not
+
+            Args:
+                country_id (int): global id
+
+            Returns:
+                str: identifier e.g. LEAF or AGG or TOTAL
+
+    """
     reg_identifier = (Country.objects.values_list('identifier', flat=True).get(global_id=country_id))
     return reg_identifier
 
-#clean the data ready for calculations
 def clean_local_leafs(a_list):
+    """Clean data as preprocessing step for calculation.
+
+        Clean the country or product data for calculations by splitting and converting to integers.
+
+        Args:
+            a_list (str): country or product string of coordinates separated by #
+
+        Returns:
+            list: country or product list of coordinates as integers
+
+    """
     #split on hashtag if multiple elements
     a_list = a_list.split("#")
     #convert that list to a list of integers
     a_list = list(map(int, a_list))
     return a_list
 
-#clean the data ready for calculations
 def clean_single_leafs(leaf, OFFSET):
+    """Clean data as preprocessing step for calculation.
+
+        Clean the country or product data for calculations by splitting, applying offset (-1) and converting to integers.
+
+        Args:
+            leaf (str): single country or product coordinate (non-processed)
+
+        Returns:
+            list: country or product list of coordinates (single element, processed)
+
+    """
     #apply offset and make it integers
     leaf = int(leaf) + OFFSET
     #make list for heterogenity purposes with AGG nodes
@@ -189,8 +284,18 @@ def clean_single_leafs(leaf, OFFSET):
     sm_tmp_list.append(leaf)
     return sm_tmp_list
 
-#clean indicator data to make it ready for calculations
 def clean_indicators(idx_lst):
+    """Clean data as preprocessing step for calculation.
+
+        Clean the selected indicator by converting to integers and applying offset of -1.
+
+        Args:
+            idx_lst (list): indicators
+
+        Returns:
+            list: indicators(processed)
+
+    """
     OFFSET = -1
     return_lst = []
     for ind in idx_lst:
@@ -199,6 +304,19 @@ def clean_indicators(idx_lst):
     return return_lst
 
 def convert_to_numpy(products,countries, indicators):
+    """Clean data as preprocessing step for calculation.
+
+        Convert processed country,product, indicator lists to numpy array.
+
+        Args:
+            products (list): pre-processed product list
+            countries (list): pre-processed country list
+            indicators (list): pre-processed indicator list
+
+        Returns:
+            list: numpy arrays of products, countries, indicator coordinates
+
+    """
     #order
     products.sort(reverse=False)
     countries.sort(reverse=False)

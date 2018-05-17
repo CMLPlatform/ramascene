@@ -6,13 +6,14 @@ log = logging.getLogger(__name__)
 from channels.consumer import AsyncConsumer
 from ramascene import querymanagement
 
-"""
-This  file  represents  the  Django  Channels  web  socket  interface  functionalities.
-"""
-
 class RamasceneConsumer(AsyncConsumer):
-    #websocket first connection, accept immediately
+    """
+    This  class  represents  the  Django  Channels  web  socket  interface  functionality.
+    """
     async def websocket_connect(self, event):
+        """
+        websocket first connection, accept immediately
+        """
         print("Connected")
         print(event)
         print(self.channel_name)
@@ -21,7 +22,15 @@ class RamasceneConsumer(AsyncConsumer):
         })
 
     async def websocket_receive(self, event):
+        """Receives message from front-end.
 
+            Tries to parse the message, if successful it will perform pre-processing steps and finally invoke Celery task.
+
+            Args:
+                self (self): self
+                event (dict): message from front-end
+
+        """
 
         try:
             data = json.loads(event['text'])
@@ -91,10 +100,15 @@ class RamasceneConsumer(AsyncConsumer):
             return
 
     async def websocket_disconnect(self, message):
-        #disconnection of web socket
+        """
+        Websocket disconnect function.
+        """
         pass
 
     async def celery_message(self, event):
+        """
+           Sends Celery task status.
+        """
         await self.send({
             "type": "websocket.send",
             "text": event["text"],

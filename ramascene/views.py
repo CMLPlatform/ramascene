@@ -10,6 +10,17 @@ def home(request):
 
 @csrf_exempt
 def ajaxHandling(request):
+    """AJAX handler.
+
+    Checks if the request is a post. Uses from the request the task/job id to fetch the Celery unique identifier.
+    In turn it retrieves by using the Celery unique identifier the actual results
+
+    Args:
+        object: request
+    Returns:
+        JSON response of result calculation
+
+    """
     if request.method == 'POST':
         try:
 

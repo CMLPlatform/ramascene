@@ -21,8 +21,13 @@ from ramascene import querymanagement
 from ramascene.models import Indicator
 
 def async_send(channel_name, job):
-    """
-    Sends task message to the front-end.
+    """Send job completion message to front-end.
+
+    uses the channel_name and Job object.
+
+    Args:
+        channel_name (object): websocket channel name
+        job (object): model object of the job
     """
     channel_layer = get_channel_layer()
 
@@ -39,8 +44,19 @@ def async_send(channel_name, job):
 
 
 def calcOneHandler(job_name,job_id, channel_name, ready_querySelection, querySelection):
-    """
-    Invokes Celery function.
+    """invokes Celery function.
+
+    Handles Celery delay method.
+
+    Args:
+        job_name (str): the name of the job
+        job_id (int): the id of the job
+        channel_name (object): the websocket channel name
+        ready_querySelection (dict): the querySelection preprocessed (only needs convertion to numpy array)
+        querySelection (dict): the original querySelection used for aggregations at later stage
+    Returns:
+        Retrieves the celery ID when completed
+
     """
     myTask = calcOne.delay(job_name,job_id, channel_name, ready_querySelection, querySelection)
     return myTask
@@ -57,12 +73,12 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
 
     # retrieve the units on which the calculation is based
     indicators = querySelection["extn"]
-
     idx_units = {}
     for idx in indicators:
         idx_unit = (Indicator.objects.values_list('unit', flat=True).get(global_id=idx))
         idx_name = (Indicator.objects.values_list('name', flat=True).get(global_id=idx))
         idx_units[idx_name] = idx_unit
+
     #sort and convert to numpy array
     product_calc_indices, country_calc_indices, \
     indicator_calc_indices = querymanagement.convert_to_numpy(product_calc_indices,country_calc_indices,

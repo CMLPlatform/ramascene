@@ -9,7 +9,6 @@ Purpose: Prepare a json for Geomapping.
         Geomapping uses ISO2 (2-letter codes). So a conversion step is needed.
         The Desire countryMapping excel contains the mapping we need. Some ISO2 were missing, thus a small mod file has
         added codes > ref: https://www.iso.org/obp/ui/
-        Their are some misalignments between Rest of <region> naming between the csv files used & Desire (see dict_RF)
         ref standards: ISO 3166
 Usage:  you can change path to EXC_FILE, MOD_FILE to other files if another EXIOBASE version is used. The same accounts
         for Rest OF dictionary

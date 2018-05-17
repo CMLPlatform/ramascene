@@ -4,11 +4,12 @@ from ramascene.models import Country, Product, Indicator
 import sys
 
 
-"""
-Populate database with pre developed csv files residing in python_ini folder
-"""
+
 
 class Command(BaseCommand):
+    """
+    Populate database with pre developed csv files residing in python_ini folder
+    """
     def handle(self, *args, **options):
         try:
             indicatorData = getfile('python_ini/data/mod_indicators.csv')

@@ -8,7 +8,6 @@ Purpose: Prepare a json for Geomapping.
         Output of RamaScene calculations and querymanagement is country names
         Geomapping uses ISO3 (3-letter codes). So a conversion step is needed.
         The Desire countryMapping excel contains the mapping we need. 
-        Their are some misalignments between Rest of <region> naming between the csv files used & Desire (see dict_RF for fix)
         ref standards: ISO 3166
 ####
 Usage:  you can change path to EXC_FILE, MOD_FILE to other files if another EXIOBASE version is used. The same accounts

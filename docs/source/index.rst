@@ -3,9 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-========================
-RaMa-Scene documentation
-========================
+===================================
+RaMa-Scene developers documentation
+===================================
+Welcome to RaMa-Scene's docs. This documentation is split into several parts, from an introduction_ to implemented modules_. The initialise_ scripts_ are independent scripts used for constructing files used by the application. See the deployment_ tutorial for more info on deploying the application.
+
+
+.. _Introduction: intro.html
+.. _modules: modules.html
+.. _initialise: python-ini.html
+.. _scripts: python-ini.html
+.. _deployment: deployment.html
 
 .. toctree::
     :maxdepth: 2
@@ -14,6 +22,7 @@ RaMa-Scene documentation
     :glob:
     :hidden:
 
-    ramascene.rst
-
-
+    intro.rst
+    modules.rst
+    python-ini.rst
+    deployment.rst
