@@ -32,6 +32,7 @@ msgpack==0.5.4
 msgpack-python==0.5.4
 numpy==1.14.1
 packaging==17.1
+pockets==0.6.2
 Pygments==2.2.0
 pyparsing==2.2.0
 pytz==2018.3
@@ -41,6 +42,7 @@ six==1.11.0
 snowballstemmer==1.2.1
 Sphinx==1.7.4
 sphinx-rtd-theme==0.3.1
+sphinxcontrib-napoleon==0.6.1
 sphinxcontrib-websupport==1.0.1
 tornado==4.5.3
 Twisted==17.9.0
