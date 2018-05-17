@@ -7,53 +7,13 @@
 RaMa-Scene documentation
 ========================
 
-Database and DB population
-==========================
-
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
+    :numbered:
+    :titlesonly:
+    :glob:
+    :hidden:
 
-   modules/models
-
-API
-===
-
-.. toctree::
-   :maxdepth: 2
-
-   modules/views
-   modules/consumers
-   modules/tasks
-
-Management of user queries
-==========================
-
-.. toctree::
-   :maxdepth: 2
-
-   modules/querymanagement   
-
-Front-end
-=========
-TODO
-
-Calculations
-============
-TODO
-
-Relevant static files
-=====================
-TODO
-
-Deployment
-==========
-TODO
+    ramascene.rst
 
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
