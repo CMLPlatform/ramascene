@@ -53,7 +53,7 @@ extensions = [
     'sphinx.ext.imgmath',
 ]
 
-autodoc_mock_imports = ['B_data', 'Y_data','L_data']
+autodoc_mock_imports = ['numpy', 'B_data', 'Y_data','L_data', 'Country', 'Product', 'Indicator', 'django']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['ytemplates']
