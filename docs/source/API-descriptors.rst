@@ -24,23 +24,23 @@ Interface descriptors [websocket message to back-end]:
 +===========================+=========================+==========================================+
 | Dimension                 | Production, Consumption | **var name: querySelection**             |
 |                           |                         |  *JSON key: dimType, JSON value:  String*|
-|                           |                         |       ex.:  {\"dimType\":\"Production\"} |
+|                           |                         |       ex.:  \"dimType\":\"Production\"   |
 +---------------------------+-------------------------+------------------------------------------+
 | Visualization             | TreeMap, GeoMap         | **var name: querySelection**             |
 |                           |                         |  *JSON key: vizType, JSON value:  String*|
-|                           |                         |       ex.:  {\"vizType\":\"TreeMap\"}    |
+|                           |                         |       ex.:  \"vizType\":\"TreeMap\"      |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Product                 | **var name: querySelection**             |
 |                           |                         |  *JSON key: nodesSec, JSON value: array* |
-|                           |                         |       ex.:  {\"nodesSec\":\"[1]\"}       |
+|                           |                         |       ex.:  \"nodesSec\":\"[1]\"         |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Country                 | **var name: querySelection**             |
 |                           |                         |  *JSON key: nodesReg, JSON value: array* |
-|                           |                         |       ex.:  {\"nodesReg\":\"[4,5]\"}     |
+|                           |                         |       ex.:  \"nodesReg\":\"[4,5]\"       |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Indicator               | **var name: querySelection**             |
 |                           |                         |  *JSON key: ext, JSON value: array*      |
-|                           |                         |       ex.:  {\"ext\":\"[8]\"}            |
+|                           |                         |       ex.:  \"ext\":\"[8]\"              |
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | → to back-end           | **var name: querySelection & action**    |
 |                           |    [WS send]            |  *JSON : querySelection, JSON: action*   |
@@ -50,16 +50,17 @@ Interface descriptors [websocket message to back-end]:
 **→ to back-end complete payload example:**
 
 | {
-| \"payload\":
-|           {\"action\":
-|               \"start_calc\"},
-|           {\"querySelection\":
-|                {\"dimType\":\"Production\"}
-|                {\"vizType\":\"TreeMap\"}
-|                {\"nodesSec\":[1]}
-|                {\"nodesReg\":[4,5]}
-|                {\"ext\":[8]}
-| }
+|           \"action\":
+|               \"start_calc\",
+|           \"querySelection\":{
+|                \"dimType\":\"Production\",
+|                \"vizType\":\"TreeMap\",
+|                \"nodesSec\":[1],
+|                \"nodesReg\":[4,5],
+|                \"ext\":[8]
+|                }
+|  }
+
 
 
 Interface descriptors [websocket messages from back-end]:
@@ -91,8 +92,8 @@ Interface descriptors [websocket messages from back-end]:
 |  \"job_id\":176,
 |  \"action\":\"completed\",
 |  \"job_status\":\"completed\",
-|  \"job_name\":\"
-|               {'nodesReg': ['Total'],
+|  \"job_name\":\{
+|                'nodesReg': ['Total'],
 |                'vizType': 'TreeMap',
 |                'nodesSec': ['Fishing', 'Mining and quarrying', 'Construction'],
 |                'dimType': 'Consumption',
