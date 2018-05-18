@@ -6,27 +6,25 @@ Python initialise scripts provide the following features:
 
 1. **Building mapping coordinates files for the application**
 2. **Creating custom geojson and topojson files**
-3. **Populate the database with coordinates**
+3. **Management commands**
 
-*Note [1]: these scripts are not directly used by the application at runtime. If you wish to extent or develop features such as
+*Note: these scripts are not directly used by the application at runtime. If you wish to extent or develop features such as
 using another EEIO dataset it is recommendend to investigate how these script work.
-For deployment management commands are used for populating the database, see section 3.3.*
-
-*Note [2]: Respective output files are put in the project folder static_assets to be used by the front-end.*
+Deployment management commands are used for populating the database, see section 3.3.*
 
 Building mapping coordinates files for the application
 ======================================================
 EXIOBASE v3.3 has specific classifications that needs to map to user input.
 For example if Europe is selected by the user as one of the parameters for analyses, the calculation procedure uses indices corresponding to all countries belonging to Europe.
 In turn these calculation results need to be aggregated back into a single value for Europe.
-The RaMa-Scene project contains the following mapping CSV's developed for this reason:
+The RaMa-Scene project contains the following mapping CSV's developed for coordinating user input to calculation procedures:
 
 * final_countryTree_exiovisuals.csv
 * final_productTree_exiovisuals.csv
 
 These files are read in by a script ``prepare_csv.py`` that in turn makes a slight modification to easily denote aggregated or disaggregated countries or product categories.
 
-*Note : see project folder python_ini/*
+*Note : see project folder python_ini/data & python_ini/devScripts.*
 
 Creating custom geojson and topojson files
 ==========================================

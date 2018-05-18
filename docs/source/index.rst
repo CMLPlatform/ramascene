@@ -6,13 +6,17 @@
 ===================================
 RaMa-Scene developers documentation
 ===================================
-Welcome to RaMa-Scene's docs. This documentation is split into several parts, from an introduction_ to implemented modules_. The initialise_ scripts_ are independent scripts used for constructing files used by the application. See the deployment_ tutorial for more info on deploying the application.
-
+Welcome to RaMa-Scene's docs. This documentation is split into several parts, from an introduction_ to implemented modules_.
+The initialise_ scripts_ are independent scripts used for constructing files used by the application.
+Refer to the API_ descriptors_ section to investigate the front-end, back-end payloads.
+See the deployment_ tutorial for more info on deploying the application.
 
 .. _Introduction: intro.html
 .. _modules: modules.html
 .. _initialise: python-ini.html
 .. _scripts: python-ini.html
+.. _API: API-descriptors.html
+.. _descriptors: API-descriptors.html
 .. _deployment: deployment.html
 
 .. toctree::
@@ -23,6 +27,7 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts, fr
     :hidden:
 
     intro.rst
-    modules.rst
     python-ini.rst
+    API-descriptors.rst
     deployment.rst
+    modules.rst
