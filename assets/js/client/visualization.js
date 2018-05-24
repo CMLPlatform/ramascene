@@ -41,44 +41,20 @@ class Visualization extends Component {
                             //         }
                             //     }
                             // },
-                            color: ["#000000"
-                                ,"#080000"
-                                ,"#100000"
-                                ,"#180000"
-                                ,"#300000"
-                                ,"#200000"
-                                ,"#280000"
-                                ,"#380000"
-                                ,"#400000"
-                                ,"#480000"
-                                ,"#500000"
-                                ,"#580000"
-                                ,"#600000"
-                                ,"#780000"
-                                ,"#680000"
-                                ,"#700000"
-                                ,"#800000"
-                                ,"#870000"
-                                ,"#970000"
-                                ,"#8f0000"
-                                ,"#9f0000"
-                                ,"#b70000"
-                                ,"#a70000"
-                                ,"#af0000"
-                                ,"#bf0000"
-                                ,"#c70000"
-                                ,"#cf0000"
-                                ,"#d70000"
-                                ,"#df0000"
-                                ,"#e70000"
-                                ,"#ef0000"
-                                ,"#ff0000"]
+                            color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
                         data: props.data,
                         // removing downloadButton because it does not render well with geomap
-                        // downloadButton: {type: "png"},
+                        downloadButton: {type: "png"},
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
+                        //set ocean to transparent
+                        ocean: 'transparent',
+                        //set project to geoMercator, we can use others e.g. geoOrthographic
+                        //see https://github.com/d3/d3-geo-projection
+                        projection: 'geoMercator',
+                        //do not use tiles
+                        tiles:0,
                         //add to tooltip the actual value
                         tooltipConfig: {
                             body: function(d) {
@@ -155,41 +131,18 @@ class Visualization extends Component {
                             //         }
                             //     }
                             // },
-                            color: ["#000000"
-                                , "#080000"
-                                , "#100000"
-                                , "#180000"
-                                , "#300000"
-                                , "#200000"
-                                , "#280000"
-                                , "#380000"
-                                , "#400000"
-                                , "#480000"
-                                , "#500000"
-                                , "#580000"
-                                , "#600000"
-                                , "#780000"
-                                , "#680000"
-                                , "#700000"
-                                , "#800000"
-                                , "#870000"
-                                , "#970000"
-                                , "#8f0000"
-                                , "#9f0000"
-                                , "#b70000"
-                                , "#a70000"
-                                , "#af0000"
-                                , "#bf0000"
-                                , "#c70000"
-                                , "#cf0000"
-                                , "#d70000"
-                                , "#df0000"
-                                , "#e70000"
-                                , "#ef0000"
-                                , "#ff0000"]
+                            color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
+
+                        // removing downloadButton because it does not render well with geomap
+                        downloadButton: {type: "png"},
+                        //set ocean to transparent
+                        ocean: 'transparent',
+                        //set project to geoMercator, we can use others e.g. geoOrthographic
+                        //see https://github.com/d3/d3-geo-projection
+                        //do not use tiles
+                        tiles:0,
                         data: nextProps.data,
-                        // downloadButton: {type: "png"},
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         tooltipConfig: {
