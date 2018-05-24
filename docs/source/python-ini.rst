@@ -10,7 +10,7 @@ Python initialise scripts provide the following features:
 
 *Note: these scripts are not directly used by the application at runtime. If you wish to extent or develop features such as
 using another EEIO dataset it is recommendend to investigate how these script work.
-Deployment management commands are used for populating the database, see section 3.3.*
+Deployment management commands are used for populating the database, see section 4.3.*
 
 Building mapping coordinates files for the application
 ======================================================

@@ -6,7 +6,7 @@ RaMa-Scene is a Django+React web-application that allows for analyzing Environme
 
 
 Several on-the-fly calculations are performed to generate EEIO results.
-The on-the-fly calculations are possible by loading in the EXIOBASE data into memory
+The on-the-fly calculations are made possible by loading in EXIOBASE raw data into memory
 and employing background processing using Celery.
 
 Implementation overview
@@ -35,7 +35,7 @@ This module also invokes query management to process the queries.
 Query Management
 ================
 Any query received from the front-end needs to be processed in order to perform calculations and generate result data
-in a proper format.
+in a proper format using the query management module.
 
 Tasks
 =====
