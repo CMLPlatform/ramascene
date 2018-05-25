@@ -51,6 +51,10 @@ Views
 =====
 The views module handles the AJAX POST and JSON result response.
 
+Analyze
+=======
+For performing the actual IO calculations the analyze module is used.
+
 .. _modules: modules.html
 .. _python: python-ini.html
 .. _initialize: python-ini.html
