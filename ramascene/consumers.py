@@ -2,9 +2,11 @@ import json
 import logging
 from .models import Job
 from .tasks import calcOneHandler
-log = logging.getLogger(__name__)
 from channels.consumer import AsyncConsumer
 from ramascene import querymanagement
+
+log = logging.getLogger(__name__)
+
 
 class RamasceneConsumer(AsyncConsumer):
     """
@@ -27,7 +29,6 @@ class RamasceneConsumer(AsyncConsumer):
             Tries to parse the message, if successful it will perform pre-processing steps and finally invoke Celery task.
 
             Args:
-                self (self): self
                 event (dict): message from front-end
 
         """
