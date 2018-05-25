@@ -11,8 +11,8 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 1. Introduction_. An overview of the application inner workings.
 2. API_ descriptors_. The front-end, back-end payloads.
 3. Deployment_. Details for deploying the application.
-4. Modules_. Technical details.
-5. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
+4. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
+5. Modules_. Technical details.
 
 .. _Introduction: intro.html
 .. _modules: modules.html

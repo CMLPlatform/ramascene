@@ -6,7 +6,7 @@ See project root static_assets:
 
 1. final_countryTree_exiovisuals.csv
 2. final_productTree_exiovisuals.csv
-3. mod_inidicators.csv
+3. mod_indicators.csv
 
 These mapping coordinates are not only used to render tree selectables, but also to transmit the global id's of the product categories, countries and indicators
 over the websocket channel. In turn the back-end handles these messages to perform calculations and store results.

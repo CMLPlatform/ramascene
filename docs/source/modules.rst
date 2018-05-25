@@ -1,4 +1,4 @@
-Modules
+ramascene
 =========
 
 .. toctree::

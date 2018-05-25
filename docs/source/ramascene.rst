@@ -4,6 +4,14 @@ ramascene package
 Submodules
 ----------
 
+ramascene.analyze module
+------------------------
+
+.. automodule:: ramascene.analyze
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 ramascene.consumers module
 --------------------------
 
