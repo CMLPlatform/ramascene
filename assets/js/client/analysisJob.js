@@ -1,6 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 import { Glyphicon } from 'react-bootstrap';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'
 // import {csrftoken} from './csrfToken';
 import $ from 'jquery';
 
@@ -16,7 +18,7 @@ class AnalysisJob extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label});
+        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label, raw_data: this.state.raw_data});
     }
 
     componentDidMount() {
@@ -45,54 +47,85 @@ class AnalysisJob extends Component {
     }
 
     retrieveRawResult() {
-        // I can't get this to work
-        // fetch(AJAX_URL, {
-        //     body: JSON.stringify({TaskID: + job.job_id}),
-        //     cache: 'no-cache',
-        //     method: 'POST',
-        //     mode: 'cors',
-        // })
-        // .then(response => {
-        //     if(response.ok)
-        //         return response.json();
-        //     throw new Error('Network response was not ok.');
-        // })
-        // .then(function(response) {
-        //     console.log('received: %s', JSON.stringify(response));
+        if (this.state.raw_data === undefined) {
+
+            // I can't get this to work
+            // fetch(AJAX_URL, {
+            //     body: JSON.stringify({TaskID: + job.job_id}),
+            //     cache: 'no-cache',
+            //     method: 'POST',
+            //     mode: 'cors',
+            // })
+            // .then(response => {
+            //     if(response.ok)
+            //         return response.json();
+            //     throw new Error('Network response was not ok.');
+            // })
+            // .then(function(response) {
+            //     console.log('received: %s', JSON.stringify(response));
             // this.state.dataCallback(response);
-        // }.bind(this), function(error) {
-        //     console.log(error);
-        // }).finally(function() {
-        //     this.setState({busy: false, startCallback: this.state.startCallback, completedCallback: this.state.completedCallback, dataCallback: this.state.dataCallback});
-        //     this.state.completedCallback();
-        // }.bind(this));
+            // }.bind(this), function(error) {
+            //     console.log(error);
+            // }).finally(function() {
+            //     this.setState({busy: false, startCallback: this.state.startCallback, completedCallback: this.state.completedCallback, dataCallback: this.state.dataCallback});
+            //     this.state.completedCallback();
+            // }.bind(this));
 
-        $.ajax({
-            cache: false,
-            complete: function(jqXHR, textStatus) {
+            $.ajax({
+                cache: false,
+                complete: function (jqXHR, textStatus) {
 
-            },
-            data: {'TaskID': this.state.job_id},
-            dataType: 'json',
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(errorThrown);
-            },
-            headers: {
-                // 'X-CSRFToken': csrftoken
-            },
-            method: 'POST',
-            success: function(data, textStatus, jqXHR) {
-                const result = JSON.parse(data.rawResultData)['rawResultData'];
-                const unit = JSON.parse(data.rawResultData)['unit'];
-                console.log('received: %s - unit : %s', JSON.stringify(result), JSON.stringify(unit));
-                this.state.resultHandler(result, unit, this.state.key);
-            }.bind(this),
-            url: AJAX_URL
-        });
+                },
+                data: {'TaskID': this.state.job_id},
+                dataType: 'json',
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log(errorThrown);
+                },
+                headers: {
+                    // 'X-CSRFToken': csrftoken
+                },
+                method: 'POST',
+                success: function (data, textStatus, jqXHR) {
+                    this.setState({
+                        key: this.state.key,
+                        query: this.state.query,
+                        resultHandler: this.state.resultHandler,
+                        deleteHandler: this.state.deleteHandler,
+                        job_status: this.state.job_status,
+                        job_id: this.state.job_id,
+                        job_name: this.state.job_name,
+                        job_label: this.state.job_label,
+                        raw_data: data
+                    });
+                    const result = JSON.parse(data.rawResultData)['rawResultData'];
+                    const unit = JSON.parse(data.rawResultData)['unit'];
+                    console.log('received: %s - unit : %s', JSON.stringify(result), JSON.stringify(unit));
+                    this.state.resultHandler(result, unit, this.state.key);
+                }.bind(this),
+                url: AJAX_URL
+            });
+        } else {
+            const result = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
+            const unit = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
+            this.state.resultHandler(result, unit, this.state.key);
+        }
     }
 
     destroy() {
-        this.state.deleteHandler(this.state.selected, this.state.key);
+
+        confirmAlert({
+            title: 'Confirm delete',
+            message: 'Are you sure to delete this job ?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => this.state.deleteHandler(this.state.selected, this.state.key)
+                },
+                {
+                    label: 'No'
+                }
+            ]
+        });
     }
 
     render() {
@@ -101,7 +134,8 @@ class AnalysisJob extends Component {
                 <td onClick={this.state.job_status == this.STATUS_COMPLETED ? this.retrieveRawResult.bind(this) : function() {}} style={this.state.job_status == this.STATUS_COMPLETED ? {cursor: 'pointer'} : {cursor: 'default'}}>
                     {this.state.selected && <Glyphicon glyph="chevron-left"/>} {this.state.job_label}
                 </td>
-                <td>{this.state.job_status == this.STATUS_COMPLETED && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)}/>}</td>
+                <td>{this.state.job_status == this.STATUS_COMPLETED && <Glyphicon glyph="eye-open" style={{cursor: 'pointer'}} onClick={this.retrieveRawResult.bind(this)}/>}
+                    {this.state.job_status == this.STATUS_COMPLETED && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)}/>}</td>
             </tr>
         );
     }

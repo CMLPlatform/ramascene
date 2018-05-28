@@ -12,6 +12,8 @@
     "rc-tree-select": "^1.12.9",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
+    "react-confirm-alert": "^2.0.2",
+    "react-csv": "^1.0.14",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
     "shortid": "^2.2.8"
