@@ -11,7 +11,7 @@ module.exports = env => {
   return {
   //the base directory (abs. path) for resolving the entry option
   context: __dirname,
-  entry: APP_DIR + '/ramascene.js',
+  entry: ['babel-polyfill', APP_DIR + '/ramascene.js'],
 
   output: {
     //where to store compiled bundle
@@ -53,7 +53,7 @@ module.exports = env => {
                     loader: 'babel-loader',
                     query: {
                       //what will be dealing with (react code)
-                      presets: ['react'],
+                      presets: ['es2015', 'react'],
                       plugins: ['transform-class-properties']
                     },
                     test: /\.js$/

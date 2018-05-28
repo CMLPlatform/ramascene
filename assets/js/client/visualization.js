@@ -44,7 +44,6 @@ class Visualization extends Component {
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
                         data: props.data,
-                        // removing downloadButton because it does not render well with geomap
                         downloadButton: {type: "png"},
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
@@ -62,6 +61,10 @@ class Visualization extends Component {
                                     return p.id === d.id;
                                 });
                                 return found_item.value;
+                            },
+                            footer: function(d) {
+                                const key = Object.keys(props.unit)[0];
+                                return key + " " + props.unit[key];
                             }
                         },
                         colorScale: 'value',
@@ -86,6 +89,10 @@ class Visualization extends Component {
                         tooltipConfig: {
                             body: function(d) {
                                 return d.value;
+                            },
+                            footer: function(d) {
+                                const key = Object.keys(props.unit)[0];
+                                return key + " " + props.unit[key];
                             }
                         },
                         data: props.data,
@@ -133,16 +140,15 @@ class Visualization extends Component {
                             // },
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
-
-                        // removing downloadButton because it does not render well with geomap
+                        data: nextProps.data,
                         downloadButton: {type: "png"},
                         //set ocean to transparent
                         ocean: 'transparent',
                         //set project to geoMercator, we can use others e.g. geoOrthographic
                         //see https://github.com/d3/d3-geo-projection
+                        projection: 'geoMercator',
                         //do not use tiles
                         tiles:0,
-                        data: nextProps.data,
                         // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         tooltipConfig: {
@@ -151,6 +157,10 @@ class Visualization extends Component {
                                     return p.id === d.id;
                                 });
                                 return found_item.value;
+                            },
+                            footer: function(d) {
+                                const key = Object.keys(nextProps.unit)[0];
+                                return key + " " + nextProps.unit[key];
                             }
                         },
                         colorScale: 'value',
@@ -174,6 +184,10 @@ class Visualization extends Component {
                         tooltipConfig: {
                             body: function(d) {
                                 return d.value;
+                            },
+                            footer: function(d) {
+                                const key = Object.keys(nextProps.unit)[0];
+                                return key + " " + nextProps.unit[key];
                             }
                         },
                         data: nextProps.data,

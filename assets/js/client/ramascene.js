@@ -2,9 +2,7 @@
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
 import { Button, ButtonGroup, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
-import 'react-select/scss/default.scss';
 import './stylesheets/ramascene.scss';
-import registerServiceWorker from './registerServiceWorker';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
 import ProductFilterableSingleSelectDropdownTree from './productFilterableSingleSelectDropdownTree';
@@ -242,7 +240,7 @@ class App extends Component {
         });
     }
 
-    renderVisualization(data, key) {
+    renderVisualization(data, unit, key) {
         // deselect currently selected job
         const current_selected_index = this.state.jobs.findIndex((job) => {
             return job.selected == true;
@@ -282,17 +280,15 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
                 Object.keys(data).forEach(function (key) {
-                    Object.keys(data).forEach(function(key) {
-                        const value = data[key];
-                        geo_data.push({id: key, value: value});
-                    });
+                    const value = data[key];
+                    geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
@@ -514,4 +510,3 @@ class App extends Component {
 }
 
 render(<App />, document.getElementById('container'));
-registerServiceWorker();

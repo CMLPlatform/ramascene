@@ -83,8 +83,9 @@ class AnalysisJob extends Component {
             method: 'POST',
             success: function(data, textStatus, jqXHR) {
                 const result = JSON.parse(data.rawResultData)['rawResultData'];
-                console.log('received: %s', JSON.stringify(result));
-                this.state.resultHandler(result, this.state.key);
+                const unit = JSON.parse(data.rawResultData)['unit'];
+                console.log('received: %s - unit : %s', JSON.stringify(result), JSON.stringify(unit));
+                this.state.resultHandler(result, unit, this.state.key);
             }.bind(this),
             url: AJAX_URL
         });

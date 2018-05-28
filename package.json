@@ -5,6 +5,7 @@
   "dependencies": {
     "antd": "^3.4.1",
     "babel-plugin-import": "^1.7.0",
+    "babel-polyfill": "^6.26.0",
     "d3plus-react": "^0.3.1",
     "jquery": "^3.3.1",
     "papaparse": "^4.3.7",
@@ -13,7 +14,6 @@
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
     "react-scripts": "1.1.1",
-    "react-select": "^1.2.1",
     "shortid": "^2.2.8"
   },
   "scripts": {
@@ -42,4 +42,3 @@
     "ws": "^5.1.1"
   }
 }
-
