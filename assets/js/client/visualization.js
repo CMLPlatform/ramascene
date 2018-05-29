@@ -1,7 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
-import {CSVLink} from 'react-csv';
 
 class Visualization extends Component {
 
@@ -207,10 +206,10 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div className="visualization-inner-panel"><Geomap config={this.state.geoconfig} /><CSVLink data={this.state.geoconfig.data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default center-block">Download RAW data</CSVLink></div>);
+                return (<Geomap config={this.state.geoconfig} />);
                 break;
             case 'tree':
-                return (<div className="visualization-inner-panel"><Treemap config={this.state.treeconfig} /><CSVLink data={this.state.treeconfig.data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default center-block">Download RAW data</CSVLink></div>);
+                return (<Treemap config={this.state.treeconfig} />);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);

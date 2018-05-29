@@ -5,6 +5,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 // import {csrftoken} from './csrfToken';
 import $ from 'jquery';
+import {CSVLink} from "react-csv";
 
 class AnalysisJob extends Component {
 
@@ -18,7 +19,7 @@ class AnalysisJob extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label, raw_data: this.state.raw_data});
+        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label, raw_data: this.state.raw_data, csv_data: this.state.csv_data});
     }
 
     componentDidMount() {
@@ -43,33 +44,6 @@ class AnalysisJob extends Component {
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
             this.setState({key: this.state.key, query: this.state.query, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: job.job_status, job_id: job.job_id, job_name: job.job_name, job_label: this.state.job_label});
-        }
-    }
-
-    retrieveRawResult() {
-        if (this.state.raw_data === undefined) {
-
-            // I can't get this to work
-            // fetch(AJAX_URL, {
-            //     body: JSON.stringify({TaskID: + job.job_id}),
-            //     cache: 'no-cache',
-            //     method: 'POST',
-            //     mode: 'cors',
-            // })
-            // .then(response => {
-            //     if(response.ok)
-            //         return response.json();
-            //     throw new Error('Network response was not ok.');
-            // })
-            // .then(function(response) {
-            //     console.log('received: %s', JSON.stringify(response));
-            // this.state.dataCallback(response);
-            // }.bind(this), function(error) {
-            //     console.log(error);
-            // }).finally(function() {
-            //     this.setState({busy: false, startCallback: this.state.startCallback, completedCallback: this.state.completedCallback, dataCallback: this.state.dataCallback});
-            //     this.state.completedCallback();
-            // }.bind(this));
 
             $.ajax({
                 cache: false,
@@ -95,20 +69,19 @@ class AnalysisJob extends Component {
                         job_id: this.state.job_id,
                         job_name: this.state.job_name,
                         job_label: this.state.job_label,
-                        raw_data: data
+                        raw_data: data,
+                        csv_data: this.generateCSVdata(data)
                     });
-                    const result = JSON.parse(data.rawResultData)['rawResultData'];
-                    const unit = JSON.parse(data.rawResultData)['unit'];
-                    console.log('received: %s - unit : %s', JSON.stringify(result), JSON.stringify(unit));
-                    this.state.resultHandler(result, unit, this.state.key);
                 }.bind(this),
                 url: AJAX_URL
             });
-        } else {
-            const result = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
-            const unit = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
-            this.state.resultHandler(result, unit, this.state.key);
         }
+    }
+
+    retrieveRawResult() {
+        const result = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
+        const unit = JSON.parse(this.state.raw_data.rawResultData)['unit'];
+        this.state.resultHandler(result, unit, this.state.key);
     }
 
     destroy() {
@@ -128,14 +101,58 @@ class AnalysisJob extends Component {
         });
     }
 
+    generateCSVdata(data) {
+        const raw_result_data = JSON.parse(data.rawResultData);
+        const job_name = raw_result_data['job_name'];
+        const dimType = job_name['dimType'];
+        const vizType = job_name['vizType'];
+        const nodesSec = job_name['nodesSec'];
+        const nodesReg = job_name['nodesReg'];
+        const extn = job_name['extn'];
+        const unit = raw_result_data['unit'];
+        var result = [];
+        if (vizType == 'TreeMap') {
+            nodesSec.forEach(function(key) {
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], nodesReg: nodesReg[0], nodesSec: key, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+            });
+        } else {
+            nodesReg.forEach(function(key) {
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], nodesReg: key, nodesSec: nodesSec[0], value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+            });
+        }
+        return result;
+    }
+
+    canVisualize() {
+        return this.state.job_status == this.STATUS_COMPLETED && this.state.raw_data !== undefined
+    }
+
+    canDownload() {
+        return this.state.job_status == this.STATUS_COMPLETED && this.state.csv_data !== undefined
+    }
+
+    canDestroy() {
+        return this.state.job_status == this.STATUS_COMPLETED
+    }
+
     render() {
+        const headers = [
+            {label: 'visualization', key: 'vizType'},
+            {label: 'dimension', key: 'dimType'},
+            {label: 'indicator', key: 'extn'},
+            {label: 'region', key: 'nodesReg'},
+            {label: 'product', key: 'nodesSec'},
+            {label: 'value', key: 'value'},
+            {label: 'unit', key: 'unit'},
+        ];
         return (
             <tr className={this.state.job_status == this.STATUS_STARTED ? 'primary' : (this.state.job_status == this.STATUS_COMPLETED ? 'success' : 'default')} key={this.state.key}>
-                <td onClick={this.state.job_status == this.STATUS_COMPLETED ? this.retrieveRawResult.bind(this) : function() {}} style={this.state.job_status == this.STATUS_COMPLETED ? {cursor: 'pointer'} : {cursor: 'default'}}>
+                <td onClick={this.canVisualize() ? this.retrieveRawResult.bind(this) : function() {}} style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
                     {this.state.selected && <Glyphicon glyph="chevron-left"/>} {this.state.job_label}
                 </td>
-                <td>{this.state.job_status == this.STATUS_COMPLETED && <Glyphicon glyph="eye-open" style={{cursor: 'pointer'}} onClick={this.retrieveRawResult.bind(this)}/>}
-                    {this.state.job_status == this.STATUS_COMPLETED && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)}/>}</td>
+                <td>{this.canVisualize() && <Glyphicon glyph="eye-open" style={{cursor: 'pointer'}} onClick={this.retrieveRawResult.bind(this)}/>}
+                    {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}}/></CSVLink>}
+                    {this.canDestroy() && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)}/>}</td>
             </tr>
         );
     }
