@@ -150,9 +150,9 @@ class AnalysisJob extends Component {
                 <td onClick={this.canVisualize() ? this.retrieveRawResult.bind(this) : function() {}} style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
                     {this.state.selected && <Glyphicon glyph="chevron-left"/>} {this.state.job_label}
                 </td>
-                <td>{this.canVisualize() && <Glyphicon glyph="eye-open" style={{cursor: 'pointer'}} onClick={this.retrieveRawResult.bind(this)}/>}
-                    {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}}/></CSVLink>}
-                    {this.canDestroy() && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)}/>}</td>
+                <td>{this.canVisualize() && <Glyphicon glyph="eye-open" style={{cursor: 'pointer'}} onClick={this.retrieveRawResult.bind(this)} title={"View"}/>}
+                    {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}} title={"Download RAW result data"}/></CSVLink>}
+                    {this.canDestroy() && <Glyphicon glyph="trash" style={{cursor: 'pointer'}} onClick={this.destroy.bind(this)} title={"Delete"}/>}</td>
             </tr>
         );
     }
