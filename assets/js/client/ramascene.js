@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Button, ButtonGroup, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -26,6 +26,8 @@ class App extends Component {
         this.VIZDETAIL_TOTAL = 'total';
         this.VIZDETAIL_CONTINENT = 'continent';
         this.VIZDETAIL_COUNTRY = 'country';
+
+        this.MAX_JOB_COUNT = 10;
 
         this.state = {
             selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
@@ -235,7 +237,7 @@ class App extends Component {
             selectedIndicatorOptions: this.state.selectedIndicatorOptions,
             selectMultiProduct: this.state.selectMultiProduct,
             selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
+            busy: (jobs.length == this.MAX_JOB_COUNT),
             jobs: jobs
         });
     }
@@ -307,7 +309,7 @@ class App extends Component {
             selectedIndicatorOptions: this.state.selectedIndicatorOptions,
             selectMultiProduct: this.state.selectMultiProduct,
             selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
+            busy: (jobs.length == this.MAX_JOB_COUNT),
             jobs: jobs
         });
 
@@ -323,6 +325,9 @@ class App extends Component {
 
         return (
             <Grid fluid={true}>
+                {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert bsStyle={"warning"}>
+                    You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
+                </Alert>}
                 <Row>
                     <Col sm={3} md={3} lg={3}>
                         <Panel defaultExpanded>
@@ -359,26 +364,6 @@ class App extends Component {
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        {/*<div>Products and Regions</div>*/}
-                                        {/*<Col sm={6} md={6} lg={6}>*/}
-                                        <Col>
-                                            <div>Products</div>
-                                            {this.state.selectMultiProduct &&
-                                                <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
-                                                                                          onChange={this.handleProductChange.bind(this)}
-                                                                                          value={this.state.selectedProductOptions}
-                                                                                          strategy={TreeSelect.SHOW_PARENT}
-                                                />
-                                            }
-                                            {!this.state.selectMultiProduct &&
-                                                <ProductFilterableSingleSelectDropdownTree disabled={this.state.busy}
-                                                                                           onChange={this.handleProductChange.bind(this)}
-                                                                                           value={this.state.selectedProductOptions}
-                                               />
-                                            }
-                                        </Col>
-                                    </Row>
                                     {(selectedVisualizationOption == this.VIZ_GEOMAP) &&
                                     <Row>
                                         <Col>
@@ -413,6 +398,26 @@ class App extends Component {
                                                                                          value={this.state.selectedRegionOptions}
                                                                                          strategy={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY ? TreeSelect.SHOW_CHILD: TreeSelect.SHOW_PARENT}
                                                 />
+                                            }
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        {/*<div>Products and Regions</div>*/}
+                                        {/*<Col sm={6} md={6} lg={6}>*/}
+                                        <Col>
+                                            <div>Products</div>
+                                            {this.state.selectMultiProduct &&
+                                            <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
+                                                                                      onChange={this.handleProductChange.bind(this)}
+                                                                                      value={this.state.selectedProductOptions}
+                                                                                      strategy={TreeSelect.SHOW_PARENT}
+                                            />
+                                            }
+                                            {!this.state.selectMultiProduct &&
+                                            <ProductFilterableSingleSelectDropdownTree disabled={this.state.busy}
+                                                                                       onChange={this.handleProductChange.bind(this)}
+                                                                                       value={this.state.selectedProductOptions}
+                                            />
                                             }
                                         </Col>
                                     </Row>
