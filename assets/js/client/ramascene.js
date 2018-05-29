@@ -396,7 +396,7 @@ class App extends Component {
                                                 <RegionFilterableMultiSelectDropdownTree disabled={this.state.busy}
                                                                                          onChange={this.handleRegionChange.bind(this)}
                                                                                          value={this.state.selectedRegionOptions}
-                                                                                         strategy={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY ? TreeSelect.SHOW_CHILD: TreeSelect.SHOW_PARENT}
+                                                                                         selectablelevel={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY ? 3 : selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT ? 2 : 1}
                                                 />
                                             }
                                         </Col>
@@ -410,7 +410,6 @@ class App extends Component {
                                             <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
                                                                                       onChange={this.handleProductChange.bind(this)}
                                                                                       value={this.state.selectedProductOptions}
-                                                                                      strategy={TreeSelect.SHOW_PARENT}
                                             />
                                             }
                                             {!this.state.selectMultiProduct &&

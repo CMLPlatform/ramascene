@@ -21,7 +21,7 @@ class FilterableSingleSelectDropdownTree extends Component {
             <TreeSelect
                 allowClear={true}
                 disabled={this.state.disabled}
-                dropdownStyle={{ maxHeight: 200, overflow: 'auto' }}
+                dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
                 maxTagTextLength={15}
                 multiple={false}
                 notFoundContent={<i>Not found</i>}
@@ -30,7 +30,6 @@ class FilterableSingleSelectDropdownTree extends Component {
                 showCheckedStrategy={TreeSelect.SHOW_PARENT}
                 showSearch={true}
                 style={{ width: '100%'}}
-                // treeCheckable cannot be true if you want to dynamically change it
                 // treeCheckable must be true if you want to be able to select all childs by selecting the parent
                 treeCheckable={false}
                 treeCheckStrictly={false}

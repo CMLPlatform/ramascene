@@ -42,7 +42,7 @@ class IndicatorFilterableMultiSelectDropdownTree extends FilterableMultiSelectDr
         for (var indicator of result.data) {
             data.push({id: indicator.Global_id, pId: indicator.Parent_id, value: indicator.Global_id, label: indicator.Name})
         }
-        this.setState({disabled: this.state.disabled, strategy: TreeSelect.SHOW_PARENT, data: data, value: this.state.value, placeholder: "select indicators", callback: this.state.callback});
+        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select indicators", callback: this.state.callback});
     }
 }
 
