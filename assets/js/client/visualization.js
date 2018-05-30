@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
+import {format} from 'd3-format';
 
 class Visualization extends Component {
 
@@ -60,7 +61,7 @@ class Visualization extends Component {
                                 var found_item = props.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return found_item.value;
+                                return format('~s')(found_item.value);
                             },
                             footer: function(d) {
                                 const key = Object.keys(props.unit)[0];
@@ -88,7 +89,7 @@ class Visualization extends Component {
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return d.value;
+                                return format('~s')(d.value);
                             },
                             footer: function(d) {
                                 const key = Object.keys(props.unit)[0];
@@ -156,7 +157,7 @@ class Visualization extends Component {
                                 var found_item = nextProps.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return found_item.value;
+                                return format('~s')(found_item.value);
                             },
                             footer: function(d) {
                                 const key = Object.keys(nextProps.unit)[0];
@@ -183,7 +184,7 @@ class Visualization extends Component {
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return d.value;
+                                return format('~s')(d.value);
                             },
                             footer: function(d) {
                                 const key = Object.keys(nextProps.unit)[0];
