@@ -4,6 +4,7 @@ from .models import Job
 from .tasks import calcOneHandler
 from channels.consumer import AsyncConsumer
 from ramascene import querymanagement
+import asyncio
 
 log = logging.getLogger(__name__)
 
@@ -85,10 +86,7 @@ class RamasceneConsumer(AsyncConsumer):
                                              'extn':indicator_calc_indices})
 
                 #call Tasks
-                my_task = calcOneHandler(job_name, job.id, self.channel_name, ready_querySelection, querySelection)
-                #save the task in Job model object
-                job.celery_id = my_task.id
-                job.save()
+                calcOneHandler(job_name, job.id, self.channel_name, ready_querySelection, querySelection)
 
             #if action is not received
             else:
@@ -110,6 +108,7 @@ class RamasceneConsumer(AsyncConsumer):
         """
            Sends Celery task status.
         """
+        await asyncio.sleep(0.5)
         await self.send({
             "type": "websocket.send",
             "text": event["text"],

@@ -5,7 +5,7 @@ import logging
 import json
 import numpy as np
 from asgiref.sync import AsyncToSync
-from celery import shared_task
+from celery import shared_task, chain
 from ramascene.data import Y_data
 from ramascene import querymanagement
 from ramascene.models import Indicator
@@ -15,9 +15,9 @@ log = logging.getLogger(__name__)
 
 
 def async_send(channel_name, job):
-    """Send job completion message to front-end.
+    """Send job message to front-end.
 
-    uses the channel_name and Job object.
+    uses the channel_name and Job object. Send success or failure status.
 
     Args:
         channel_name (object): websocket channel name
@@ -29,7 +29,7 @@ def async_send(channel_name, job):
             channel_name,
             {"type": "celery.message",
                 "text": json.dumps({
-                "action": "completed",
+                "action": "check status",
                 "job_id": job.id,
                 "job_name": job.name,
                 "job_status": job.status,
@@ -55,7 +55,7 @@ def job_update(job_id):
 def calcOneHandler(job_name,job_id, channel_name, ready_querySelection, querySelection):
     """invokes Celery function.
 
-    Handles Celery delay method.
+    Handler for invoking Celery method.
 
     Args:
         job_name (str): the name of the job
@@ -63,12 +63,12 @@ def calcOneHandler(job_name,job_id, channel_name, ready_querySelection, querySel
         channel_name (object): the websocket channel name
         ready_querySelection (dict): the querySelection preprocessed (only needs convertion to numpy array)
         querySelection (dict): the original querySelection used for aggregations at later stage
-    Returns:
-        Retrieves the celery ID when completed
 
     """
-    myTask = calcOne.delay(job_name,job_id, channel_name, ready_querySelection, querySelection)
-    return myTask
+    #apply a Celery chain, 1: first invoke the calculations, 2: second send ws message complete
+    chain(calcOne.s(job_name,job_id, channel_name, ready_querySelection, querySelection),
+                     handle_complete.s(job_id, channel_name),).apply_async()
+
 
 
 @shared_task
@@ -96,6 +96,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
 
     # set constant for country selling product ("total")
     s_country_idx = np.arange(0, 49)
+
     # Try calculations for Analyzing part of the application
     # TODO check if user is in analyze or modeling stage
     try:
@@ -107,9 +108,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
             # invoke method for route 2 calculations
             json_data = p2.route_two()
             # Change task status to completed
-            job = job_update(job_id)
-            # send the websocket message "task_status: completed"
-            async_send(channel_name, job)
+            job_update(job_id)
             # save the json result to the celery result database
             return json_data
 
@@ -121,9 +120,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
             # invoke method for route 3 calculations
             json_data = p3.route_three()
             # Change task status to completed
-            job = job_update(job_id)
-            # send the websocket message "task_status: completed"
-            async_send(channel_name, job)
+            job_update(job_id)
             # save the json result to the celery result database
             return json_data
 
@@ -135,9 +132,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
             # invoke method for route 4 calculations
             json_data = p1.route_one()
             # Change task status to completed
-            job = job_update(job_id)
-            # send the websocket message "task_status: completed"
-            async_send(channel_name, job)
+            job_update(job_id)
             # save the json result to the celery result database
             return json_data
 
@@ -149,9 +144,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
             # invoke method for route 4 calculations
             json_data = p4.route_four()
             # Change task status to completed
-            job = job_update(job_id)
-            # send the websocket message "task_status: completed"
-            async_send(channel_name, job)
+            job_update(job_id)
             # save the json result to the celery result database
             return json_data
         else:
@@ -159,12 +152,30 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
             job.status = "Failed"
             async_send(channel_name, job)
             log.debug("Failed job_name=%s",job.name)
+
     except Exception as e:
         job = Job.objects.get(pk=job_id)
         job.status = "Failed"
         async_send(channel_name, job)
         log.debug("Failed job_name=%s", e)
         print(e)
+
+@shared_task
+def handle_complete(json_results, job_id, channel_name):
+    """
+    Handle a successful Celery  Task.
+    """
+    # get the job model by primary key
+    job = Job.objects.get(pk=job_id)
+    # save the celery id of the chained parent task (the calculation task)
+    job.celery_id = handle_complete.request.parent_id
+    job.save()
+    #send final complete message
+    async_send(channel_name, job)
+
+
+
+
 
 
 
