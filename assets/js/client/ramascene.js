@@ -10,7 +10,6 @@ import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSe
 import RegionFilterableMultiSelectDropdownTree from './regionFilterableMultiSelectDropdownTree';
 import IndicatorFilterableSingleSelectDropdownTree from './indicatorFilterableSingleSelectDropdownTree';
 import AnalysisJob from './analysisJob';
-import TreeSelect from "rc-tree-select";
 
 var shortid = require('shortid');
 

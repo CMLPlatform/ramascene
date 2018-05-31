@@ -21,25 +21,31 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
             case 2:
                 // only continents should be selected
                 // if total is selected then select all continents
-                if (this.state.data.find(function(d) { return d.level == 1 && nextProps.value.includes(d.value)}) !== undefined) {
-                    value = this.state.data.filter(d => d.level == 2).map(d => d.value);
-                } else {
-                    value = this.state.data.filter(d => d.level == 2 && nextProps.value.includes(d.value)).map(d => d.value);
-                    // if a country is selected than select that continent
-                    // [...new Set()] serves to filter out doubles
-                    value = [...new Set(value.concat(this.state.data.filter(d => d.level == 3 && nextProps.value.includes(d.value)).map(d => d.pId)))];
+                if (nextProps.value !== undefined) {
+                    if (this.state.data.find(function (d) {
+                        return d.level == 1 && nextProps.value.includes(d.value)
+                    }) !== undefined) {
+                        value = this.state.data.filter(d => d.level == 2).map(d => d.value);
+                    } else {
+                        value = this.state.data.filter(d => d.level == 2 && nextProps.value.includes(d.value)).map(d => d.value);
+                        // if a country is selected than select that continent
+                        // [...new Set()] serves to filter out doubles
+                        value = [...new Set(value.concat(this.state.data.filter(d => d.level == 3 && nextProps.value.includes(d.value)).map(d => d.pId.toString())))];
+                    }
                 }
                 break;
             case 3:
                 // only countries should be selected
                 // if total is selected then select all countries
-                if (this.state.data.find(d => d.level == 1 && nextProps.value.includes(d.value)) !== undefined) {
-                    value = this.state.data.filter(d => d.level == 3).map(d => d.value);
-                } else {
-                    value = this.state.data.filter(d => d.level == 3 && nextProps.value.includes(d.value)).map(d => d.value);
-                    // if continent is selected then select all countries for the continent
-                    // [...new Set()] serves to filter out doubles
-                    value = [...new Set(value.concat(this.state.data.filter(d => d.level == 3 && this.state.data.filter(d => d.level == 2 && nextProps.value.includes(d.value)).map(d => d.value).includes(d.pId)).map(d => d.value)))];
+                if (nextProps.value !== undefined) {
+                    if (this.state.data.find(d => d.level == 1 && nextProps.value.includes(d.value)) !== undefined) {
+                        value = this.state.data.filter(d => d.level == 3).map(d => d.value);
+                    } else {
+                        value = this.state.data.filter(d => d.level == 3 && nextProps.value.includes(d.value)).map(d => d.value);
+                        // if continent is selected then select all countries for the continent
+                        // [...new Set()] serves to filter out doubles
+                        value = [...new Set(value.concat(this.state.data.filter(d => d.level == 3 && this.state.data.filter(d => d.level == 2 && nextProps.value.includes(d.value)).map(d => d.value).includes(d.pId.toString())).map(d => d.value)))];
+                    }
                 }
                 break;
         }
@@ -76,7 +82,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
         var data = [];
         for (var region of result.data) {
             // data.push({id: region.Global_id, pId: region.Parent_id, value: {global_id: region.Global_id, parent_id: region.Parent_id}, label: region.Name});
-            data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id, label: region.Name, level: region.Level});
+            data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id.toString(), label: region.Name, level: region.Level});
         }
         this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select region(s)", callback: this.state.callback, selectablelevel: this.state.selectablelevel});
     }

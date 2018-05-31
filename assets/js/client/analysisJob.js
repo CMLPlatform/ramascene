@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import { Glyphicon } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
-// import {csrftoken} from './csrfToken';
+import {csrftoken} from './csrfToken';
 import $ from 'jquery';
 import {CSVLink} from "react-csv";
 
@@ -56,7 +56,7 @@ class AnalysisJob extends Component {
                     console.log(errorThrown);
                 },
                 headers: {
-                    // 'X-CSRFToken': csrftoken
+                    'X-CSRFToken': csrftoken
                 },
                 method: 'POST',
                 success: function (data, textStatus, jqXHR) {

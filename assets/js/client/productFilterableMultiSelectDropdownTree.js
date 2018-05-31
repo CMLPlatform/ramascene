@@ -40,7 +40,7 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
         // result = {data, errors, meta}
         var data = [];
         for (var product of result.data) {
-            data.push({id: product.Global_id, pId: product.Parent_Id, value: product.Global_id, label: product.Name});
+            data.push({id: product.Global_id, pId: product.Parent_Id, value: product.Global_id.toString(), label: product.Name});
         }
         this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select product(s)", callback: this.state.callback});
     }
