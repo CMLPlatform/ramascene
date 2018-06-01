@@ -111,10 +111,6 @@ Make sure Daphne is installed and start daphne (in virtualenv):
 
 ``daphne -b 0.0.0.0 -p 8001 ramasceneMasterProject.asgi:application``
 
-Run workers for Django channels (make sure you are in project root folder):
-
-``python3 manage.py runworker ramasceneConsumer``
-
 Start Celery in virtual env.:
 
 ``celery -A ramasceneMasterProject worker -l info  --concurrency=2``
@@ -126,5 +122,16 @@ Test the application to see if everything is running correct in a web-browser.
 
 Daemonizing
 ===========
-Celery, runworker, Daphne need to be deamonized. For example with supervisor.
+Celery, Daphne need to be deamonized. For example with supervisor.
 See example configuration file :download:`example_supervisord <ystatic/example_supervisord.conf>`
+
+
+RaMa-Scene memory usage
+=======================
+
+The memory usage of the application is approximately 2.5G, namely due to loading raw data in memory. Loading in raw
+data objects in memory improves calculations speeds. The following measurements are taken:
+
+* Daphe (Interface server for making Django available): increase from (default) 462M to 1.24G
+* Celery (background processor): increase from 1.24G to 2.24 G
+* Websocket (consumer): increase from 2.24G to 3.01 G
