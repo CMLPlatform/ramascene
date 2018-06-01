@@ -11,6 +11,10 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
+    handleOnChange(value) {
+        this.state.callback(value);
+    }
+
     componentWillMount() {
         //https://www.papaparse.com/docs#config
         Papa.parse('../static/final_productTree_exiovisuals.csv', {

@@ -11,6 +11,10 @@ class IndicatorFilterableMultiSelectDropdownTree extends FilterableMultiSelectDr
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
+    handleOnChange(value) {
+        this.state.callback(value);
+    }
+
     componentWillMount() {
         //https://www.papaparse.com/doc#config
         Papa.parse('../static/mod_indicators.csv', {
