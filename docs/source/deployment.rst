@@ -129,9 +129,8 @@ See example configuration file :download:`example_supervisord <ystatic/example_s
 RaMa-Scene memory usage
 =======================
 
-The memory usage of the application is approximately 2.5G, namely due to loading raw data in memory. Loading in raw
+The memory usage of the application is approximately 1.8G, namely due to loading raw data in memory. Loading in raw
 data objects in memory improves calculations speeds. The following measurements are taken:
 
 * Daphe (Interface server for making Django available): increase from (default) 462M to 1.24G
-* Celery (background processor): increase from 1.24G to 2.24 G
-* Websocket (consumer): increase from 2.24G to 3.01 G
+* Celery (background processor): increase from 1.24G to 2.24G
