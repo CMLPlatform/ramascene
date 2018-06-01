@@ -49,7 +49,6 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
                 }
                 break;
         }
-        this.setState({disabled: this.state.disabled, data: this.state.data, value: new_value, placeholder: this.state.placeholder, callback: this.state.callback, selectablelevel: this.state.selectablelevel});
         this.state.callback(new_value);
     }
 

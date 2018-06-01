@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Panel, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, Panel, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -93,7 +93,7 @@ class App extends Component {
             selectedVisualizationOption: this.VIZ_GEOMAP,
             selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
             selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
-            selectedRegionOptions: this.state.selectedRegionOptions,
+            selectedRegionOptions: [],
             selectedIndicatorOptions: this.state.selectedIndicatorOptions,
             selectMultiProduct: false,
             selectMultiRegion: true,
@@ -324,6 +324,17 @@ class App extends Component {
 
         return (
             <Grid fluid={true}>
+                <Navbar>
+                    <Navbar.Header>
+                        <Navbar.Brand>
+                            {/*<Image src="../static/logo.png"/>*/}
+                            RaMa-Scene
+                        </Navbar.Brand>
+                    </Navbar.Header>
+                    <Nav>
+
+                    </Nav>
+                </Navbar>
                 {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert bsStyle={"warning"}>
                     You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
                 </Alert>}
@@ -436,7 +447,7 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel defaultExpanded>
+                        <Panel>
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Scenario Modelling
@@ -448,7 +459,7 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel defaultExpanded>
+                        <Panel>
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Report
@@ -493,7 +504,7 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel defaultExpanded>
+                        <Panel>
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Resources
@@ -502,6 +513,18 @@ class App extends Component {
                             <Panel.Collapse>
                                 <Panel.Body>
                                     Not yet implemented
+                                </Panel.Body>
+                            </Panel.Collapse>
+                        </Panel>
+                        <Panel defaultExpanded>
+                            <Panel.Heading>
+                                <Panel.Title toggle>
+                                    Partners
+                                </Panel.Title>
+                            </Panel.Heading>
+                            <Panel.Collapse>
+                                <Panel.Body>
+                                    <Image src="../static/partners.png" responsive />
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>

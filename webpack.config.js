@@ -58,10 +58,10 @@ module.exports = env => {
                     },
                     test: /\.js$/
                 },
-                     {
-        test: /\.(css|sass|scss)$/,
-        use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
-      },
+                {
+                    test: /\.(css|sass|scss)$/,
+                    use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader!sass-loader' })
+                },
                 {
                     test: /\.woff2?$|\.ttf$|\.svg$|\.eot$/,
                     use: [
