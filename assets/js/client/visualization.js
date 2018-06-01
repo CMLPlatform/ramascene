@@ -35,24 +35,13 @@ class Visualization extends Component {
                     type: props.type,
                     geoconfig: {
                         colorScaleConfig: {
-                            // axisConfig: {
-                            //     shapeConfig: {
-                            //         labelConfig: {
-                            //             fontColor: "white"
-                            //         }
-                            //     }
-                            // },
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
                         data: props.data,
                         downloadButton: {type: "png"},
-                        // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         //set ocean to transparent
                         ocean: 'transparent',
-                        //set project to geoMercator, we can use others e.g. geoOrthographic
-                        //see https://github.com/d3/d3-geo-projection
-                        projection: 'geoMercator',
                         //do not use tiles
                         tiles:0,
                         //add to tooltip the actual value
@@ -68,18 +57,7 @@ class Visualization extends Component {
                                 return key + " " + props.unit[key];
                             }
                         },
-                        colorScale: 'value',
-                        // TODO how can we get filter to work when dynamically changing topojson and data ?
-                        // fitFilter: function(d) {
-                        //      return props.data.find(function(p) {
-                        //          return p.id === d.id;
-                        //      });
-                        // }.bind(props)
-                        // topojsonFilter: function(d) {
-                        //     return props.data.find(function(p) {
-                        //         return p.id === d.id;
-                        //     });
-                        // }.bind(props)
+                        colorScale: 'value'
                     }
                 };
                 break;
@@ -132,25 +110,14 @@ class Visualization extends Component {
                     type: nextProps.type,
                     geoconfig: {
                         colorScaleConfig: {
-                            // axisConfig: {
-                            //     shapeConfig: {
-                            //         labelConfig: {
-                            //             fontColor: "white"
-                            //         }
-                            //     }
-                            // },
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
                         },
                         data: nextProps.data,
                         downloadButton: {type: "png"},
                         //set ocean to transparent
                         ocean: 'transparent',
-                        //set project to geoMercator, we can use others e.g. geoOrthographic
-                        //see https://github.com/d3/d3-geo-projection
-                        projection: 'geoMercator',
                         //do not use tiles
                         tiles:0,
-                        // topojson: 'countries_97_topo.json',
                         topojson: topoJson,
                         tooltipConfig: {
                             body: function(d) {
@@ -164,17 +131,7 @@ class Visualization extends Component {
                                 return key + " " + nextProps.unit[key];
                             }
                         },
-                        colorScale: 'value',
-                        // fitFilter: function(d) {
-                        //     return nextProps.data.find(function(p) {
-                        //         return p.id === d.id;
-                        //     });
-                        // }.bind(nextProps)
-                        // topojsonFilter: function(d) {
-                        //     return nextProps.data.find(function(p) {
-                        //         return p.id === d.id;
-                        //     });
-                        // }.bind(nextProps)
+                        colorScale: 'value'
                     }
                 });
                 break;
