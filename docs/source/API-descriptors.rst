@@ -90,7 +90,7 @@ Interface descriptors [websocket messages from back-end]:
 
 | {
 |  \"job_id\":176,
-|  \"action\":\"completed\",
+|  \"action\":\"check status\",
 |  \"job_status\":\"completed\",
 |  \"job_name\":\{
 |                'nodesReg': ['Total'],

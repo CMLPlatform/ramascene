@@ -69,7 +69,11 @@ Prepare static resources:
 
 ``$npm install``
 
-*Configure webpack.config.js for ajax url and websocket url.*
+Set webpack conf settings for production:
+
+* Configure webpack.config.js for ajax url and websocket url at webpack.DefinePlugin().
+* Adjust process environment to "production" at webpack.DefinePlugin().
+* Make sure that new UglifyJsPlugin() is set.
 
 Built React bundle:
 
