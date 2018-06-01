@@ -25,7 +25,7 @@ class FilterableMultiSelectDropdownTree extends Component {
                 maxTagTextLength={15}
                 multiple={true}
                 notFoundContent={<i>Not found</i>}
-                onChange={this.state.callback}
+                onChange={this.handleOnChange.bind(this)}
                 placeholder={<i>{this.state.placeholder}</i>}
                 showCheckedStrategy={TreeSelect.SHOW_PARENT}
                 showSearch={true}
