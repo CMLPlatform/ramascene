@@ -1,6 +1,13 @@
 ramascene package
 =================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    ramascene.management
+
 Submodules
 ----------
 
@@ -16,6 +23,14 @@ ramascene.consumers module
 --------------------------
 
 .. automodule:: ramascene.consumers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.exceptions module
+---------------------------
+
+.. automodule:: ramascene.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
