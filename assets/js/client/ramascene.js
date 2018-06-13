@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, Panel, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, OverlayTrigger, Panel, Row, Table, Tooltip } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -12,6 +12,17 @@ import IndicatorFilterableSingleSelectDropdownTree from './indicatorFilterableSi
 import AnalysisJob from './analysisJob';
 
 var shortid = require('shortid');
+
+function CustomTooltip({id, children, tooltip}) {
+    return (
+        <OverlayTrigger
+            overlay={<Tooltip id={id} placement="right">{tooltip}</Tooltip>}
+            delayShow={300}
+            delayHide={150}
+        >{children}
+        </OverlayTrigger>
+    );
+};
 
 class App extends Component {
 
@@ -350,7 +361,7 @@ class App extends Component {
                                 <Panel.Body>
                                     <Row>
                                         <Col>
-                                            <div>Perspective</div>
+                                            <div>Perspective<CustomTooltip tooltip="hello world!" id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleProductionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_PRODUCTION}
@@ -363,7 +374,7 @@ class App extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <div>Visualization</div>
+                                            <div>Visualization<CustomTooltip tooltip="hello world!" id="visualization-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTreeMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_TREEMAP}
@@ -377,7 +388,7 @@ class App extends Component {
                                     {(selectedVisualizationOption == this.VIZ_GEOMAP) &&
                                     <Row>
                                         <Col>
-                                            <div>Visualization Detail</div>
+                                            <div>Visualization Detail<CustomTooltip tooltip="hello world!" id="visualization-detail-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTotalClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
@@ -395,7 +406,7 @@ class App extends Component {
                                     <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>Regions</div>
+                                            <div>Regions<CustomTooltip tooltip="hello world!" id="region-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {!this.state.selectMultiRegion &&
                                                 <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy}
                                                                                           onChange={this.handleRegionChange.bind(this)}
@@ -415,7 +426,7 @@ class App extends Component {
                                         {/*<div>Products and Regions</div>*/}
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>Products</div>
+                                            <div>Products<CustomTooltip tooltip="hello world!" id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {this.state.selectMultiProduct &&
                                             <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
                                                                                       onChange={this.handleProductChange.bind(this)}
@@ -432,7 +443,7 @@ class App extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <div>Indicator</div>
+                                            <div>Indicator<CustomTooltip tooltip="hello world!" id="indicator-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy}
                                                                                         onChange={this.handleIndicatorChange.bind(this)}
                                                                                         value={this.state.selectedIndicatorOptions}
@@ -479,6 +490,7 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Body>
                                 <div id="visualization" className="visualization-panel"></div>
+                                <sub>EXIOBASE v3.3. data</sub>
                             </Panel.Body>
                         </Panel>
                     </Col>

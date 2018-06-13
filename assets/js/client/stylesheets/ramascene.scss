@@ -3,6 +3,10 @@ $body-bg: #333;
 
 @import '_bootstrap';
 
+.glyphicon-question-sign {
+  color: $brand-info;
+}
+
 .panel {
   color: #333;
 }
