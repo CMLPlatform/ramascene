@@ -236,7 +236,33 @@ class App extends Component {
         // this.state.jobs.push(React.createElement(AnalysisJob, {query: query, resultHandler: this.renderVisualization.bind(this), deleteHandler: this.deleteJob.bind(this)}));
 
         const jobs = Object.assign([], this.state.jobs);
-        jobs.push({key: shortid.generate(), query: query, selected: false, detailLevel: this.state.selectedVisualizationDetailOption});
+        jobs.push({key: shortid.generate(), query: query, selected: false, auto_render: false, detailLevel: this.state.selectedVisualizationDetailOption});
+
+        this.setState({
+            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
+            selectedVisualizationOption: this.state.selectedVisualizationOption,
+            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
+            selectedProductOptions: this.state.selectedProductOptions,
+            selectedRegionOptions: this.state.selectedRegionOptions,
+            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
+            selectMultiProduct: this.state.selectMultiProduct,
+            selectMultiRegion: this.state.selectMultiRegion,
+            busy: (jobs.length == this.MAX_JOB_COUNT),
+            jobs: jobs
+        });
+    }
+
+    componentWillMount() {
+        const query = {
+            'dimType': this.PERSPECTIVE_PRODUCTION,
+            'vizType': this.VIZ_TREEMAP,
+            'nodesSec': [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+            'nodesReg': [1],
+            'extn': [1]
+        };
+
+        const jobs = Object.assign([], this.state.jobs);
+        jobs.push({key: shortid.generate(), query: query, selected: false, auto_render: true, detailLevel: this.VIZDETAIL_COUNTRY});
 
         this.setState({
             selectedPerspectiveOption: this.state.selectedPerspectiveOption,
@@ -508,7 +534,7 @@ class App extends Component {
                                         {
                                             this.state.jobs.map(function(job) {
                                                 // we cannot pass key to props, but we must use another property name e.g. id
-                                                return (<AnalysisJob key={job.key} id={job.key} query={job.query} selected={job.selected} detailLevel={job.detailLevel} resultHandler={this.renderVisualization.bind(this)} deleteHandler={this.deleteJob.bind(this)} />)
+                                                return (<AnalysisJob key={job.key} id={job.key} query={job.query} selected={job.selected} auto_render={job.auto_render} detailLevel={job.detailLevel} resultHandler={this.renderVisualization.bind(this)} deleteHandler={this.deleteJob.bind(this)} />)
                                             }.bind(this))
                                         }
                                         </tbody>

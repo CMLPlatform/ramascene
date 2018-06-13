@@ -15,11 +15,11 @@ class AnalysisJob extends Component {
         this.STATUS_STARTED = 'started';
         this.STATUS_COMPLETED = 'completed';
 
-        this.state = {key: props.id, query: props.query, selected: props.selected, detailLevel: props.detailLevel, resultHandler: props.resultHandler, deleteHandler: props.deleteHandler, job_status: null, job_id: null, job_name: null, job_label: ""};
+        this.state = {key: props.id, query: props.query, selected: props.selected, auto_render: props.auto_render, detailLevel: props.detailLevel, resultHandler: props.resultHandler, deleteHandler: props.deleteHandler, job_status: null, job_id: null, job_name: null, job_label: ""};
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label, raw_data: this.state.raw_data, csv_data: this.state.csv_data});
+        this.setState({key: this.state.key, query: this.state.query, selected: nextProps.selected, auto_render: this.state.auto_render, detailLevel: this.state.detailLevel, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: this.state.job_status, job_id: this.state.job_id, job_name: this.state.job_name, job_label: this.state.job_label, raw_data: this.state.raw_data, csv_data: this.state.csv_data});
     }
 
     componentDidMount() {
@@ -40,10 +40,10 @@ class AnalysisJob extends Component {
             // construct job label
             var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, job.job_name.vizType.length - 3), job.job_name.nodesSec.toString().substr(0, 10), job.job_name.nodesReg.toString().substr(0, 10), job.job_name.extn.toString().substr(0, 10)];
 
-            this.setState({key: this.state.key, query: this.state.query, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: job.job_status, job_id: job.job_id, job_name: job.job_name, job_label: label_parts.join('>')});
+            this.setState({key: this.state.key, query: this.state.query, selected: this.state.selected, auto_render: this.state.auto_render, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: job.job_status, job_id: job.job_id, job_name: job.job_name, job_label: label_parts.join('>')});
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
-            this.setState({key: this.state.key, query: this.state.query, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: job.job_status, job_id: job.job_id, job_name: job.job_name, job_label: this.state.job_label});
+            this.setState({key: this.state.key, query: this.state.query, selected: this.state.selected, auto_render: this.state.auto_render, resultHandler: this.state.resultHandler, deleteHandler: this.state.deleteHandler, job_status: job.job_status, job_id: job.job_id, job_name: job.job_name, job_label: this.state.job_label});
 
             $.ajax({
                 cache: false,
@@ -60,18 +60,38 @@ class AnalysisJob extends Component {
                 },
                 method: 'POST',
                 success: function (data, textStatus, jqXHR) {
-                    this.setState({
-                        key: this.state.key,
-                        query: this.state.query,
-                        resultHandler: this.state.resultHandler,
-                        deleteHandler: this.state.deleteHandler,
-                        job_status: this.state.job_status,
-                        job_id: this.state.job_id,
-                        job_name: this.state.job_name,
-                        job_label: this.state.job_label,
-                        raw_data: data,
-                        csv_data: this.generateCSVdata(data)
-                    });
+                    if (this.state.auto_render == true) {
+                        this.setState({
+                            key: this.state.key,
+                            query: this.state.query,
+                            selected: true,
+                            auto_render: this.state.auto_render,
+                            resultHandler: this.state.resultHandler,
+                            deleteHandler: this.state.deleteHandler,
+                            job_status: this.state.job_status,
+                            job_id: this.state.job_id,
+                            job_name: this.state.job_name,
+                            job_label: this.state.job_label,
+                            raw_data: data,
+                            csv_data: this.generateCSVdata(data)
+                        });
+                        this.retrieveRawResult();
+                    } else {
+                        this.setState({
+                            key: this.state.key,
+                            query: this.state.query,
+                            selected: this.state.selected,
+                            auto_render: this.state.auto_render,
+                            resultHandler: this.state.resultHandler,
+                            deleteHandler: this.state.deleteHandler,
+                            job_status: this.state.job_status,
+                            job_id: this.state.job_id,
+                            job_name: this.state.job_name,
+                            job_label: this.state.job_label,
+                            raw_data: data,
+                            csv_data: this.generateCSVdata(data)
+                        });
+                    }
                 }.bind(this),
                 url: AJAX_URL
             });
