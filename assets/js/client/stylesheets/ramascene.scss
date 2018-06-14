@@ -11,6 +11,12 @@ $body-bg: #333;
   color: #333;
 }
 
+.popover-content {
+  max-height: 400px;
+  overflow: auto;
+  padding: 9px 14px;
+}
+
 .rc-tree-select-not-found {
   color: #000;
 }

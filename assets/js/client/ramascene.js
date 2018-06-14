@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, OverlayTrigger, Panel, Row, Table, Tooltip } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -15,8 +15,8 @@ var shortid = require('shortid');
 
 function CustomTooltip({id, children, tooltip}) {
     return (
-        <OverlayTrigger
-            overlay={<Tooltip id={id} placement="right">{tooltip}</Tooltip>}
+        <OverlayTrigger trigger="click"
+            overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
             delayShow={300}
             delayHide={150}
         >{children}
@@ -387,14 +387,20 @@ class App extends Component {
                                 <Panel.Body>
                                     <Row>
                                         <Col>
-                                            <div>Perspective<CustomTooltip tooltip="hello world!" id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Perspective<CustomTooltip tooltip="
+                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut semper velit eros, a consequat elit venenatis nec. Quisque varius dapibus augue elementum vehicula. Sed id ligula sed mi ullamcorper iaculis vel a neque. Donec dapibus nisl ipsum, in gravida sem eleifend sed. Quisque erat nunc, facilisis id viverra in, consectetur a elit. Sed semper risus erat, id sollicitudin odio finibus ut. Cras vehicula non justo quis porta. Pellentesque dictum tellus ante, a vulputate massa semper ac. Maecenas facilisis velit sed dapibus lobortis. Vivamus maximus ipsum justo, et gravida lectus tempus nec. Nullam purus orci, egestas a ligula sed, dictum pharetra erat.</p>
+                                            <p>Aliquam lobortis, lorem in viverra ultricies, ligula quam pulvinar nulla, id ultrices ante tellus vel quam. Fusce sed lobortis est. Donec mattis pharetra ex. Praesent magna magna, cursus a gravida eu, tincidunt ut justo. Phasellus at luctus eros. Cras faucibus arcu quis justo finibus porta. Donec et egestas lacus. Nulla facilisi.</p>
+                                            <p>Vestibulum non lorem volutpat, interdum risus vel, elementum lorem. Nullam commodo dignissim eros. Morbi nulla eros, finibus vitae tristique sodales, sollicitudin et diam. Sed sagittis posuere ante, ut dignissim nulla. In elementum aliquam fringilla. Cras malesuada nisi mi, vel placerat enim placerat vel. Duis ac orci elementum, viverra odio non, ultrices nisl. Nunc elementum risus id turpis tincidunt aliquam. Donec consequat tincidunt tellus, et eleifend urna elementum eu. Mauris nisl elit, faucibus ac congue in, tristique eu erat. Donec eget maximus tortor, eget venenatis mauris.</p>
+                                            <p>Morbi maximus posuere dui ac cursus. Cras iaculis augue at sapien ultricies volutpat. Praesent sit amet venenatis orci. Duis et nisl nec est suscipit feugiat eget at ante. Duis facilisis risus at turpis facilisis, in accumsan tellus convallis. Nulla facilisi. Aliquam sit amet ante a massa maximus ullamcorper. Curabitur ac feugiat mauris. Mauris at felis dignissim, euismod nibh quis, commodo eros. In hac habitasse platea dictumst. Nunc ac semper libero. Integer sit amet tempor ligula. Quisque eget tellus eu turpis pharetra elementum eget at lectus.</p>
+                                            <p>Ut tincidunt varius risus, malesuada imperdiet ex efficitur nec. Mauris et nunc ut lorem lobortis finibus ut ut leo. Mauris non dui nec libero scelerisque tincidunt vitae id velit. Etiam ac diam ligula. Praesent sit amet massa at mi tincidunt blandit. Mauris euismod, leo rhoncus porttitor dignissim, velit nibh venenatis nisi, quis tristique sem ipsum vitae nisl. Aliquam eget erat sit amet est commodo hendrerit. Nulla venenatis eros non nisi porttitor iaculis. Curabitur a dui venenatis, hendrerit massa in, porttitor sapien. Integer cursus erat nec ullamcorper ullamcorper. Curabitur cursus arcu a lacus consectetur tincidunt. Duis non tristique sem.</p>"
+                                                                           id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleProductionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_PRODUCTION}
                                                         disabled={this.state.busy}>Production</Button>
                                                 <Button onClick={this.handleConsumptionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_CONSUMPTION}
-                                                        disabled={this.state.busy}>Consumption</Button>
+                                                        disabled={this.state.busy}>Final Consumption</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
@@ -432,7 +438,7 @@ class App extends Component {
                                     <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>Regions<CustomTooltip tooltip="hello world!" id="region-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>{this.state.selectMultiRegion ? 'select multiple regions' : 'select a single region'}<CustomTooltip tooltip="hello world!" id="region-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {!this.state.selectMultiRegion &&
                                                 <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy}
                                                                                           onChange={this.handleRegionChange.bind(this)}
@@ -452,7 +458,7 @@ class App extends Component {
                                         {/*<div>Products and Regions</div>*/}
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>Products<CustomTooltip tooltip="hello world!" id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>{this.state.selectMultiProduct ? 'select multiple products' : 'select a single product'}<CustomTooltip tooltip="hello world!" id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {this.state.selectMultiProduct &&
                                             <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
                                                                                       onChange={this.handleProductChange.bind(this)}
