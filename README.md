@@ -9,10 +9,9 @@ http://rama-scene.readthedocs.io/en/latest/
 
 # Getting started
 ---
-### Clone the data repository 
-``` 
-git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene_data.git 
-```
+### Retrieve the raw data
+Go to the LFS repository: https://bitbucket.org/CML-IE/rama-scene_data/src/master/
+Download the datafiles in rama-scene_data/rawData/2011/ manually (L,Y,B numpy files)
 
 ### Clone the project 
 ``` 
