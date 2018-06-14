@@ -169,7 +169,7 @@ result of final consumption in the USA.
 
 The calculation route has been designed for general application. It can calculate the environmental impacts of
 different products given a specific selected country selling final product or specific country where the emission
-takes place or specific sector where the emission takes place. However the actual implementation of route 2 takes
+takes place or specific sector where the emission takes place. However the actual implementation of route 3 takes
 into account that country selling product are all countries, the country where the emission takes place are all
 countries and the emission at all sectors are taken into account.
 
@@ -222,7 +222,7 @@ as calculation Route 3 but the aggregation step at the end differs from route 1.
 The calculation route has been designed for general application. It can calculate the environmental impacts
 of different products given a specific selected country selling final product or specific country where the
 emission takes place or specific sector where the emission takes place. However the actual implementation of
-route 2 takes into account that country selling product are all countries, the country where the emission takes
+route 4 takes into account that country selling product are all countries, the country where the emission takes
 place are all countries and the emission at all sectors are taken into account.
 
 The calculation starts by creating the final demand vector that contains the selected products for the selected countries.
