@@ -11,6 +11,7 @@ http://rama-scene.readthedocs.io/en/latest/
 ---
 ### Retrieve the raw data
 Go to the LFS repository: https://bitbucket.org/CML-IE/rama-scene_data/src/master/
+
 Download the datafiles in rama-scene_data/rawData/2011/ manually (L,Y,B numpy files)
 
 ### Clone the project 
