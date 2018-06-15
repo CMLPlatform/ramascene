@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
 import {format} from 'd3-format';
+import {Badge} from 'react-bootstrap';
 
 class Visualization extends Component {
 
@@ -29,10 +30,20 @@ class Visualization extends Component {
                 break;
         }
 
+        var sum = 0;
+        props.data.forEach(d => {
+            sum += d.value;
+        });
+
+        const key = Object.keys(props.unit)[0];
+        var unit = key + ' ' + props.unit[key];
+
         switch (props.type) {
             case 'geo':
                 this.state = {
                     type: props.type,
+                    sum: sum,
+                    unit: unit,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
@@ -53,8 +64,7 @@ class Visualization extends Component {
                                 return format('~s')(found_item.value);
                             },
                             footer: function(d) {
-                                const key = Object.keys(props.unit)[0];
-                                return key + " " + props.unit[key];
+                                return unit;
                             }
                         },
                         colorScale: 'value'
@@ -64,14 +74,15 @@ class Visualization extends Component {
             case 'tree':
                 this.state = {
                     type: props.type,
+                    sum: sum,
+                    unit: unit,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
                                 return format('~s')(d.value);
                             },
                             footer: function(d) {
-                                const key = Object.keys(props.unit)[0];
-                                return key + " " + props.unit[key];
+                                return unit;
                             }
                         },
                         data: props.data,
@@ -104,10 +115,20 @@ class Visualization extends Component {
                 break;
         }
 
+        var sum = 0;
+        nextProps.data.forEach(d => {
+            sum += d.value;
+        });
+
+        const key = Object.keys(nextProps.unit)[0];
+        var unit = key + ' ' + nextProps.unit[key];
+
         switch (nextProps.type) {
             case 'geo':
                 this.setState({
                     type: nextProps.type,
+                    sum: sum,
+                    unit: unit,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#384172" , "#f0f6f6" , "#D29C31", "#B22401"]
@@ -127,8 +148,7 @@ class Visualization extends Component {
                                 return format('~s')(found_item.value);
                             },
                             footer: function(d) {
-                                const key = Object.keys(nextProps.unit)[0];
-                                return key + " " + nextProps.unit[key];
+                                return unit;
                             }
                         },
                         colorScale: 'value'
@@ -138,14 +158,15 @@ class Visualization extends Component {
             case 'tree':
                 this.setState({
                     type: nextProps.type,
+                    sum: sum,
+                    unit: unit,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
                                 return format('~s')(d.value);
                             },
                             footer: function(d) {
-                                const key = Object.keys(nextProps.unit)[0];
-                                return key + " " + nextProps.unit[key];
+                                return unit;
                             }
                         },
                         data: nextProps.data,
@@ -164,10 +185,10 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<Geomap config={this.state.geoconfig} />);
+                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge></div>);
                 break;
             case 'tree':
-                return (<Treemap config={this.state.treeconfig} />);
+                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge></div>);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);

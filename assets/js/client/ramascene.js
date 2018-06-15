@@ -516,8 +516,8 @@ class App extends Component {
                                 <Panel.Title>View</Panel.Title>
                             </Panel.Heading>
                             <Panel.Body>
-                                <div id="visualization" className="visualization-panel"></div>
-                                <sub>EXIOBASE v3.3. data</sub>
+                                <div id="visualization"></div>
+                                <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
                         </Panel>
                     </Col>
