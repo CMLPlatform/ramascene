@@ -1,7 +1,6 @@
 import logging
 import json
 import numpy as np
-from ramascene.data import B_data,L_data
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 
@@ -13,7 +12,7 @@ class Analyze:
     This class contains the method for calculations
     """
     def __init__(self, product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection,idx_units,
-                 job_name, job_id, s_country_idx, Y_data):
+                 job_name, job_id, s_country_idx, Y_data, B_data, L_data):
         self.product_calc_indices = product_calc_indices
         self.country_calc_indices = country_calc_indices
         self.indicator_calc_indices = indicator_calc_indices
@@ -23,6 +22,8 @@ class Analyze:
         self.idx_units = idx_units
         self.s_country_idx = s_country_idx
         self.Y_data = Y_data
+        self.B_data = B_data
+        self.L_data = L_data
 
     def route_one(self):
         """Perform calculations according to route one.
@@ -44,8 +45,8 @@ class Analyze:
 
         # Get data
         Y = self.Y_data
-        L = L_data
-        B = B_data
+        L = self.L_data
+        B = self.B_data
 
         # Set-up final demand based on selected consuming countries
         # Select and aggregate countries/regions
@@ -117,8 +118,8 @@ class Analyze:
 
         # Get data
         Y = self.Y_data
-        L = L_data
-        B = B_data
+        L = self.L_data
+        B = self.B_data
 
         # Set-up final demand. Select consuming countries and
         # set the non-selected consumed product categories to zero
@@ -186,8 +187,8 @@ class Analyze:
 
         # Get data
         Y = self.Y_data
-        L = L_data
-        B = B_data
+        L = self.L_data
+        B = self.B_data
 
         # Set-up final demand. Select consuming countries and
         # set the non-selected consumed product categories to zero
@@ -261,8 +262,8 @@ class Analyze:
 
         # Get data
         Y = self.Y_data
-        L = L_data
-        B = B_data
+        L = self.L_data
+        B = self.B_data
 
         # Set-up final demand. Select countries
         # and set non-selected consumed product categories to zero

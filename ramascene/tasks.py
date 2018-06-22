@@ -6,7 +6,7 @@ import json
 import numpy as np
 from asgiref.sync import AsyncToSync
 from celery import shared_task, chain
-from ramascene.data import Y_data
+from ramascene.data import Y_data, L_data, B_data
 from ramascene import querymanagement
 from ramascene.models import Indicator
 from ramascene.analyze import Analyze
@@ -104,7 +104,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
         if querySelection["vizType"] == "GeoMap" and querySelection["dimType"] == "Consumption":
             # instantiate Analyze class
             p2 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection,idx_units,
-                job_name, job_id, s_country_idx, Y_data)
+                job_name, job_id, s_country_idx, Y_data, B_data, L_data)
             # invoke method for route 2 calculations
             json_data = p2.route_two()
             # Change task status to completed
@@ -116,7 +116,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
         elif querySelection["vizType"] == "GeoMap" and querySelection["dimType"] == "Production":
             # instantiate Analyze class
             p3 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data)
+                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
             # invoke method for route 3 calculations
             json_data = p3.route_three()
             # Change task status to completed
@@ -128,7 +128,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
         elif querySelection["vizType"] == "TreeMap" and querySelection["dimType"] == "Consumption":
             # instantiate Analyze class
             p1 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data)
+                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
             # invoke method for route 4 calculations
             json_data = p1.route_one()
             # Change task status to completed
@@ -140,7 +140,7 @@ def calcOne(job_name,job_id, channel_name, ready_querySelection, querySelection)
         elif querySelection["vizType"] == "TreeMap" and querySelection["dimType"] == "Production":
             # instantiate Analyze class
             p4 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data)
+                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
             # invoke method for route 4 calculations
             json_data = p4.route_four()
             # Change task status to completed
