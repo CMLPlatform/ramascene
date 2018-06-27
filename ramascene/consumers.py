@@ -37,10 +37,8 @@ class RamasceneConsumer(AsyncConsumer):
         try:
             data = json.loads(event['text'])
 
-
             #if action message from front-end is inside payload
-            if data["action"] == "start_calc":
-
+            if data["action"] == "start_calc" or data["action"] == "default":
                 #get query
                 querySelection = data["querySelection"]
                 info_querySelection = querySelection.copy()
@@ -60,7 +58,9 @@ class RamasceneConsumer(AsyncConsumer):
                     status="started",
                 )
                 job.save()
-
+                #run some tests to see how many are in the queue. In the future we may want to implement this for notification.
+                from ramascene import tests
+                print(tests.get_celery_queue_items())
                 # return data
                 await self.send({"type": "websocket.send", "text": json.dumps({
                     "action": "started",
@@ -90,12 +90,13 @@ class RamasceneConsumer(AsyncConsumer):
 
             #if action is not received
             else:
+
                 data.update({"status": "error wrong input"})
 
 
         except Exception as e:
             log.debug("ws message isn't json text=%s", event['text'])
-
+            print(e)
             return
 
     async def websocket_disconnect(self, message):
