@@ -32,7 +32,6 @@ class Analyze:
         Returns:
             json: json result data
         """
-        print("route 1")
         p_product_idx = np.arange(0, 200)
         p_country_idx = np.arange(0, 49)
 
@@ -104,7 +103,6 @@ class Analyze:
         Returns:
             json: json result data
         """
-        print("route 2")
         p_product_idx = np.arange(0, 200)
         p_country_idx = np.arange(0, 49)
 
@@ -171,10 +169,8 @@ class Analyze:
         Returns:
             json: json result data
         """
-        print("route 3")
         c_product_idx = np.arange(0, 200)
         c_country_idx = np.arange(0, 49)
-
 
         # Expand selected ranges
         ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices, self.country_calc_indices)
@@ -247,7 +243,6 @@ class Analyze:
         Returns:
             json: json result data
         """
-        print("route 4")
         c_product_idx = np.arange(0, 200)
         c_country_idx = np.arange(0, 49)
 
@@ -311,4 +306,3 @@ class Analyze:
         data['rawResultData'] = result_as_names
         json_data = json.dumps(data)
         return json_data
-
