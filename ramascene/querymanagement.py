@@ -5,21 +5,19 @@ import numpy as np
 Supporting  file  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
 """
 
-def get_leafs(product_global_ids, country_global_ids):
+def get_leafs_product(product_global_ids):
     """    Returns the leaf nodes of a given global id
 
         Uses the database/model to fetch leaf nodes.
 
         Args:
             product_global_ids (list): A list of user selected product global ids
-            country_global_ids (list): A list of user selected country global ids
 
         Returns:
             list: complete list of  leaf ids (minus a offset of -1 for calculation purposes)
     """
     OFFSET = -1
     product_calc_indices = []
-    country_calc_indices = []
     # It's always a list even if it only has a single element
     for id in product_global_ids:
         # perform identification,
@@ -33,7 +31,22 @@ def get_leafs(product_global_ids, country_global_ids):
             my_local_leafs = (Product.objects.values_list('leaf_children_local', flat=True).get(global_id=id))
             leafs = clean_local_leafs(my_local_leafs)
             product_calc_indices.append(leafs)
+    # flatten lists
+    product_calc_indices = [item for sublist in product_calc_indices for item in sublist]
+    return product_calc_indices
+def get_leafs_country(country_global_ids):
+    """    Returns the leaf nodes of a given global id
 
+        Uses the database/model to fetch leaf nodes.
+
+        Args:
+            country_global_ids (list): A list of user selected country global ids
+
+        Returns:
+            list: complete list of  leaf ids (minus a offset of -1 for calculation purposes)
+    """
+    OFFSET = -1
+    country_calc_indices = []
     # It's always a list even if it only has a single element
     for id in country_global_ids:
         # perform identification,
@@ -47,11 +60,9 @@ def get_leafs(product_global_ids, country_global_ids):
             my_local_leafs = (Country.objects.values_list('leaf_children_local', flat=True).get(global_id=id))
             leafs = clean_local_leafs(my_local_leafs)
             country_calc_indices.append(leafs)
-
-    # flatten lists
-    product_calc_indices = [item for sublist in product_calc_indices for item in sublist]
+    #flatten list
     country_calc_indices = [item for sublist in country_calc_indices for item in sublist]
-    return product_calc_indices, country_calc_indices
+    return country_calc_indices
 
 def get_calc_names_product(prod_result_data):
     """Get name of products.
