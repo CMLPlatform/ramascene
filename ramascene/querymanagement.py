@@ -340,30 +340,23 @@ def clean_indicators(idx_lst):
         return_lst.append(i)
     return return_lst
 
-def convert_to_numpy(products,countries, indicators):
+def convert_to_numpy(list_obj):
     """Clean data as preprocessing step for calculation.
 
         Convert processed country,product, indicator lists to numpy array.
 
         Args:
-            products (list): pre-processed product list
-            countries (list): pre-processed country list
-            indicators (list): pre-processed indicator list
+            product,country,indicator (list): pre-processed list
+
 
         Returns:
-            list: numpy arrays of products, countries, indicator coordinates
+            list: numpy arrays of products or countries or indicator coordinates
 
     """
-    #order
-    products.sort(reverse=False)
-    countries.sort(reverse=False)
-    indicators.sort(reverse=False)
+    # order
+    list_obj.sort(reverse=False)
+    # convert to array
+    numpy_array = np.asarray(list_obj, dtype=np.int64)
 
-    #convert to array
-    products = np.asarray(products, dtype=np.int64)
-    countries = np.asarray(countries, dtype=np.int64)
-    indicators = np.asarray(indicators, dtype=np.int64)
-
-    return products, countries, indicators
-
+    return numpy_array
 

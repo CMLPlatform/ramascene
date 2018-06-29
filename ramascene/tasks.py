@@ -10,6 +10,7 @@ from ramascene.data import Y_data, L_data, B_data
 from ramascene import querymanagement
 from ramascene.models import Indicator
 from ramascene.analyze import Analyze
+from ramascene.modelling import Modelling
 
 log = logging.getLogger(__name__)
 
@@ -89,21 +90,27 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         idx_units[idx_name] = idx_unit
 
     # sort and convert to numpy array
-    product_calc_indices, country_calc_indices, \
-        indicator_calc_indices = querymanagement.convert_to_numpy(product_calc_indices, country_calc_indices,
-                                                                  indicator_calc_indices)
+    product_calc_indices = querymanagement.convert_to_numpy(product_calc_indices)
+    country_calc_indices = querymanagement.convert_to_numpy(country_calc_indices)
+    indicator_calc_indices = querymanagement.convert_to_numpy(indicator_calc_indices)
 
     # set constant for country selling product ("total")
     s_country_idx = np.arange(0, 49)
-
     # Try calculations for Analyzing part of the application
     # TODO check if user is in analyze or modeling stage
     try:
         # selection state No 2:  - country of consumption - multiple select
         if query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Consumption":
+            #if there are model_details
+            if "model_details" in query_selection:
+                model = Modelling(Y_data,L_data,query_selection["model_details"])
+                Y = model.apply_model()
+                print("as returned by model class:" + str(sum(sum(Y))))
+            else:
+                Y = Y_data
             # instantiate Analyze class
             p2 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
+                         job_name, job_id, s_country_idx, Y, B_data, L_data)
             # invoke method for route 2 calculations
             json_data = p2.route_two()
             # Change task status to completed
@@ -113,9 +120,16 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
 
         # selection state No 3: - country where emission takes place - multiple select
         elif query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Production":
+            #if there are model_details
+            if "model_details" in query_selection:
+                model = Modelling(Y_data,L_data,query_selection["model_details"])
+                Y = model.apply_model()
+                print("as returned by model class:" + str(sum(sum(Y))))
+            else:
+                Y = Y_data
             # instantiate Analyze class
             p3 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
+                         job_name, job_id, s_country_idx, Y, B_data, L_data)
             # invoke method for route 3 calculations
             json_data = p3.route_three()
             # Change task status to completed
@@ -125,9 +139,16 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
 
         # selection state No 1: - consumed products - multiple select
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Consumption":
+            #if there are model_details
+            if "model_details" in query_selection:
+                model = Modelling(Y_data,L_data,query_selection["model_details"])
+                Y = model.apply_model()
+                print("as returned by model class:" + str(sum(sum(Y))))
+            else:
+                Y = Y_data
             # instantiate Analyze class
             p1 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
+                         job_name, job_id, s_country_idx, Y, B_data, L_data)
             # invoke method for route 4 calculations
             json_data = p1.route_one()
             # Change task status to completed
@@ -137,9 +158,16 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
 
         # selection state No 4: - sector where emission takes place - multiple select
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Production":
+            #if there are model_details
+            if "model_details" in query_selection:
+                model = Modelling(Y_data,L_data,query_selection["model_details"])
+                Y = model.apply_model()
+                print("as returned by model class:"+str(sum(sum(Y))))
+            else:
+                Y = Y_data
             # instantiate Analyze class
             p4 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y_data, B_data, L_data)
+                         job_name, job_id, s_country_idx, Y, B_data, L_data)
             # invoke method for route 4 calculations
             json_data = p4.route_four()
             # Change task status to completed
@@ -157,7 +185,7 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         job.status = "Failed"
         async_send(channel_name, job)
         log.debug("Failed job_name=%s", e)
-        print(e)
+        print("failed at:"+str(e))
 
 
 @shared_task

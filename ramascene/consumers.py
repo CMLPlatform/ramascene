@@ -45,21 +45,26 @@ class RamasceneConsumer(AsyncConsumer):
                 ready_query_selection = query_selection.copy()
                 if data["action"] == "model":
                     model_details = (data["model_details"])
+                    origin_regions = []
+                    consumed_regions = []
+                    products = []
                     for intervention in model_details:
-                        #for each modeling change retrieve the details (global ids)
+                        # for each modeling change retrieve the details (global ids)
                         product = intervention["product"]
-                        model_perspective = intervention["consumedBy"]
                         origin_reg = intervention["originReg"]
                         consumed_reg = intervention["consumedReg"]
-                        tech_change = intervention["techChange"]
-
                         name_origin_reg = querymanagement.get_names_country(origin_reg)
                         name_consumed_reg = querymanagement.get_names_country(consumed_reg)
                         name_product  = querymanagement.get_names_product(product)
-                        #WS response as job_name should now include the modeling details
-                        info_query_selection.update({'originReg': name_origin_reg, 'comsumedReg':name_consumed_reg
-                                                     ,'product': name_product, 'techChange': tech_change})
+                        origin_regions.append(name_origin_reg)
+                        consumed_regions.append(name_consumed_reg)
+                        products.append(name_product)
 
+                    # WS response as job_name should now include the modeling details
+                    info_query_selection.update({'originReg': origin_regions, 'comsumedReg':consumed_regions
+                                                     ,'product': products, 'techChange': intervention["techChange"]})
+                    # as the full data object is not send to Celery, insert model_details into the queryseleciton
+                    query_selection.update({'model_details': model_details})
                 # clean query for info or alternatively said job_name
                 names_products = querymanagement.get_names_product(query_selection["nodesSec"])
                 names_countries = querymanagement.get_names_country(query_selection["nodesReg"])
@@ -77,17 +82,12 @@ class RamasceneConsumer(AsyncConsumer):
                 #return websocket response
                 await self.ws_response(job)
 
-                # get query objects that need to be made ready for calculations
-                my_received_product_global_ids = query_selection["nodesSec"]
-                my_received_country_global_ids = query_selection["nodesReg"]
-                my_received_indicator_global_ids = query_selection["extn"]
-
                 # prepare for Celery handler
-                product_calc_indices, country_calc_indices = \
-                    querymanagement.get_leafs(my_received_product_global_ids, my_received_country_global_ids)
+                product_calc_indices = querymanagement.get_leafs_product(query_selection["nodesSec"])
+                country_calc_indices = querymanagement.get_leafs_country(query_selection["nodesReg"])
 
                 # set offset for indicator/extension, so prepare for default handler
-                indicator_calc_indices = querymanagement.clean_indicators(my_received_indicator_global_ids)
+                indicator_calc_indices = querymanagement.clean_indicators(query_selection["extn"])
 
                 # querySelection ready for calculations
                 ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
