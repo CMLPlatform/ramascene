@@ -5,6 +5,7 @@ from .tasks import default_handler
 from channels.consumer import AsyncConsumer
 from ramascene import querymanagement
 import asyncio
+from ramasceneMasterProject.settings import REDIS_FOR_CELERY
 
 log = logging.getLogger(__name__)
 
@@ -42,7 +43,20 @@ class RamasceneConsumer(AsyncConsumer):
                 query_selection = data["querySelection"]
                 info_query_selection = query_selection.copy()
                 ready_query_selection = query_selection.copy()
+                if data["action"] == "model":
+                    model_details = (data["model_details"])
+                    for intervention in model_details:
 
+                        product = intervention["product"]
+                        model_perspective = intervention["consumedBy"]
+                        origin_reg = intervention["originReg"]
+                        consumed_reg = intervention["consumedReg"]
+                        tech_change = intervention["techChange"]
+                        print(product)
+                        print(model_perspective)
+                        print(origin_reg)
+                        print(consumed_reg)
+                        print(tech_change)
                 # clean query for info or alternatively said job_name
                 names_products, \
                     names_countries, \
@@ -94,7 +108,7 @@ class RamasceneConsumer(AsyncConsumer):
 
         except Exception as e:
             log.debug("ws message isn't json text=%s", event['text'])
-            print(e)
+            print("error: " + str(e))
             return
 
     async def websocket_disconnect(self, message):
@@ -122,15 +136,19 @@ class RamasceneConsumer(AsyncConsumer):
         return job
 
     async def ws_response(self,job):
-        # run some tests to see how many are in the queue.
-        # In the future we may want to implement this for notification.
-        from ramascene import tests
-        print(tests.get_celery_queue_items())
-
+        #If REDIS is used as broker, we check how long the queue length is
+        if REDIS_FOR_CELERY:
+            import redis
+            queue_name = "celery"
+            client = redis.Redis(host="localhost", port=6379, db=1)
+            length = client.llen(queue_name)
+        else:
+            length= "Unavailable"
         # return data
         await self.send({"type": "websocket.send", "text": json.dumps({
             "action": "started",
             "job_id": job.id,
             "job_name": job.name,
             "job_status": job.status,
+            "queue_length": str(length)
         })})
