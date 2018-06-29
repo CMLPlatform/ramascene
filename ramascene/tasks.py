@@ -161,7 +161,7 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
 
 
 @shared_task
-def handle_complete(job_id, channel_name):
+def handle_complete(json_results, job_id, channel_name):
     """
     Handle a successful Celery  Task.
     """
@@ -172,3 +172,4 @@ def handle_complete(job_id, channel_name):
     job.save()
     # send final complete message
     async_send(channel_name, job)
+

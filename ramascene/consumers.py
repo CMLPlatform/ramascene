@@ -55,23 +55,10 @@ class RamasceneConsumer(AsyncConsumer):
                 log.debug("job Name=%s", job_name)
 
                 # Save model to our database
-                job = Job(
-                    name=job_name,
-                    status="started",
-                )
-                job.save()
-                # run some tests to see how many are in the queue.
-                # In the future we may want to implement this for notification.
-                from ramascene import tests
-                print(tests.get_celery_queue_items())
+                job = await self.save_job(job_name)
 
-                # return data
-                await self.send({"type": "websocket.send", "text": json.dumps({
-                    "action": "started",
-                    "job_id": job.id,
-                    "job_name": job.name,
-                    "job_status": job.status,
-                })})
+                #return websocket response
+                await self.ws_response(job)
 
                 # get query objects that need to be made ready for calculations
                 my_received_product_global_ids = query_selection["nodesSec"]
@@ -82,14 +69,13 @@ class RamasceneConsumer(AsyncConsumer):
                 product_calc_indices, country_calc_indices = \
                     querymanagement.get_leafs(my_received_product_global_ids, my_received_country_global_ids)
 
-                # set offset for indicator/extension, so prepare for calcOnehandler
+                # set offset for indicator/extension, so prepare for default handler
                 indicator_calc_indices = querymanagement.clean_indicators(my_received_indicator_global_ids)
 
                 # querySelection ready for calculations
                 ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
                                              'extn': indicator_calc_indices})
-                # TODO RENAME calcOneHandler to default_handler also rename calcOne to calc_default
-                # call Tasks
+                # call default handler
                 default_handler(job_name, job.id, self.channel_name, ready_query_selection, query_selection)
             elif data["action"] == "timeseries":
                 print("Timeseries is called...")
@@ -126,3 +112,25 @@ class RamasceneConsumer(AsyncConsumer):
             "type": "websocket.send",
             "text": event["text"],
         })
+
+    async def save_job(self, job_name):
+        job = Job(
+            name=job_name,
+            status="started",
+        )
+        job.save()
+        return job
+
+    async def ws_response(self,job):
+        # run some tests to see how many are in the queue.
+        # In the future we may want to implement this for notification.
+        from ramascene import tests
+        print(tests.get_celery_queue_items())
+
+        # return data
+        await self.send({"type": "websocket.send", "text": json.dumps({
+            "action": "started",
+            "job_id": job.id,
+            "job_name": job.name,
+            "job_status": job.status,
+        })})
