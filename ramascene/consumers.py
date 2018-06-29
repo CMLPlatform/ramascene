@@ -46,25 +46,28 @@ class RamasceneConsumer(AsyncConsumer):
                 if data["action"] == "model":
                     model_details = (data["model_details"])
                     for intervention in model_details:
-
+                        #for each modeling change retrieve the details (global ids)
                         product = intervention["product"]
                         model_perspective = intervention["consumedBy"]
                         origin_reg = intervention["originReg"]
                         consumed_reg = intervention["consumedReg"]
                         tech_change = intervention["techChange"]
-                        print(product)
-                        print(model_perspective)
-                        print(origin_reg)
-                        print(consumed_reg)
-                        print(tech_change)
+
+                        name_origin_reg = querymanagement.get_names_country(origin_reg)
+                        name_consumed_reg = querymanagement.get_names_country(consumed_reg)
+                        name_product  = querymanagement.get_names_product(product)
+                        #WS response as job_name should now include the modeling details
+                        info_query_selection.update({'originReg': name_origin_reg, 'comsumedReg':name_consumed_reg
+                                                     ,'product': name_product, 'techChange': tech_change})
+
                 # clean query for info or alternatively said job_name
-                names_products, \
-                    names_countries, \
-                    name_indicator = querymanagement.get_names(query_selection["nodesSec"],
-                                                               query_selection["nodesReg"], query_selection["extn"])
+                names_products = querymanagement.get_names_product(query_selection["nodesSec"])
+                names_countries = querymanagement.get_names_country(query_selection["nodesReg"])
+                name_indicator = querymanagement.get_names_indicator(query_selection["extn"])
 
                 info_query_selection.update({'nodesSec': names_products, 'nodesReg': names_countries,
                                              'extn': name_indicator})
+
                 job_name = info_query_selection
                 log.debug("job Name=%s", job_name)
 
