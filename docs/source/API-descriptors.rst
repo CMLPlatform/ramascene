@@ -39,8 +39,8 @@ Interface descriptors [websocket message to back-end]:
 |                           |                         |       ex.:  \"nodesReg\":\"[4,5]\"       |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Indicator               | **var name: querySelection**             |
-|                           |                         |  *JSON key: extn, JSON value: array*      |
-|                           |                         |       ex.:  \"extn\":\"[8]\"              |
+|                           |                         |  *JSON key: extn, JSON value: array*     |
+|                           |                         |       ex.:  \"extn\":\"[8]\"             |
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | → to back-end           | **var name: querySelection & action**    |
 |                           |    [WS send]            |  *JSON : querySelection, JSON: action*   |
