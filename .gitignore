@@ -1,2 +1,11 @@
+# ignore build of docs
 /docs/build
+
+# ignore node_modules (use commands to built)
 /node_modules
+
+#ignore bundle created by django (use commands to built)
+/assets/bundles
+
+#(ignore sqlite)
+sqlite3*
