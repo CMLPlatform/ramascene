@@ -93,34 +93,60 @@ def get_calc_names_country(country_result_data):
         country_result_named[country_name] = value
     return country_result_named
 
-
-def get_names(prod_ids, country_ids, indicator_ids):
-    """Get name of countries, products and indicators
+def get_names_product(prod_ids):
+    """Get name of products
 
     Uses the database/model to fetch names, used for sending selection information to front-end
 
     Args:
         prod_ids (list): list of products by global id
-        country_ids (list): list of countries by global id
-        indicator_ids (list): list of indicators by global id
 
     Returns:
-        list: lists of products,countries and indicators as names
+        list: lists of products
 
     """
-    prod_names =[]
-    country_names=[]
-    indicator_names=[]
+    prod_names = []
     for prod in prod_ids:
         prod_name = (Product.objects.values_list('name', flat=True).get(global_id=prod))
         prod_names.append(prod_name)
+    return prod_names
+
+def get_names_country(country_ids):
+    """Get name of countries
+
+    Uses the database/model to fetch names, used for sending selection information to front-end
+
+    Args:
+        country_ids (list): list of countries by global id
+
+    Returns:
+        list: lists of countries
+
+    """
+    country_names = []
     for country in country_ids:
         country_name = (Country.objects.values_list('name', flat=True).get(global_id=country))
         country_names.append(country_name)
+    return country_names
+
+def get_names_indicator(indicator_ids):
+    """Get name of indicators
+
+    Uses the database/model to fetch names, used for sending selection information to front-end
+
+    Args:
+
+        indicator_ids (list): list of indicators by global id
+
+    Returns:
+        list: lists of indicators as names
+
+    """
+    indicator_names = []
     for indicator in indicator_ids:
         indicator_name = (Indicator.objects.values_list('name', flat=True).get(global_id=indicator))
         indicator_names.append(indicator_name)
-    return prod_names, country_names, indicator_names
+    return indicator_names
 
 def get_aggregations_countries(querySelection, result_data):
     """Sum to construct aggregates results for countries.
@@ -328,4 +354,5 @@ def convert_to_numpy(products,countries, indicators):
     indicators = np.asarray(indicators, dtype=np.int64)
 
     return products, countries, indicators
+
 
