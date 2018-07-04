@@ -22,7 +22,7 @@ git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git
 ### Point in settings.py to the data repository files
 Adjust PATH_TO_L, PATH_TO_B, PATH_TO_Y
 
-### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure before installing your env. you have python-dev installed via $sudo apt-get install python-dev)
+### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure you have python-dev installed via apt-get)
 ``` 
 $pip3 install -r requirements.txt 
 ```
