@@ -200,4 +200,4 @@ def handle_complete(json_results, job_id, channel_name):
     job.save()
     # send final complete message
     async_send(channel_name, job)
-
+    return json_results
