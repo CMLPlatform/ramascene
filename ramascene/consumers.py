@@ -38,7 +38,7 @@ class RamasceneConsumer(AsyncConsumer):
         try:
             data = json.loads(event['text'])
             # if action message from front-end is inside payload
-            if data["action"] == "default" or data["action"] == "model":
+            if data["action"] == "default" or data["action"] == "model" or data["action"] == "start_calc" :
                 # get query
                 query_selection = data["querySelection"]
                 info_query_selection = query_selection.copy()
