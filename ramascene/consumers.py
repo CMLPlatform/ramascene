@@ -48,6 +48,7 @@ class RamasceneConsumer(AsyncConsumer):
                     origin_regions = []
                     consumed_regions = []
                     products = []
+
                     for intervention in model_details:
                         # for each modeling change retrieve the details (global ids)
                         product = intervention["product"]
