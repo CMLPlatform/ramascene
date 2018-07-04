@@ -18,7 +18,7 @@ Install Redis [message broker]
 Install redis:
 ``sudo apt-get install redis-server``
 
-Create a virtual environment and install the following:
+Create a virtual environment (python3.5 or higher, and make sure you have python-dev installed via apt-get) and install the following:
 
 | ``pip3 install asgi_redis``
 | ``pip3 install -U channels_redis``
