@@ -56,9 +56,15 @@ WEBPACK_LOADER = {
 }
 
 #path to respective matrices
-PATH_TO_L = '<MY_PATH_TO_L>'
-PATH_TO_B = '<MY_PATH_TO_B>'
-PATH_TO_Y = '<MY_PATH_TO_Y>'
+DEFAULT_L = 'path to reference 2011 L matrix'
+DEFAULT_B = 'path to reference 2011 B matrix'
+DEFAULT_Y = 'path to reference 2011 Y matrix'
+#path to timeseries directory
+TIMESERIES_DIR = 'path to datasets directory'
+#name of numpy objects for timeseries
+NAME_L = 'L_v3.npy'
+NAME_B = 'B_v3.npy'
+NAME_Y = 'Y_v3.npy'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -105,6 +111,7 @@ ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 
 
 # Celery settings
+REDIS_FOR_CELERY = True
 BROKER_URL = 'redis://localhost:6379/0'  # our redis address
 #CELERY_BROKER_URL = 'amqp://localhost'#
 CELERY_BROKER_URL = 'redis://localhost:6379/1'
@@ -113,7 +120,7 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
-REDIS_FOR_CELERY = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
