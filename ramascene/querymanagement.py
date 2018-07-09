@@ -1,5 +1,6 @@
 from ramascene.models import Country, Product, Indicator
 import numpy as np
+import math
 
 """
 Supporting  file  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
@@ -202,7 +203,7 @@ def get_aggregations_countries(querySelection, result_data):
                 value = result_data.get(a_leaf)
                 #append to list ready for aggregation
                 tmp_list.append(value)
-            tmp_agg_result = sum(tmp_list)
+            tmp_agg_result = math.fsum(tmp_list)
             result_container[global_country_id] = tmp_agg_result
 
     return result_container
@@ -250,7 +251,7 @@ def get_aggregations_products(querySelection, result_data):
                 value = result_data.get(a_leaf)
                 #append to list ready for aggregation
                 tmp_list.append(value)
-            tmp_agg_result = sum(tmp_list)
+            tmp_agg_result = math.fsum(tmp_list)
             result_container[global_product_id] = tmp_agg_result
     return result_container
 
@@ -359,4 +360,3 @@ def convert_to_numpy(list_obj):
     numpy_array = np.asarray(list_obj, dtype=np.int64)
 
     return numpy_array
-
