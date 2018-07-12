@@ -55,6 +55,10 @@ Analyze
 =======
 For performing the actual IO calculations the analyze module is used.
 
+Modelling
+=========
+This module is used for implementation of modelling features in the application
+
 .. _modules: modules.html
 .. _python: python-ini.html
 .. _initialize: python-ini.html

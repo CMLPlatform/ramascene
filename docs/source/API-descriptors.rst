@@ -9,7 +9,8 @@ See project root static_assets:
 3. mod_indicators.csv
 
 These mapping coordinates are not only used to render tree selectables, but also to transmit the global id's of the product categories, countries and indicators
-over the websocket channel. In turn the back-end handles these messages to perform calculations and store results.
+over the websocket channel. In turn the back-end handles these messages to perform calculations and store results. For example all countries and all products in the world represent the global id
+[1]. The indicator [1] represents product output. For further reference see the mapping CSV files.
 
 API routing:
 
@@ -17,11 +18,20 @@ API routing:
 * API URL AJAX:  ``<domain-ip>/ajaxhandling/``
 * Interface format: JSON
 
+Default calculations
+====================
+
+The following queries denote the communication between front-end and back-end for performing default calculations.
+
 Interface descriptors [websocket message to back-end]:
 
 +---------------------------+-------------------------+------------------------------------------+
 | Stage                     | Instances relation      | Variable name, dataType, example         |
 +===========================+=========================+==========================================+
+| Calculation type          |  Default calculation    | **var name: action**                     |
+|                           |                         |  *JSON key: action, JSON value:  String* |
+|                           |                         |       ex.:  \"action\":\"default\"       |
++---------------------------+-------------------------+------------------------------------------+
 | Dimension                 | Production, Consumption | **var name: querySelection**             |
 |                           |                         |  *JSON key: dimType, JSON value:  String*|
 |                           |                         |       ex.:  \"dimType\":\"Production\"   |
@@ -32,15 +42,19 @@ Interface descriptors [websocket message to back-end]:
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Product                 | **var name: querySelection**             |
 |                           |                         |  *JSON key: nodesSec, JSON value: array* |
-|                           |                         |       ex.:  \"nodesSec\":\"[1]\"         |
+|                           |                         |       ex.:  \"nodesSec\":\"[3,4,7]\"     |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Country                 | **var name: querySelection**             |
 |                           |                         |  *JSON key: nodesReg, JSON value: array* |
-|                           |                         |       ex.:  \"nodesReg\":\"[4,5]\"       |
+|                           |                         |       ex.:  \"nodesReg\":\"[1]\"         |
 +---------------------------+-------------------------+------------------------------------------+
 | Filter                    | Indicator               | **var name: querySelection**             |
 |                           |                         |  *JSON key: extn, JSON value: array*     |
-|                           |                         |       ex.:  \"extn\":\"[8]\"             |
+|                           |                         |       ex.:  \"extn\":\"[2]\"             |
++---------------------------+-------------------------+------------------------------------------+
+| Year                      | Default reference year  | **var name: querySelection**             |
+|                           |                         |  *JSON key: year, JSON value: array*     |
+|                           |                         |       ex.:  \"year\":\"[2011]\"          |
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | → to back-end           | **var name: querySelection & action**    |
 |                           |    [WS send]            |  *JSON : querySelection, JSON: action*   |
@@ -51,13 +65,14 @@ Interface descriptors [websocket message to back-end]:
 
 | {
 |           \"action\":
-|               \"start_calc\",
+|               \"default\",
 |           \"querySelection\":{
 |                \"dimType\":\"Production\",
 |                \"vizType\":\"TreeMap\",
-|                \"nodesSec\":[1],
-|                \"nodesReg\":[4,5],
-|                \"extn\":[8]
+|                \"nodesSec\":[3,4,7],
+|                \"nodesReg\":[1],
+|                \"extn\":[2],
+|                \"year\":[2011],
 |                }
 |  }
 
@@ -79,7 +94,7 @@ Interface descriptors [websocket messages from back-end]:
 +---------------------------+-------------------------+------------------------------------------+
 | Job status                | from Back-end →         |**var name: job_id**                      |
 |                           |   [WS response]         | *JSON key: job_id,JSON value: int*       |
-|                           |                         |       ex.:  {\"job_id\":\"165\"}         |
+|                           |                         |       ex.:  {\"job_id\":\"176\"}         |
 +---------------------------+-------------------------+------------------------------------------+
 | Job name                  | from Back-end →         |**var name: job_name**                    |
 |                           |   [WS response]         | *JSON key: job_name,JSON value: JSON*    |
@@ -96,11 +111,14 @@ Interface descriptors [websocket messages from back-end]:
 |                'nodesReg': ['Total'],
 |                'vizType': 'TreeMap',
 |                'nodesSec': ['Fishing', 'Mining and quarrying', 'Construction'],
-|                'dimType': 'Consumption',
-|                'extn': ['Value Added: Total']
+|                'dimType': 'Production',
+|                'extn': ['Value Added: Total'],
+|                'year': [2011]
 |               }
 | }
 
+If the websocket message is complete, the front-end can perform a POST request for results via Ajax containing the job_id
+named as 'TaskID'. For example in the above websocket response we see that job_id is 176, the Ajax POST request is 'TaskID:176'.
 
 Interface descriptors [AJAX response]:
 
@@ -114,11 +132,11 @@ Interface descriptors [AJAX response]:
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | from Back-end →         | **var name: job_id**                     |
 |                           |   [AJAX response]       |  *JSON key: job_id, JSON value: int*     |
-|                           |                         |       ex.:  {\"job_id\":\"175\"}         |
+|                           |                         |       ex.:  {\"job_id\":\"176\"}         |
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | from Back-end →         | **var name: rawResultData**              |
 |                           |  [AJAX response]        |  *JSON key: name, JSON value: array*     |
-|                           |                         |       ex.:  {\"Europe\":\"[1256.67]\"}   |
+|                           |                         |       ex.:  {\"Total\":\"[1256.67]\"}    |
 +---------------------------+-------------------------+------------------------------------------+
 | All                       | from Back-end →         | **var name: job_name**                   |
 |                           |   [AJAX response]       |  *JSON key: job_name, JSON value: JSON*  |
@@ -128,17 +146,90 @@ Interface descriptors [AJAX response]:
 **→ from back-end complete response example:**
 
 | {
-| \"job_id\":
-|          175,
-| \"unit\":
-|          {\"GHG emissions: Total\": \"kg CO2 eq\"},
-| \"job_name\":
-|          {\"nodesReg\": [\"Europe\"],
-|           \"nodesSec\": [\"Fishing\"],
+| \"job_id\":176,
+| \"unit\": {\"Value Added: Total":"M.EUR"\},
+| \"job_name\": {
+|           \"nodesReg\": [\"Total\"],
+|           \"nodesSec\": ["Fishing", "Mining and quarrying","Construction"],
 |           \"dimType\": \"Production\",
-|           \"extn\": [\"GHG emissions: Total\"],
-|           \"vizType\": \"GeoMap\"},
-| \"rawResultData\":
-|          {\"Europe\": 13787995489.580374}
+|           \"extn\": ["Value Added: Total"],
+|           \"year\": [2011],
+|           \"vizType\": \"GeoMap\"
+|           },
+| \"rawResultData\":{
+|          Fishing":75172.94699626492, "Mining and quarrying":2151937.135835223, "Construction":3148250.604361363
+|          }
 | }
+
+
+An important aspect is that the back-end expects the websocket message to contain a single value for indicator. Additionally
+if the query selection contains "GeoMap" the "nodesReg" descriptor can be an array of multiple elements denoting multiple countries,
+while the "nodesSec" descriptor can only have a single indicator.
+On the other hand if the query selection contains "TreeMap" the "nodesSec" descriptor can be an array of multiple elements
+denoting multiple products, while the "nodesReg" descriptor can only have a single indicator.
+
+Modelling calculations
+======================
+
+The following queries denote the communication between front-end and back-end for modelling calculations. Modelling is applied on existing default query selections.
+
++---------------------------+-------------------------+---------------------------------------------+
+| Stage                     | Instances relation      | Variable name, dataType, example            |
++===========================+=========================+=============================================+
+| Product of interest       |  Model details          | **var name: model_details**                 |
+|                           |  : Product              |  *JSON key: product, JSON value:  array*    |
+|                           |                         |       ex.:  \"product\":[1]                 |
++---------------------------+-------------------------+---------------------------------------------+
+| Manufacturing region      |  Model details          | **var name: model_details**                 |
+|                           |  : Product origin region|  *JSON key: originReg,JSON value:  array*   |
+|                           |                         |       ex.:  \"originReg\":[3]               |
++---------------------------+-------------------------+---------------------------------------------+
+| Model type of calculation |  Model details          | **var name: model_details**                 |
+|                           |  : Model type           |  *JSON key: consumedBy, JSON value: string* |
+|                           |                         |    ex.:  \"consumedBy\":\"FinalConsumption\"|
++---------------------------+-------------------------+---------------------------------------------+
+| Region consuming          |  Model details          | **var name: model_details**                 |
+|                           |  : Region of consumption|  *JSON key: consumedReg, JSON value:  array*|
+|                           |                         |       ex.:  \"consumedReg\":[5]             |
++---------------------------+-------------------------+---------------------------------------------+
+| Technological change      |  Model details          | **var name: model_details**                 |
+|                           |  : Technical change     |  *JSON key: techChange, JSON value:  array* |
+|                           |                         |       ex.:  \"techChange\":[5]              |
++---------------------------+-------------------------+---------------------------------------------+
+
+The technological change is a single value denoting a percentage. See below for a full query example:
+
+**→ from back-end complete response example:**
+
+| {
+| "action": "model",
+| "querySelection": {
+|    "dimType": "Production",
+|    "vizType": "TreeMap",
+|    "nodesSec": [1],
+|    "nodesReg": [4,5],
+|    "ext": [8],
+|    "year": [2011]
+|    },
+|    "model_details": [
+|        {
+|            "product": [1],
+|            "originReg": [3],
+|            "consumedBy": "FinalConsumption",
+|            "consumedReg": [5],
+|            "techChange": [-15]
+|        },
+|        {
+|            "product": [6],
+|            "originReg": [5],
+|            "consumedBy": "FinalConsumption",
+|            "consumedReg": [18],
+|            "techChange": [20]
+|        }
+|    ]
+| }
+
+
+Multiple model selections can be added. The websocket response will contain the added model details specified by name.
+
 
