@@ -4,18 +4,19 @@ import xlrd
 ####
 Date: 13th of April 2018
 Author: Sidney Niccolson
-Purpose: Prepare a json for Geomapping.
-        Output of RamaScene calculations and querymanagement is country names
-        Geomapping uses ISO3 (3-letter codes). So a conversion step is needed.
-        The Desire countryMapping excel contains the mapping we need. 
-        ref standards: ISO 3166
+Purpose: Prepare a json for Geomapping as geomapping uses ISO3 (3-letter codes). 
+         A conversion step is needed to determine what countries belong to Rest of categories as 3-letter codes.
+         The same accounts for other aggregations such as continents in general.
+         The Desire countryMapping excel contains the mapping we need. 
+         ref standards: ISO 3166
 ####
 Usage:  you can change path to EXC_FILE, MOD_FILE to other files if another EXIOBASE version is used. The same accounts
         for Rest OF dictionary
 """
 
-
+# EXC_FILE is the country mapping DESIRE excel used to find what countries belong to REST of categories
 EXC_FILE = '../data/mod_CountryMappingDESIRE.xlsx'
+# MOD_file reflect the EXIOBASE coordinates containing countries, rest of categories. It also contains aggregations regarding continents
 MOD_FILE = '../data/mod_final_countryTree_ISO3166_3.csv'
 
 DICT_RF = {"WE": "Rest of Europe",	"WM": "Rest of Middle East", "WL": "Rest of America", "WA": "Rest of Asia and Pacific",
@@ -140,6 +141,7 @@ def create_json(dct):
 
     with open('../data/geomapping_ISO3166_3.json', 'w') as outfile:
         json.dump(dct, outfile, indent=4)
+    print("***json mapper file succesfully created as geomapping_ISO3166_3.json***")
 # Start execution here!
 if __name__ == '__main__':
     data_dict = get_dict(MOD_FILE)

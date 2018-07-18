@@ -22,7 +22,7 @@ See geomapping_files.tar.gz for functional geojson and topojson files
 
 FNAME_GEO = "./geo-countries/archive/countries.geojson"
 FNAME_MAP = "./data/geomapping_ISO3166_3.json"
-SETTING = "country_lvl" #either "country_lvl", "continental_lvl", "total_lvl"
+SETTING = "continental_lvl" #either "country_lvl", "continental_lvl", "total_lvl"
 
 def get_files(fname_geo, fname_map):
     #load countries data as geopandas dataframe
