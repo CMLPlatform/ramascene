@@ -55,12 +55,8 @@ WEBPACK_LOADER = {
     }
 }
 
-#path to respective matrices
-DEFAULT_L = 'path to reference 2011 L matrix'
-DEFAULT_B = 'path to reference 2011 B matrix'
-DEFAULT_Y = 'path to reference 2011 Y matrix'
-#path to timeseries directory
-TIMESERIES_DIR = 'path to datasets directory'
+#path to datasets directory
+DATASET_DIR = 'path to datasets directory'
 #name of numpy objects for timeseries
 NAME_L = 'L_v3.npy'
 NAME_B = 'B_v3.npy'
