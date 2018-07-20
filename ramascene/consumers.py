@@ -41,14 +41,20 @@ class RamasceneConsumer(AsyncConsumer):
 
                 # get query
                 query_selection = data["querySelection"]
-                info_query_selection = query_selection.copy()
-                ready_query_selection = query_selection.copy()
-
                 # TODO remove temporary year setting after fron-end update and then use the year query selection
                 # get year
                 if not 'year' in query_selection.keys():
                     year = 2011
                     query_selection.update({"year": year})
+                else:
+                    # TODO this piece of code should not be removed after the front-end update
+                    # as we always get an array, we need to get the first value from the query,
+                    # In future "actions" this might differ and we allow multiple years or multiple indicators
+                    year = query_selection["year"][0]
+                    # update the query_selection to only contain a single value
+                    query_selection.update({'year': year})
+                info_query_selection = query_selection.copy()
+                ready_query_selection = query_selection.copy()
 
                 if data["action"] == "model":
                     model_details = (data["model_details"])
