@@ -62,7 +62,7 @@ $./node_modules/.bin/webpack --config webpack.config.js
 
 ### Start Celery
 ```
-$celery -A ramasceneMasterProject worker -l info  --concurrency 2 --queue calc_default
+$celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default
 ```
 > Note: The concurrency value can be tweaked
 
