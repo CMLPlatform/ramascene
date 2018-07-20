@@ -9,18 +9,16 @@ http://rama-scene.readthedocs.io/en/latest/
 
 # Getting started
 ---
-### Retrieve the raw data
-Go to the LFS repository: https://bitbucket.org/CML-IE/rama-scene_data/src/master/
-
-Download the datafiles in rama-scene_data/rawData/2011/ manually (L,Y,B numpy files)
+### Retrieve the raw datasets
+Visit our data repository at: https://fdonaticml.stackstorage.com/s/1wYNXkJXkIWqXGW
 
 ### Clone the project 
 ``` 
 git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git 
 ```
 
-### Point in settings.py to the data repository files
-Adjust PATH_TO_L, PATH_TO_B, PATH_TO_Y
+### Point in settings.py to the datasets downloaded above
+Adjust DATASET_DIR
 
 ### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure you have python-dev installed via apt-get)
 ``` 
@@ -64,7 +62,7 @@ $./node_modules/.bin/webpack --config webpack.config.js
 
 ### Start Celery
 ```
-$celery -A ramasceneMasterProject worker -l info  --concurrency=2 
+$celery -A ramasceneMasterProject worker -l info  --concurrency 2 --queue calc_default
 ```
 > Note: The concurrency value can be tweaked
 
