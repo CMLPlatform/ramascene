@@ -9,7 +9,14 @@
 
 
 {% block speciality %}
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
+    <!-- Custom fonts for this template -->
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css_home/grayscale.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 
@@ -19,13 +26,271 @@
 
 {% block content %}
 
+  <body id="page-top">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="ramascene">Open tool</a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#methods">Methods</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="masthead">
+      <div class="container d-flex h-100 align-items-center">
+        <div class="mx-auto text-center">
+          <h1 class="mx-auto my-0 text-uppercase">RaMA-Scene</h1>
+          <h2 class="text-white-50 mx-auto mt-2 mb-5">RAw MAterials SCENario Efficiency improvement blended learning package and assessment tool.</h2>
+          <a href="#about" class="btn btn-primary js-scroll-trigger">Learn more about the project</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="about-section text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto">
+            <h2 class="text-white mb-4">Project</h2>
+            <p class="text-white-50">RaMaScene is an EIT Raw Materials project with the objective of facilitating decision making and the diffusion of knowledge and skills for raw materials scenarios.
+
+</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="methods" class="projects-section bg-light">
+      <div class="container">
+
+        <!-- Featured Project Row -->
+        <div class="row align-items-center no-gutters mb-4 mb-lg-5">
+          <div class="col-xl-8 col-lg-7">
+            <img class="img-fluid mb-3 mb-lg-0" src="{% static 'img/pic1.jpg' %}" alt="">
+          </div>
+          <div class="col-xl-4 col-lg-5">
+            <div class="featured-text text-center text-lg-left">
+              <h4>EEIO calculations</h4>
+              <p class="text-black-50 mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>
+            </div>
+          </div>
+        </div>
+                <!-- Project One Row -->
+        <div class="row justify-content-center no-gutters mb-5 mb-lg-0">
+          <div class="col-lg-6">
+          </div>
+          <div class="col-lg-6">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-left">
+                  <h4 class="text-white">[Consumption view] <br> Compare products</h4>
+                    <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>                  <hr class="d-none d-lg-block mb-0 ml-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project Two Row -->
+        <div class="row justify-content-center no-gutters">
+          <div class="col-lg-6">
+          </div>
+          <div class="col-lg-6 order-lg-first">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-right">
+                  <h4 class="text-white">[Consumption view] <br> Compare countries</h4>
+                    <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>                  <hr class="d-none d-lg-block mb-0 mr-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+           <div class="row justify-content-center no-gutters mb-5 mb-lg-0">
+          <div class="col-lg-6">
+          </div>
+          <div class="col-lg-6">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-left">
+                  <h4 class="text-white">[Production view] <br> Compare products</h4>
+                  <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
+                    consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate </p>
+                  <hr class="d-none d-lg-block mb-0 ml-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+         <div class="row justify-content-center no-gutters">
+          <div class="col-lg-6">
+          </div>
+          <div class="col-lg-6 order-lg-first">
+            <div class="bg-black text-center h-100 project">
+              <div class="d-flex h-100">
+                <div class="project-text w-100 my-auto text-center text-lg-right">
+                  <h4 class="text-white">[Production view] <br> Compare countries</h4>
+                  <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
+                     </p>
+                  <hr class="d-none d-lg-block mb-0 mr-0">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <br>
+ <div class="row align-items-center no-gutters mb-4 mb-lg-5">
+          <div class="col-xl-8 col-lg-7">
+                        <img class="img-fluid mb-3 mb-lg-0" src="{% static 'img/pic6.jpg' %}" alt="">
+          </div>
+          <div class="col-xl-4 col-lg-5">
+            <div class="featured-text text-center text-lg-left">
+              <h4>Modelling</h4>
+              <p class="text-black-50 mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
+                ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
+                ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat
+                massa quis enim. Donec pede justo, fringilla vel, </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="signup" class="signup-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 col-lg-8 mx-auto text-center">
+
+            <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+            <h2 class="text-white mb-5">Contact</h2>
+
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section bg-black">
+      <div class="container-fluid">
+
+        <div class="row">
+
+
+
+          <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-envelope text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">TU Delft </h4>
+                <hr class="my-4">
+                <div class="small text-black-50">
+                  Prof. R. Balkenende: a.r.balkenende@tudelft.nl
+                </div>
+                <div class="small text-black-50">
+                  Dr. C. Bakker:  	c.a.bakker@tudelft.nl
+                </div>
+              </div>
+            </div>
+          </div>
+           <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-envelope text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">Leiden University - CML</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">
+                  Prof. A. Tukker: Tukker@cml.leidenuniv.nl
+                </div>
+                <div class="small text-black-50">
+                  F. Donati: f.donati@cml.leidenuniv.nl
+                </div>
+                <div class="small text-black-50">
+                S. Niccolson: s.i.niccolson@cml.leidenuniv.nl
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+<div class="col-md-3 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-envelope text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">Fraunhofer IBP</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">
+                  Dr. R. Graf: roberta.graf@ibp.fraunhofer.de
+                </div>
+                <div class="small text-black-50">
+                  Dr. R. Ilg: robert.ilg@ibp.fraunhofer.de
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3 mb-md-0">
+            <div class="card py-4 h-100">
+              <div class="card-body text-center">
+                <i class="fas fa-envelope text-primary mb-2"></i>
+                <h4 class="text-uppercase m-0">VITO</h4>
+                <hr class="my-4">
+                <div class="small text-black-50">
+                  Ir. T. Geerken: theo.geerken@vito.be
+                </div>
+                <div class="small text-black-50">
+                  Ir. A. Vercalsteren: an.vercalsteren@vito.be
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
 
 
 
 
 
+      </div>
+
+    </section>
 
 
+
+
+
+<!--
 <h1>Welcome to the RamaScene homepage! </h1>
 Please visit:
 <li class="active"><a href="ramascene">
@@ -36,7 +301,32 @@ Please visit:
  <a href="ramascene">
 </a>
 </li>
+-->
 
 
+{% endblock %}
+  {% block footer %}
+      <!-- Footer -->
+    <footer class="bg-black small text-center text-white-50">
+      <div class="container">
+         The clients and developers of the RaMA-Scene application are not responsible for any incorrect or incomplete data (about measurements, standards, visualizations etc.) or information on this website.
+        <br>Copyright &copy; RaMa-Scene 2017 - 2018
+      </div>
+     <div class="container">
+      Credits <a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@lucabravo?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Luca Bravo"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path></svg></span><span style="display:inline-block;padding:2px 3px">Luca Bravo</span></a>
+<a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@davidleveque?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from D x L"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path></svg></span><span style="display:inline-block;padding:2px 3px">D x L</span></a>
+     <a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@iambrettzeck?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from Brett Zeck"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path></svg></span><span style="display:inline-block;padding:2px 3px">Brett Zeck</span></a>
+     <a style="background-color:black;color:white;text-decoration:none;padding:4px 6px;font-family:-apple-system, BlinkMacSystemFont, &quot;San Francisco&quot;, &quot;Helvetica Neue&quot;, Helvetica, Ubuntu, Roboto, Noto, &quot;Segoe UI&quot;, Arial, sans-serif;font-size:12px;font-weight:bold;line-height:1.2;display:inline-block;border-radius:3px" href="https://unsplash.com/@chuttersnap?utm_medium=referral&amp;utm_campaign=photographer-credit&amp;utm_content=creditBadge" target="_blank" rel="noopener noreferrer" title="Download free do whatever you want high-resolution photos from chuttersnap"><span style="display:inline-block;padding:2px 3px"><svg xmlns="http://www.w3.org/2000/svg" style="height:12px;width:auto;position:relative;vertical-align:middle;top:-1px;fill:white" viewBox="0 0 32 32"><title>unsplash-logo</title><path d="M20.8 18.1c0 2.7-2.2 4.8-4.8 4.8s-4.8-2.1-4.8-4.8c0-2.7 2.2-4.8 4.8-4.8 2.7.1 4.8 2.2 4.8 4.8zm11.2-7.4v14.9c0 2.3-1.9 4.3-4.3 4.3h-23.4c-2.4 0-4.3-1.9-4.3-4.3v-15c0-2.3 1.9-4.3 4.3-4.3h3.7l.8-2.3c.4-1.1 1.7-2 2.9-2h8.6c1.2 0 2.5.9 2.9 2l.8 2.4h3.7c2.4 0 4.3 1.9 4.3 4.3zm-8.6 7.5c0-4.1-3.3-7.5-7.5-7.5-4.1 0-7.5 3.4-7.5 7.5s3.3 7.5 7.5 7.5c4.2-.1 7.5-3.4 7.5-7.5z"></path></svg></span><span style="display:inline-block;padding:2px 3px">chuttersnap</span></a>
+     </div>
+    </footer>
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
+    <!-- Plugin JavaScript -->
+    <script src="{% static 'vendor/font-awesome/js/all.js' %}"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="{% static 'js_home/grayscale.min.js' %}"></script>
 {% endblock %}
