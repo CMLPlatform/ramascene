@@ -366,7 +366,7 @@ class App extends Component {
                     <Navbar.Header>
                         <Navbar.Brand>
                             {/*<Image src="../static/logo.png"/>*/}
-                            RaMa-Scene
+                            <a href="../">RaMa-Scene</a>
                         </Navbar.Brand>
                     </Navbar.Header>
                     <Nav>

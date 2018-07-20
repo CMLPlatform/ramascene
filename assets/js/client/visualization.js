@@ -46,7 +46,7 @@ class Visualization extends Component {
                     unit: unit,
                     geoconfig: {
                         colorScaleConfig: {
-                            color: ["#edd7ac" , "#D29C31", "#B22401"]
+                            color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
                         },
                         data: props.data,
                         downloadButton: {type: "png"},
@@ -131,7 +131,7 @@ class Visualization extends Component {
                     unit: unit,
                     geoconfig: {
                         colorScaleConfig: {
-                            color: ["#edd7ac" , "#D29C31", "#B22401"]
+                            color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
                         },
                         data: nextProps.data,
                         downloadButton: {type: "png"},
