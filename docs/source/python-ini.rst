@@ -4,36 +4,14 @@ Python initialise scripts
 
 Python initialise scripts provide the following features:
 
-1. **Building mapping coordinates files for the application**
-2. **Creating custom geojson and topojson files**
-3. **Management commands**
+1. **Management commands**
+2. **Creating EXIOBASE numpy objects**
+3. **Building mapping coordinates files for the application**
+4. **Creating custom geojson and topojson files**
 
-*Note: these scripts are not directly used by the application at runtime. If you wish to extent or develop features such as
-using another EEIO dataset it is recommendend to investigate how these script work.
-Deployment management commands are used for populating the database, see section 4.3.*
-
-Building mapping coordinates files for the application
-======================================================
-EXIOBASE v3.3 has specific classifications that needs to map to user input.
-For example if Europe is selected by the user as one of the parameters for analyses, the calculation procedure uses indices corresponding to all countries belonging to Europe.
-In turn these calculation results need to be aggregated back into a single value for Europe.
-For coordinating user input to calculation procedures the RaMa-Scene application developed the following mapping CSV's :
-
-* final_countryTree_exiovisuals.csv
-* final_productTree_exiovisuals.csv
-
-These files are read in by the script ``prepare_csv.py`` that in turn makes a slight modification to easily denote aggregated or disaggregated countries or product categories.
-
-*Note : see project folder python_ini/data & python_ini/devScripts.*
-
-Creating custom geojson and topojson files
-==========================================
-For visualizations of continental data custom polygons need to be created that reflect the country mapping of EXIOBASE.
-A script is developed to dissolve countries that belong to a certain continent or "rest of " classification with the library GeoPandas.
-
-Relevant scripts: ``geo_dissolve_by_level.py``, ``prepare_geomapping_ISO3166_3.py``, ``prepare_geomapping_ISO3166_2.py``
-
-*Note : see project folder python_ini/geomapBuilds*
+*Note: the scripts under point 2, 3 and 4 are not directly used by the application at runtime. If you wish to extent or develop features such as
+using another EEIO dataset it is recommendend to investigate how these script work, alternatively these points can be skipped.
+Deployment management commands are used for populating the database and are needed for deployment.*
 
 Management commands
 ===================
@@ -51,3 +29,50 @@ Aside from database population, it is necessary to clean the database of results
 with the following command ``python manage.py clear_models``
 
 *Note : see project folder ramascene/management/commands*
+
+Creating EXIOBASE numpy objects
+===============================
+Originally EXIOBASE data is organised in tabulated text file. This application uses the python numpy library to perform calculations and
+therefore the original EXIOBASE data is converted to numpy objects. The script ``create_numpy_objects_v3.py`` expects a folder structure
+as the following:
+
+* script/create_numpy_objects_v3.py -> the actual conversion script
+* data/auxiliary -> auxiliary information to determine indicators in the application
+* data/clean/<year> -> a folder that contains the years reserved for output (not in the source code, because of the large amount of data)
+* data/raw/<year> -> a folder that contains the original txt files per year (not in the source code, because of the large amount of data)
+
+*Note : see project folder python_ini/devScripts/script/create_numpy_objects_v3.py.*
+
+Building mapping coordinates files for the application
+======================================================
+EXIOBASE v3.3 has specific classifications that needs to map to user input.
+For example if Europe is selected by the user as one of the parameters for analyses, the calculation procedure uses indices corresponding to all countries belonging to Europe.
+In turn these calculation results need to be aggregated back into a single value for Europe.
+For coordinating user input to calculation procedures we developed the following mapping CSV's based on an older application called ExioVisuals :
+
+* final_countryTree_exiovisuals.csv
+* final_productTree_exiovisuals.csv
+
+These files are read in by the script ``prepare_csv.py`` that in turn makes a slight modification to easily denote aggregated/disaggregated countries or product categories.
+The output files of ``prepare_csv.py`` are prefixed with *mod_<filename>* and is used by the management command described later in this page to populate the database.
+
+*Note : see project folder python_ini/data & python_ini/devScripts.*
+
+Creating custom geojson and topojson files
+==========================================
+For visualizations of continental data custom polygons need to be created that reflect the country mapping of EXIOBASE.
+A script is developed to dissolve countries that belong to a certain continent or "rest of " classification with the library GeoPandas.
+
+Relevant scripts: ``geo_dissolve_by_level.py``, ``prepare_geomapping_ISO3166_3.py``, ``prepare_geomapping_ISO3166_2.py``
+
+1. First the *mod_final_countryTree_exiovisuals.csv* (modified by prepare_csv script above) is further adjusted to contain the 3-letter ISO code available in the DESIRE country list excel.
+The default modified file only contains 2-letter codes and this cannot be used by the script needed to create polygon files.
+Changing 2-letter to 3-letter codes is done manually by using the DESIRE country list, the new file is called *mod_final_countryTree_ISO3166_3.csv*.
+2. Run prepare_geomapping_ISO3166_3.py with *mod_final_countryTree_ISO3166_3.csv*
+3. After step 1 and 2, create a virtual environment and install the requirements in the python_ini/geoMapbuilds to enable the use of GeoPandas.
+4. The script geo_dissolve_by_level.py is used to create 3 geojson files, 1) a file for the whole world, 2) a file for continents, 3) a file for countries and rest of regions. This was needed for the visualization library for mapping. Before running the script, please select which of the three files you wish to generate by adjusting the SETTING variable.
+5. The generated files are fairly big, in turn it is key to make these small smaller by converting them to topojson and simplify the polygons using MapShaper.
+This is achieved with 1) importing the files into mapshaper, 2) clicking on "simplify" and check "prevent shape removal" 3) finally export to topojson with command "id-field=id" "drop-table"
+
+*Note : see project folder python_ini/geomapBuilds and python_ini/devScripts*
+

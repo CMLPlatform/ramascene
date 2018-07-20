@@ -56,11 +56,15 @@ Populating database classifications:
 
 Adjust settings.py in project:
 
-| PATH_TO_L = '<full path to L matrix>'
-| PATH_TO_B = '<full path to B matrix>
-| PATH_TO_Y = '<full path to Y matrix>'
+| DATASET_DIR = '<full path to folder containing all raw datasets>'
+| NAME_L = 'L_v3.npy' -> should not change unless there is an update to the numpy objects
+| NAME_B = 'B_v3.npy' -> should not change unless there is an update to the numpy objects
+| NAME_Y = 'Y_v3.npy' -> should not change unless there is an update to the numpy objects
 | DEBUG = False
 | ALLOWED_HOSTS = [<domain>]
+
+Adjust settings.secret.py in project to set a secure secret key:
+For more information contact the developers or refer to https://docs.djangoproject.com/en/2.0/ref/settings/#secret-key
 
 Install node.js (node version: 3.10.10 or higher), if not already installed:
 
@@ -85,7 +89,7 @@ Django collect static:
 
 Install and setup nginx [HTTP and Reverse Proxy Server]
 =======================================================
-Installing nginx requires apache to be stopped if running:
+Installing nginx requires apache to be stopped temporarily:
 
 ``sudo service apache2 stop``
 
@@ -123,8 +127,14 @@ Test the application to see if everything is running correct in a web-browser.
 
 Daemonizing
 ===========
-Celery, Daphne need to be deamonized. For example with supervisor.
+Celery and Daphne need to be deamonized. For example with supervisor.
 See example configuration file :download:`example_supervisord <ystatic/example_supervisord.conf>`
+
+Management of database results
+==============================
+Cron can be used to clear the database results on a regular basis, see example below:
+#delete database contents at 5 a.m on every sunday
+0 5 * * 0 cd /<path-to-project-root>/ && /<path-to-python-virtual-env>/bin/python /<path-to-project-root>/manage.py clear_models
 
 
 RaMa-Scene memory usage

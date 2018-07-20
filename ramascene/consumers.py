@@ -137,6 +137,9 @@ class RamasceneConsumer(AsyncConsumer):
         })
 
     async def save_job(self, job_name):
+        """
+        Update and save the job status to started
+        """
         job = Job(
             name=job_name,
             status="started",
@@ -145,6 +148,9 @@ class RamasceneConsumer(AsyncConsumer):
         return job
 
     async def ws_response(self,job, queue_name):
+        """
+        Sends web socket response that the job is started
+        """
         #If REDIS is used as broker, we check how long the queue length is
         if REDIS_FOR_CELERY:
             import redis

@@ -6,6 +6,9 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 
 def home(request):
+    """
+    Home page.
+    """
     return render(request,'ramascene/home.html')
 
 @csrf_exempt

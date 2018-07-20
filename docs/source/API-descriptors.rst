@@ -117,7 +117,7 @@ Interface descriptors [websocket messages from back-end]:
 |               }
 | }
 
-If the websocket message is complete, the front-end can perform a POST request for results via Ajax containing the job_id
+If the websocket message job_status is set to "completed", the front-end can perform a POST request for results via Ajax containing the job_id
 named as 'TaskID'. For example in the above websocket response we see that job_id is 176, the Ajax POST request is 'TaskID:176'.
 
 Interface descriptors [AJAX response]:
@@ -162,7 +162,7 @@ Interface descriptors [AJAX response]:
 | }
 
 
-An important aspect is that the back-end expects the websocket message to contain a single value for indicator. Additionally
+An important aspect is that in the current version the back-end expects the websocket message to contain a single value for indicator and year. Additionally
 if the query selection contains "GeoMap" the "nodesReg" descriptor can be an array of multiple elements denoting multiple countries,
 while the "nodesSec" descriptor can only have a single indicator.
 On the other hand if the query selection contains "TreeMap" the "nodesSec" descriptor can be an array of multiple elements
@@ -171,7 +171,7 @@ denoting multiple products, while the "nodesReg" descriptor can only have a sing
 Modelling calculations
 ======================
 
-The following queries denote the communication between front-end and back-end for modelling calculations. Modelling is applied on existing default query selections.
+The following table denotes the communication between front-end and back-end for modelling calculations. Modelling is applied on existing default query selections.
 
 +---------------------------+-------------------------+---------------------------------------------+
 | Stage                     | Instances relation      | Variable name, dataType, example            |
@@ -230,6 +230,9 @@ The technological change is a single value denoting a percentage. See below for 
 | }
 
 
-Multiple model selections can be added. The websocket response will contain the added model details specified by name.
+Multiple model selections can be added, however a user can only specify a single-selection per "product", "originReg",
+"consumedBy","consumedReg" in the array for this version of the application.
+The websocket response contains the added model details specified by name.
+
 
 
