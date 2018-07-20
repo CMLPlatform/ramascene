@@ -103,7 +103,7 @@ Check status of nginx:
 ``sudo nginx -t``
 
 Allow Nginx to interact with the host machine on the network:
-``sudo ufw allow â€˜Nginx Fullâ€™``
+``sudo ufw allow ‘Nginx Full’``
 
 
 
@@ -115,9 +115,9 @@ Make sure Daphne is installed and start daphne (in virtualenv):
 
 Start Celery in virtual env.:
 
-``celery -A ramasceneMasterProject worker -l info  --concurrency=2``
+``celery -A ramasceneMasterProject worker -l info  --concurrency=1``
 
-Be careful with CPU load if you raise concurrency.
+Be careful with load if you raise concurrency.
 
 Test the application to see if everything is running correct in a web-browser.
 
