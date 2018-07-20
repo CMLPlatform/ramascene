@@ -57,9 +57,6 @@ Populating database classifications:
 Adjust settings.py in project:
 
 | DATASET_DIR = '<full path to folder containing all raw datasets>'
-| NAME_L = 'L_v3.npy' -> should not change unless there is an update to the numpy objects
-| NAME_B = 'B_v3.npy' -> should not change unless there is an update to the numpy objects
-| NAME_Y = 'Y_v3.npy' -> should not change unless there is an update to the numpy objects
 | DEBUG = False
 | ALLOWED_HOSTS = [<domain>]
 
@@ -134,14 +131,12 @@ Management of database results
 ==============================
 Cron can be used to clear the database results on a regular basis, see example below:
 #delete database contents at 5 a.m on every sunday
-0 5 * * 0 cd /<path-to-project-root>/ && /<path-to-python-virtual-env>/bin/python /<path-to-project-root>/manage.py clear_models
+``0 5 * * 0 cd /<path-pr-root>/ && /<path-to-virtual-env>/bin/python /<path-pr-root>/manage.py clear_models``
 
 
 RaMa-Scene memory usage
 =======================
 
-The memory usage of the application is approximately 1.8G, namely due to loading raw data in memory. Loading in raw
-data objects in memory improves calculations speeds. The following measurements are taken:
-
-* Daphe (Interface server for making Django available): increase from (default) 462M to 1.24G
-* Celery (background processor): increase from 1.24G to 2.24G
+The memory usage of a single query denoting the memory load of numpy objects of a given year is approximately 1.8G.
+Meaning that if we set concurrency to 2 the load can be at least 3.6G. Hence a capable server is needed with sufficient
+memory and CPU to run this application.

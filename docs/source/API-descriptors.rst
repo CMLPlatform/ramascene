@@ -231,7 +231,7 @@ The technological change is a single value denoting a percentage. See below for 
 
 
 Multiple model selections can be added, however a user can only specify a single-selection per "product", "originReg",
-"consumedBy","consumedReg" in the array for this version of the application.
+"consumedBy", "consumedReg" in the array for this version of the application.
 The websocket response contains the added model details specified by name.
 
 

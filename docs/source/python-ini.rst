@@ -54,7 +54,7 @@ For coordinating user input to calculation procedures we developed the following
 * final_productTree_exiovisuals.csv
 
 These files are read in by the script ``prepare_csv.py`` that in turn makes a slight modification to easily denote aggregated/disaggregated countries or product categories.
-The output files of ``prepare_csv.py`` are prefixed with *mod_<filename>* and is used by the management command described later in this page to populate the database.
+The output files of ``prepare_csv.py`` are prefixed with *mod_<filename>* and is used by one of the management commands.
 
 *Note : see project folder python_ini/data & python_ini/devScripts.*
 
@@ -65,14 +65,11 @@ A script is developed to dissolve countries that belong to a certain continent o
 
 Relevant scripts: ``geo_dissolve_by_level.py``, ``prepare_geomapping_ISO3166_3.py``, ``prepare_geomapping_ISO3166_2.py``
 
-1. First the *mod_final_countryTree_exiovisuals.csv* (modified by prepare_csv script above) is further adjusted to contain the 3-letter ISO code available in the DESIRE country list excel.
-The default modified file only contains 2-letter codes and this cannot be used by the script needed to create polygon files.
-Changing 2-letter to 3-letter codes is done manually by using the DESIRE country list, the new file is called *mod_final_countryTree_ISO3166_3.csv*.
+1. First the *mod_final_countryTree_exiovisuals.csv* (modified by prepare_csv script above) is further adjusted to contain the 3-letter ISO code available in the DESIRE country list excel.The default modified file only contains 2-letter codes and this cannot be used by the script needed to create polygon files.Changing 2-letter to 3-letter codes is done manually by using the DESIRE country list, the new file is called *mod_final_countryTree_ISO3166_3.csv*.
 2. Run prepare_geomapping_ISO3166_3.py with *mod_final_countryTree_ISO3166_3.csv*
-3. After step 1 and 2, create a virtual environment and install the requirements in the python_ini/geoMapbuilds to enable the use of GeoPandas.
-4. The script geo_dissolve_by_level.py is used to create 3 geojson files, 1) a file for the whole world, 2) a file for continents, 3) a file for countries and rest of regions. This was needed for the visualization library for mapping. Before running the script, please select which of the three files you wish to generate by adjusting the SETTING variable.
-5. The generated files are fairly big, in turn it is key to make these small smaller by converting them to topojson and simplify the polygons using MapShaper.
-This is achieved with 1) importing the files into mapshaper, 2) clicking on "simplify" and check "prevent shape removal" 3) finally export to topojson with command "id-field=id" "drop-table"
+3. After step 1 and 2, create a virtual environment and install the requirements.txt in the python_ini/geoMapbuilds to enable the use of GeoPandas.
+4. The script geo_dissolve_by_level.py is used to create 3 geojson files, 1) a file for the whole world, 2) a file for continents, 3) a file for countries and rest of regions. This is needed for the visualization library d3plus. Before running the script, please select which of the three files you wish to generate by adjusting the SETTING variable.
+5. The generated files are fairly big, in turn it is key to make these small smaller by converting them to topojson and simplify the polygons using MapShaper.org. This is achieved with 1) importing the files into mapshaper, 2) clicking on "simplify" and check "prevent shape removal" 3) finally export to topojson with command "id-field=id" "drop-table"
 
 *Note : see project folder python_ini/geomapBuilds and python_ini/devScripts*
 
