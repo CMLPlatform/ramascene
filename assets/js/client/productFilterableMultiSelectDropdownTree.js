@@ -66,7 +66,7 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
         for (var product of result.data) {
             data.push({id: product.Global_id, pId: product.Parent_Id, value: product.Global_id.toString(), label: product.Name, level: product.Level});
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select product(s)", callback: this.state.callback});
+        this.setState({data: data, placeholder: "select product(s)"});
     }
 }
 

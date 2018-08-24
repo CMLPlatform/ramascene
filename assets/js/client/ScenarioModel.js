@@ -1,0 +1,225 @@
+//@flow
+import React, {Component} from 'react';
+import {Button, Col, FormControl, Glyphicon, OverlayTrigger, Popover, Row, Well} from 'react-bootstrap';
+import ProductFilterableSingleSelectDropdownTree from './productFilterableSingleSelectDropdownTree';
+import ConsumerFilterableSingleSelectDropdownTree from './consumerFilterableSingleSelectDropdownTree';
+import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
+// import {ModellingContext} from "./modellingContext";
+import PropTypes from 'prop-types';
+
+var shortid = require('shortid');
+var {changes_helptext, coefficient_helptext, consumer_helptext, destination_helptext, origin_helptext, product_helptext} = require('./helptexts');
+
+function CustomTooltip({id, children, tooltip}) {
+    return (
+        <OverlayTrigger trigger="click"
+                        overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
+                        delayShow={300}
+                        delayHide={150}
+        >{children}
+        </OverlayTrigger>
+    );
+};
+
+class ScenarioModel extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.MAX_CHANGES = 5;
+
+        this.state = {busy: props.busy, model_details: [], coefficient: 0, selectedConsumerOption: ['FinalConsumption']};
+
+        this.productCompRef = null;
+        this.setProductRef = component => {
+            this.productCompRef = component;
+        };
+        this.consumerCompRef = null;
+        this.setConsumerRef = component => {
+            this.consumerCompRef = component;
+        };
+        this.originCompRef = null;
+        this.setOriginRef = component => {
+            this.originCompRef = component;
+        };
+        this.destCompRef = null;
+        this.setDestRef = component => {
+            this.destCompRef = component;
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({busy: nextProps.busy});
+    }
+
+    render() {
+        return (
+            <React.Fragment>
+                <Row>
+                    <Col>
+                        <div>product<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <ProductFilterableSingleSelectDropdownTree onChange={this.handleProductChange.bind(this)}
+                                                                   value={this.state.selectedProductOption}
+                                                                   ref={this.setProductRef}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Consumed by<CustomTooltip tooltip={consumer_helptext} id="consumer-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <ConsumerFilterableSingleSelectDropdownTree onChange={this.handleConsumerChange.bind(this)}
+                                                                    value={this.state.selectedConsumerOption}
+                                                                    ref={this.setConsumerRef}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Originating from<CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        {/*TODO how should the country list look like ?*/}
+                        <RegionFilterableSingleSelectDropdownTree onChange={this.handleOriginChange.bind(this)}
+                                                                  value={this.state.selectedOriginOption}
+                                                                  ref={this.setOriginRef}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Consumed where<CustomTooltip tooltip={destination_helptext} id="destination-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        {/*TODO how should the country list look like ?*/}
+                        <RegionFilterableSingleSelectDropdownTree onChange={this.handleDestinationChange.bind(this)}
+                                                                  value={this.state.selectedDestinationOption}
+                                                                  ref={this.setDestRef}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Technical Change Coefficient<CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div className="input-group">
+                            <FormControl type="number" value={this.state.coefficient} onChange={this.handleCoefficientChange.bind(this)}/>
+                            <span className="input-group-addon">%</span>
+                        </div>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Button onClick={this.handleAddClick.bind(this)} bsStyle="success" disabled={this.state.selectedProductOption === undefined || this.state.selectedConsumerOption === undefined || this.state.selectedOriginOption === undefined || this.state.selectedDestinationOption === undefined || this.state.coefficient === undefined}>Add change</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Added changes<CustomTooltip tooltip={changes_helptext} id="changes-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <Well>{
+                            this.state.model_details.map(function(model, index) {
+                                return (<div key={shortid.generate()}>
+                                    {index + 1})&nbsp;
+                                    {this.productCompRef.getLabel(model.product)}&raquo;
+                                    {this.consumerCompRef.getLabel(model.consumedBy)}&raquo;
+                                    {this.originCompRef.getLabel(model.originReg)}&raquo;
+                                    {this.destCompRef.getLabel(model.consumedReg)}&raquo;
+                                    {model.techChange}%
+                                </div>)
+                            }.bind(this))
+                        }</Well>
+                    </Col>
+                </Row>
+                <Row>
+                    {/*<ModellingContext.Consumer>*/}
+                        {/*{({saveSettingsCallback, clearSettingsCallback}) => (*/}
+                            {/*<React.Fragment>*/}
+                            <Col lg={6}>
+                                <Button onClick={this.handleSaveClick.bind(this, this.context.saveSettingsCallback)} bsStyle="success" disabled={this.state.model_details.length == 0}>Save settings</Button>
+                            </Col>
+                            <Col lg={6}>
+                                <Button onClick={this.handleClearClick.bind(this, this.context.clearSettingsCallback)} bsStyle="success">Clear settings</Button>
+                            </Col>
+                            {/*</React.Fragment>*/}
+                        {/*)}*/}
+                    {/*</ModellingContext.Consumer>*/}
+                </Row>
+            </React.Fragment>
+        );
+    }
+
+    handleProductChange(value) {
+        this.setState({
+            selectedProductOption: value
+        });
+    }
+
+    handleConsumerChange(value) {
+        this.setState({
+            selectedConsumerOption: value
+        });
+    }
+
+    handleOriginChange(value) {
+        this.setState({
+            selectedOriginOption: value
+        });
+    }
+
+    handleDestinationChange(value) {
+        this.setState({
+            selectedDestinationOption: value
+        });
+    }
+
+    handleCoefficientChange(e) {
+        this.setState({
+            coefficient: e.target.value
+        });
+    }
+
+    handleAddClick() {
+        // make sure for single select dropdown trees the value is presented as an array
+        var product = null;
+        var origin = null;
+        var destination = null;
+        if (!Array.isArray(this.state.selectedProductOption)) {
+            product = [this.state.selectedProductOption];
+        } else {
+            product = this.state.selectedProductOption;
+        }
+        if (!Array.isArray(this.state.selectedOriginOption)) {
+            origin = [this.state.selectedOriginOption];
+        } else {
+            origin = this.state.selectedOriginOption;
+        }
+        if (!Array.isArray(this.state.selectedDestinationOption)) {
+            destination = [this.state.selectedDestinationOption];
+        } else {
+            destination = this.state.selectedDestinationOption;
+        }
+
+        const model_detail = {
+            'product': product,
+            'originReg': origin,
+            'consumedBy': this.state.selectedConsumerOption,
+            'consumedReg': destination,
+            'techChange': [this.state.coefficient]
+        };
+
+        const model_details = Object.assign([], this.state.model_details);
+        model_details.push(model_detail);
+
+        this.setState({model_details: model_details, busy: model_details.length == this.MAX_CHANGES});
+    }
+
+    handleSaveClick(callback) {
+        callback(this.state.model_details);
+    }
+
+    handleClearClick(callback) {
+        this.setState({model_details: []});
+        callback();
+    }
+}
+
+ScenarioModel.contextTypes = {
+    saveSettingsCallback: PropTypes.func,
+    clearSettingsCallback: PropTypes.func
+};
+
+export default ScenarioModel;

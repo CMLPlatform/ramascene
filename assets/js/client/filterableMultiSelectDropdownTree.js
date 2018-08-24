@@ -12,7 +12,11 @@ class FilterableMultiSelectDropdownTree extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({disabled: nextProps.disabled, data: this.state.data, value: nextProps.value, placeholder: this.state.placeholder, callback: this.state.callback, selectablelevel: nextProps.selectablelevel });
+        this.setState({
+            disabled: nextProps.disabled,
+            value: nextProps.value,
+            selectablelevel: nextProps.selectablelevel
+        });
     }
 
     render() {

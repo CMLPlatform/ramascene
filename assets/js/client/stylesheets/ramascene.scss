@@ -3,6 +3,20 @@ $body-bg: #333;
 
 @import '_bootstrap';
 
+h5 {
+  font-weight: bold;
+}
+
+td {
+  .btn {
+    padding: 1px 6px;
+  }
+}
+
+ul {
+  list-style-type: none;
+}
+
 .glyphicon-question-sign {
   color: $brand-info;
 }

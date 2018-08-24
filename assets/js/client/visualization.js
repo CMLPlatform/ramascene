@@ -44,6 +44,7 @@ class Visualization extends Component {
                     type: props.type,
                     sum: sum,
                     unit: unit,
+                    year: props.year,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -76,6 +77,7 @@ class Visualization extends Component {
                     type: props.type,
                     sum: sum,
                     unit: unit,
+                    year: props.year,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
@@ -129,6 +131,7 @@ class Visualization extends Component {
                     type: nextProps.type,
                     sum: sum,
                     unit: unit,
+                    year: nextProps.year,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -160,6 +163,7 @@ class Visualization extends Component {
                     type: nextProps.type,
                     sum: sum,
                     unit: unit,
+                    year: nextProps.year,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
@@ -185,10 +189,10 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge></div>);
+                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{'Year = ' + this.state.year}</Badge></div>);
                 break;
             case 'tree':
-                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge></div>);
+                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{'Year = ' + this.state.year}</Badge></div>);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);

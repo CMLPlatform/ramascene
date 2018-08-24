@@ -42,7 +42,7 @@ class IndicatorFilterableSingleSelectDropdownTree extends FilterableSingleSelect
         for (var indicator of result.data) {
             data.push({id: indicator.Global_id, pId: indicator.Parent_id, value: indicator.Global_id.toString(), label: indicator.Name})
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select indicator", callback: this.state.callback});
+        this.setState({data: data, placeholder: "select indicator"});
     }
 }
 

@@ -9,10 +9,14 @@ import ProductFilterableSingleSelectDropdownTree from './productFilterableSingle
 import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
 import RegionFilterableMultiSelectDropdownTree from './regionFilterableMultiSelectDropdownTree';
 import IndicatorFilterableSingleSelectDropdownTree from './indicatorFilterableSingleSelectDropdownTree';
+import YearFilterableSingleSelectDropdownTree from './yearFilterableSingleSelectDropdownTree';
 import AnalysisJob from './analysisJob';
+import ScenarioModel from "./ScenarioModel";
+// import {ModellingContext} from "./modellingContext";
+import PropTypes from 'prop-types';
 
 var shortid = require('shortid');
-var {perspective_helptext,visualization_helptext,visualization_detail_helptext,region_helptext,product_helptext,indicator_helptext} = require('./helptexts');
+var {perspective_helptext,visualization_helptext,visualization_detail_helptext,year_helptext,region_helptext,product_helptext,indicator_helptext} = require('./helptexts');
 
 function CustomTooltip({id, children, tooltip}) {
     return (
@@ -44,163 +48,91 @@ class App extends Component {
             selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
             selectedVisualizationOption: this.VIZ_TREEMAP,
             selectedVisualizationDetailOption: this.VIZDETAIL_COUNTRY,
+            selectedYearOption: [],
             selectedProductOptions: [],
             selectedRegionOptions: [],
             selectedIndicatorOptions: [],
             selectMultiProduct: true,
             selectMultiRegion: false,
-            busy: false,
-            jobs: []
+            busy: true,
+            jobs: [],
+            model_details: []
         };
     }
 
     handleProductionClicked() {
         this.setState({
-            selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION
         });
     }
 
     handleConsumptionClicked() {
         this.setState({
-            selectedPerspectiveOption: this.PERSPECTIVE_CONSUMPTION,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedPerspectiveOption: this.PERSPECTIVE_CONSUMPTION
         });
     }
 
     handleTreeMapClicked() {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
             selectedVisualizationOption: this.VIZ_TREEMAP,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
             selectedRegionOptions: (Array.isArray(this.state.selectedRegionOptions) ? this.state.selectedRegionOptions.slice(0,1) : this.state.selectedRegionOptions),
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
             selectMultiProduct: true,
-            selectMultiRegion: false,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectMultiRegion: false
         });
     }
 
     handleGeoMapClicked() {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
             selectedVisualizationOption: this.VIZ_GEOMAP,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
             selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
             selectedRegionOptions: [],
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
             selectMultiProduct: false,
-            selectMultiRegion: true,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectMultiRegion: true
         });
     }
 
     handleTotalClicked() {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
             selectedVisualizationDetailOption: this.VIZDETAIL_TOTAL,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: [],
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedRegionOptions: []
         });
     }
 
     handleContinentClicked() {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
             selectedVisualizationDetailOption: this.VIZDETAIL_CONTINENT,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: [],
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedRegionOptions: []
         });
     }
 
     handleCountryClicked() {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
             selectedVisualizationDetailOption: this.VIZDETAIL_COUNTRY,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: [],
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedRegionOptions: []
+        });
+    }
+
+    handleYearChange(value) {
+        this.setState({
+            selectedYearOption: value
         });
     }
 
     handleProductChange(value) {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: value,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedProductOptions: value
         });
     }
 
     handleRegionChange(value) {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: value,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedRegionOptions: value
         });
     }
 
     handleIndicatorChange(value) {
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: value,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
-            jobs: this.state.jobs
+            selectedIndicatorOptions: value
         });
     }
 
@@ -209,6 +141,7 @@ class App extends Component {
         var nodesSec = null;
         var nodesReg = null;
         var extn = null;
+        var year = null;
         if (!Array.isArray(this.state.selectedProductOptions)) {
             nodesSec = [this.state.selectedProductOptions];
         } else {
@@ -225,31 +158,41 @@ class App extends Component {
         } else {
             extn = this.state.selectedIndicatorOptions;
         }
+        if (!Array.isArray(this.state.selectedYearOption)) {
+            year = [this.state.selectedYearOption];
+        } else {
+            year = this.state.selectedYearOption;
+        }
 
         const query = {
             'dimType': this.state.selectedPerspectiveOption,
             'vizType': this.state.selectedVisualizationOption,
             'nodesSec': nodesSec,
             'nodesReg': nodesReg,
-            'extn': extn
+            'extn': extn,
+            'year': year
         };
 
         // this.state.jobs.push(React.createElement(AnalysisJob, {query: query, resultHandler: this.renderVisualization.bind(this), deleteHandler: this.deleteJob.bind(this)}));
 
         const jobs = Object.assign([], this.state.jobs);
-        jobs.push({key: shortid.generate(), query: query, selected: false, auto_render: false, detailLevel: this.state.selectedVisualizationDetailOption});
+        jobs.push({key: shortid.generate(), query: query, in_main_view: false, in_comparison_view: false, auto_render: false, detailLevel: this.state.selectedVisualizationDetailOption});
 
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: (jobs.length == this.MAX_JOB_COUNT),
+            busy: true,
             jobs: jobs
+        });
+    }
+
+    handleModelling() {
+        this.setState({
+            busy: true
+        });
+    }
+
+    handleJobFinished() {
+        this.setState({
+            busy: false
         });
     }
 
@@ -259,40 +202,33 @@ class App extends Component {
             'vizType': this.VIZ_TREEMAP,
             'nodesSec': [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
             'nodesReg': [1],
-            'extn': [1]
+            'extn': [1],
+            'year': [2011]
         };
 
         const jobs = Object.assign([], this.state.jobs);
-        jobs.push({key: shortid.generate(), query: query, selected: false, auto_render: true, detailLevel: this.VIZDETAIL_COUNTRY});
+        jobs.push({key: shortid.generate(), query: query, in_main_view: false, in_comparison_view: false, auto_render: true, detailLevel: this.VIZDETAIL_COUNTRY});
 
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: (jobs.length == this.MAX_JOB_COUNT),
+            busy: true,
             jobs: jobs
         });
     }
 
     renderVisualization(data, unit, key) {
-        // deselect currently selected job
+        // deselect currently in_main_view job
         const current_selected_index = this.state.jobs.findIndex((job) => {
-            return job.selected == true;
+            return job.in_main_view == true;
         });
         const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
-        current_selected_job.selected = false;
+        current_selected_job.in_main_view = false;
 
-        // select newly selected job
+        // select newly in_main_view job
         const index = this.state.jobs.findIndex((job) => {
             return job.key === key;
         });
         const job = Object.assign({}, this.state.jobs[index]);
-        job.selected = true;
+        job.in_main_view = true;
 
         // update jobs array
         const jobs = Object.assign([], this.state.jobs);
@@ -300,15 +236,6 @@ class App extends Component {
         jobs[index] = job;
 
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedVisualizationDetailOption: this.state.selectedVisualizationDetailOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: this.state.busy,
             jobs: jobs
         });
 
@@ -319,7 +246,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -327,31 +254,73 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
         }
     }
 
-    deleteJob(selected, key) {
+    renderComparisonVisualisation(data, unit, key) {
+        // deselect currently in_main_view job
+        const current_selected_index = this.state.jobs.findIndex((job) => {
+            return job.in_comparison_view == true;
+        });
+        const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
+        current_selected_job.in_comparison_view = false;
+
+        // select newly in_main_view job
+        const index = this.state.jobs.findIndex((job) => {
+            return job.key === key;
+        });
+        const job = Object.assign({}, this.state.jobs[index]);
+        job.in_comparison_view = true;
+
+        // update jobs array
+        const jobs = Object.assign([], this.state.jobs);
+        jobs[current_selected_index] = current_selected_job;
+        jobs[index] = job;
+
+        this.setState({
+            jobs: jobs
+        });
+
+        switch (job.query.vizType) {
+            case this.VIZ_TREEMAP:
+                var tree_data = [];
+                Object.keys(data).forEach(function(key) {
+                    const value = data[key];
+                    tree_data.push({id: key, value: value});
+                });
+                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year}/>, document.getElementById('comparison-visualization'));
+                break;
+            case this.VIZ_GEOMAP:
+                var geo_data = [];
+                Object.keys(data).forEach(function (key) {
+                    const value = data[key];
+                    geo_data.push({id: key, value: value});
+                });
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year}/>, document.getElementById('comparison-visualization'));
+                break;
+            default:
+                break;
+        }
+    }
+
+    deleteJob(in_main_view, in_comparison_view, key) {
         // var new_jobs = Object.assign([], this.state.jobs);
         const jobs = this.state.jobs.filter(j => j.key != key);
 
         this.setState({
-            selectedPerspectiveOption: this.state.selectedPerspectiveOption,
-            selectedVisualizationOption: this.state.selectedVisualizationOption,
-            selectedProductOptions: this.state.selectedProductOptions,
-            selectedRegionOptions: this.state.selectedRegionOptions,
-            selectedIndicatorOptions: this.state.selectedIndicatorOptions,
-            selectMultiProduct: this.state.selectMultiProduct,
-            selectMultiRegion: this.state.selectMultiRegion,
-            busy: (jobs.length == this.MAX_JOB_COUNT),
             jobs: jobs
         });
 
-        if (selected) {
+        if (in_main_view) {
             unmountComponentAtNode(document.getElementById('visualization'));
+        }
+
+        if (in_comparison_view) {
+            unmountComponentAtNode(document.getElementById('comparison-visualization'));
         }
     }
 
@@ -392,10 +361,10 @@ class App extends Component {
                                             <ButtonGroup>
                                                 <Button onClick={this.handleProductionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_PRODUCTION}
-                                                        disabled={this.state.busy}>Production</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Production</Button>
                                                 <Button onClick={this.handleConsumptionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_CONSUMPTION}
-                                                        disabled={this.state.busy}>Final Consumption</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Final Consumption</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
@@ -405,10 +374,10 @@ class App extends Component {
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTreeMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_TREEMAP}
-                                                        disabled={this.state.busy}>TreeMap</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>TreeMap</Button>
                                                 <Button onClick={this.handleGeoMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_GEOMAP}
-                                                        disabled={this.state.busy}>GeoMap</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>GeoMap</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
@@ -419,29 +388,38 @@ class App extends Component {
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTotalClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
-                                                        disabled={this.state.busy}>Total</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Total</Button>
                                                 <Button onClick={this.handleContinentClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT}
-                                                        disabled={this.state.busy}>Continent</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Continent</Button>
                                                 <Button onClick={this.handleCountryClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY}
-                                                        disabled={this.state.busy}>Country</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Country</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
                                     }
                                     <Row>
+                                        <Col>
+                                            <div>Year<CustomTooltip tooltip={year_helptext} id="year-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <YearFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
+                                                                                    onChange={this.handleYearChange.bind(this)}
+                                                                                    value={this.state.selectedYearOption}
+                                            />
+                                        </Col>
+                                    </Row>
+                                    <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
                                             <div>{this.state.selectMultiRegion ? 'select multiple regions' : 'select a single region'}<CustomTooltip tooltip={region_helptext} id="region-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {!this.state.selectMultiRegion &&
-                                                <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy}
+                                                <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                           onChange={this.handleRegionChange.bind(this)}
                                                                                           value={this.state.selectedRegionOptions}
                                                 />
                                             }
                                             {this.state.selectMultiRegion &&
-                                                <RegionFilterableMultiSelectDropdownTree disabled={this.state.busy}
+                                                <RegionFilterableMultiSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                          onChange={this.handleRegionChange.bind(this)}
                                                                                          value={this.state.selectedRegionOptions}
                                                                                          selectablelevel={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY ? 3 : selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT ? 2 : 1}
@@ -455,13 +433,13 @@ class App extends Component {
                                         <Col>
                                             <div>{this.state.selectMultiProduct ? 'select multiple products' : 'select a single product'}<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {this.state.selectMultiProduct &&
-                                            <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy}
+                                            <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                       onChange={this.handleProductChange.bind(this)}
                                                                                       value={this.state.selectedProductOptions}
                                             />
                                             }
                                             {!this.state.selectMultiProduct &&
-                                            <ProductFilterableSingleSelectDropdownTree disabled={this.state.busy}
+                                            <ProductFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                        onChange={this.handleProductChange.bind(this)}
                                                                                        value={this.state.selectedProductOptions}
                                             />
@@ -471,7 +449,7 @@ class App extends Component {
                                     <Row>
                                         <Col>
                                             <div>Indicator<CustomTooltip tooltip={indicator_helptext} id="indicator-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
-                                            <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy}
+                                            <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                         onChange={this.handleIndicatorChange.bind(this)}
                                                                                         value={this.state.selectedIndicatorOptions}
                                             />
@@ -479,13 +457,13 @@ class App extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Button bsStyle="success" onClick={this.handleAnalyse.bind(this)} disabled={this.state.busy || this.state.selectedProductOptions === undefined || this.state.selectedProductOptions.length <= 0 || this.state.selectedRegionOptions === undefined || this.state.selectedRegionOptions.length <= 0 || this.state.selectedIndicatorOptions === undefined || this.state.selectedIndicatorOptions.length <= 0}><Glyphicon glyph={this.state.busy ? 'hourglass' : 'play'}/>&nbsp;Analyse</Button>
+                                            <Button bsStyle="success" onClick={this.handleAnalyse.bind(this)} disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT || this.state.selectedProductOptions === undefined || this.state.selectedProductOptions.length <= 0 || this.state.selectedRegionOptions === undefined || this.state.selectedRegionOptions.length <= 0 || this.state.selectedIndicatorOptions === undefined || this.state.selectedIndicatorOptions.length <= 0}><Glyphicon glyph={this.state.busy ? 'hourglass' : 'play'}/>&nbsp;Analyse</Button>
                                         </Col>
                                     </Row>
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel>
+                        <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Scenario Modelling
@@ -493,7 +471,12 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
-                                    Not yet implemented
+                                    {/*<ModellingContext.Provider value={{*/}
+                                        {/*saveSettingsCallback: this.saveModellingSettings.bind(this),*/}
+                                        {/*clearSettingsCallback: this.clearModellingSettings.bind(this)*/}
+                                    {/*}}>*/}
+                                        <ScenarioModel busy={this.state.busy}/>
+                                    {/*</ModellingContext.Provider>*/}
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
@@ -513,10 +496,19 @@ class App extends Component {
                     <Col sm={6} md={6} lg={6}>
                         <Panel>
                             <Panel.Heading>
-                                <Panel.Title>View</Panel.Title>
+                                <Panel.Title>Main View</Panel.Title>
                             </Panel.Heading>
                             <Panel.Body>
                                 <div id="visualization"></div>
+                                <sub className="pull-right">EXIOBASE v3.3. data</sub>
+                            </Panel.Body>
+                        </Panel>
+                        <Panel>
+                            <Panel.Heading>
+                                <Panel.Title>Comparison View</Panel.Title>
+                            </Panel.Heading>
+                            <Panel.Body>
+                                <div id="comparison-visualization"></div>
                                 <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
                         </Panel>
@@ -530,12 +522,26 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
+                                    {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M symbol if you are ready to model</Alert>}
                                     <Table striped condensed hover>
                                         <tbody>
                                         {
                                             this.state.jobs.map(function(job) {
                                                 // we cannot pass key to props, but we must use another property name e.g. id
-                                                return (<AnalysisJob key={job.key} id={job.key} query={job.query} selected={job.selected} auto_render={job.auto_render} detailLevel={job.detailLevel} resultHandler={this.renderVisualization.bind(this)} deleteHandler={this.deleteJob.bind(this)} />)
+                                                return (<AnalysisJob key={job.key}
+                                                                     busy={this.state.busy}
+                                                                     id={job.key}
+                                                                     query={job.query}
+                                                                     in_main_view={job.in_main_view}
+                                                                     in_comparison_view={job.in_comparison_view}
+                                                                     auto_render={job.auto_render}
+                                                                     detailLevel={job.detailLevel}
+                                                                     finishHandler={this.handleJobFinished.bind(this)}
+                                                                     resultHandler={this.renderVisualization.bind(this)}
+                                                                     comparisonHandler={this.renderComparisonVisualisation.bind(this)}
+                                                                     deleteHandler={this.deleteJob.bind(this)}
+                                                                     startModellingHandler={this.handleModelling.bind(this)} />)
+
                                             }.bind(this))
                                         }
                                         </tbody>
@@ -551,7 +557,39 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
-                                    Not yet implemented
+                                    <h5>Didactics</h5>
+                                    <ul>
+                                        <li>Manual</li>
+                                        <li>Excercises</li>
+                                        <li>Slides</li>
+                                        <li>Join the class</li>
+                                        <li>Additional courses</li>
+                                    </ul>
+                                    <h5>Raw Materials Information System</h5>
+                                    <ul>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Policy & Legislation</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Terminology & Library</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Critical Raw Materials (CRM)</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Raw Materials Monitoring & Indicators</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Secondary Raw Materials & Circular Economy</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Industry & Innovation</a></li>
+                                        <li><a href="http://rmis.jrc.ec.europa.eu/">Raw Materials Knowledge Gateway</a></li>
+                                    </ul>
+                                    <h5>Other resources</h5>
+                                    <ul>
+                                        <li><a href="https://www.exiobase.eu/">EXIOBASE</a></li>
+                                        <li><a href="https://cml.liacs.nl/exiovisuals/">EXIOVISUALS</a></li>
+                                        <li><a href="https://atlas.media.mit.edu/en/visualize/tree_map/hs92/export/nga/all/show/2016/">Observatory of Economic Complexity</a></li>
+                                        <li><a href="https://ielab.info/">Industrial Ecology Virtual Laboratory</a></li>
+                                        <li><a href="http://tool.globalcalculator.org">The Global Calculator</a></li>
+                                        <li><a href="https://ejatlas.org/">Environmental Justice Atlas</a></li>
+                                        <li><a href="https://trase.earth/?lang=en">TRASE</a></li>
+                                        <li><a href="http://www.ecolizer.be/">Ecolizer</a></li>
+                                        <li><a href="https://www.environmentalfootprints.org/infographics#">Environmental Footprint Explorer</a></li>
+                                        <li><a href="https://resourcetrade.earth/">Resource Trade</a></li>
+                                        <li><a href="https://resourcewatch.org/data/explore">Resource Watch</a></li>
+                                        <li><a href="http://data.footprintnetwork.org/">Data Footprint Network</a></li>
+                                    </ul>
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
@@ -572,6 +610,28 @@ class App extends Component {
             </Grid>
         );
     }
+
+    getChildContext() {
+        return {
+            model_details: this.state.model_details,
+            saveSettingsCallback: this.saveModellingSettings.bind(this),
+            clearSettingsCallback: this.clearModellingSettings.bind(this)
+        };
+    }
+
+    saveModellingSettings(model_details) {
+        this.setState({model_details: model_details});
+    }
+
+    clearModellingSettings() {
+        this.setState({model_details: []});
+    }
 }
+
+App.childContextTypes = {
+    model_details: PropTypes.array,
+    saveSettingsCallback: PropTypes.func,
+    clearSettingsCallback: PropTypes.func
+};
 
 render(<App />, document.getElementById('container'));

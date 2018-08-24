@@ -1,6 +1,12 @@
 export const perspective_helptext = "<h4>Selecting your perspective</h4><br>To be implemented..</br>";
 export const visualization_helptext = "<h4>Selecting a visualization</h4><br>To be implemented..</br>";
 export const visualization_detail_helptext = "<h4>Visualization detail</h4><br>To be implemented..</br>";
+export const year_helptext = "<h4>Year</h4><br>To be implemented..</br>";
 export const region_helptext = "<h4>Selecting your region(s)</h4><br>To be implemented..</br>";
 export const product_helptext = "<h4>Selecting your product(s)</h4><br>To be implemented..</br>";
 export const indicator_helptext = "<h4>Selecting your indicator</h4><br>To be implemented..</br>";
+export const consumer_helptext = "<h4>Consumer</h4><br>To be implemented..</br>";
+export const origin_helptext = "<h4>Originating from</h4><br>To be implemented..</br>";
+export const destination_helptext = "<h4>Consumed where</h4><br>To be implemented..</br>";
+export const coefficient_helptext = "<h4>Technical Change Coefficient</h4><br>To be implemented..</br>";
+export const changes_helptext = "<h4>Added changes</h4><br>To be implemented..</br>";

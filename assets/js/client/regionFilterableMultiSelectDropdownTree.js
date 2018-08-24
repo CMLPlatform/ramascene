@@ -84,7 +84,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
             // data.push({id: region.Global_id, pId: region.Parent_id, value: {global_id: region.Global_id, parent_id: region.Parent_id}, label: region.Name});
             data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id.toString(), label: region.Name, level: region.Level});
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select region(s)", callback: this.state.callback, selectablelevel: this.state.selectablelevel});
+        this.setState({data: data, placeholder: "select region(s)"});
     }
 }
 

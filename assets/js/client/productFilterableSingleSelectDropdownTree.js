@@ -41,7 +41,14 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
         for (var product of result.data) {
             data.push({id: product.Global_id, pId: product.Parent_Id, value: product.Global_id.toString(), label: product.Name});
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select product", callback: this.state.callback});
+        this.setState({data: data, placeholder: "select product"});
+    }
+
+    getLabel(value) {
+        var product = this.state.data.find(function(product) {
+            return product.value == value;
+        });
+        return product.label;
     }
 }
 

@@ -12,7 +12,10 @@ class FilterableSingleSelectDropdownTree extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({disabled: nextProps.disabled, data: this.state.data, value: nextProps.value, placeholder: this.state.placeholder, callback: this.state.callback });
+        this.setState({
+            disabled: nextProps.disabled,
+            value: nextProps.value
+        });
     }
 
     render() {

@@ -41,7 +41,14 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
         for (var region of result.data) {
             data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id.toString(), label: region.Name});
         }
-        this.setState({disabled: this.state.disabled, data: data, value: this.state.value, placeholder: "select region", callback: this.state.callback});
+        this.setState({data: data, placeholder: "select region"});
+    }
+
+    getLabel(value) {
+        var region = this.state.data.find(function(region) {
+            return region.value == value;
+        });
+        return region.label;
     }
 }
 
