@@ -37,29 +37,25 @@ class RamasceneConsumer(AsyncConsumer):
         try:
             data = json.loads(event['text'])
             # if action message from front-end is inside payload
-            if data["action"] == "default" or data["action"] == "model" or data["action"] == "start_calc":
+            if data["action"] == "default" or data["action"] == "model":
+                print(data)
 
                 # get query
                 query_selection = data["querySelection"]
-                # TODO remove temporary year setting after fron-end update and then use the year query selection
-                # get year
-                if not 'year' in query_selection.keys():
-                    year = 2011
-                    query_selection.update({"year": year})
-                else:
-                    # TODO this piece of code should not be removed after the front-end update
-                    # as we always get an array, we need to get the first value from the query,
-                    # In future "actions" this might differ and we allow multiple years or multiple indicators
-                    year = query_selection["year"][0]
-                    # update the query_selection to only contain a single value
-                    query_selection.update({'year': year})
+
+                # as we always get an array from the API, we need to get the first value from the query,
+                # In future versions this might differ and we allow multiple years or multiple indicators
+                year = int(query_selection["year"][0])
+                # update the query_selection to only contain a single value
+                query_selection.update({'year': year})
+
                 info_query_selection = query_selection.copy()
                 ready_query_selection = query_selection.copy()
 
                 if data["action"] == "model":
                     model_details = (data["model_details"])
                     # update the original year selected with a .1 so we can differentiate with model year
-                    model_year = year + .1
+                    model_year = "model year"
                     origin_regions = []
                     consumed_regions = []
                     products = []
@@ -81,6 +77,7 @@ class RamasceneConsumer(AsyncConsumer):
                                                  'year':model_year})
                     # as the full data object is not send to Celery, insert model_details into the queryseleciton
                     query_selection.update({'model_details': model_details})
+
                 # clean query for info or alternatively said job_name
                 names_products = querymanagement.get_names_product(query_selection["nodesSec"])
                 names_countries = querymanagement.get_names_country(query_selection["nodesReg"])

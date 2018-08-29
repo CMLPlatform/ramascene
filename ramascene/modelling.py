@@ -18,6 +18,7 @@ class Modelling:
         self.Y = self.Y_data.copy()
         self.L = self.L_data.copy()
 
+
         # loop over the different interventions, such that we can apply changes individually
         Y_modified = False
         L_modified = False
@@ -27,11 +28,11 @@ class Modelling:
             country_idx = np.arange(0, 49)
 
             product = intervention["product"]
-
-            consuming_cat = intervention["consumedBy"]  # old model perspective
+            consuming_cat = intervention["consumedBy"]
             origin_reg = intervention["originReg"]
             consumed_reg = intervention["consumedReg"]
             tech_change = intervention["techChange"]
+
             # get calculation ready indices
             calc_ready_product = querymanagement.get_leafs_product(product)
             calc_ready_origin_reg = querymanagement.get_leafs_country(origin_reg)
@@ -42,35 +43,27 @@ class Modelling:
             calc_ready_origin_reg = querymanagement.convert_to_numpy(calc_ready_origin_reg)
             calc_ready_consumed_reg = querymanagement.convert_to_numpy(calc_ready_consumed_reg)
 
+            # TODO after front-end change, we don't need to explicitly get the first element out of the list
+            if isinstance(consuming_cat, (list,)):
+                consuming_cat = consuming_cat[0]
+
             if consuming_cat == "FinalConsumption":
                 # identify local coordinates
                 ids = pim.ProductIndexManager(product_idx,
                                               country_idx,
                                               calc_ready_product,
                                               calc_ready_origin_reg)
-
                 rows = ids.get_consumed_product_ids()
                 columns = calc_ready_consumed_reg
+
+
                 self.Y = self.model_final_demand(self.Y, rows, columns, tech_change)
 
                 Y_modified = True
 
             elif consuming_cat != "FinalConsumption":
                 # do not do anything yet as it fails at the moment
-                '''
-                # get calculation ready indices
-                calc_ready_consumed_by = querymanagement.get_leafs_product(consuming_cat)
-                # convert to numpy arrays
-                calc_ready_consumed_by = querymanagement.convert_to_numpy(calc_ready_consumed_by)
-                # identify local coordinates
-
-                ids = pim.ProductIndexManager(calc_ready_consumed_by, calc_ready_consumed_reg, calc_ready_product,
-                                              calc_ready_origin_reg)
-
-                rows = ids.get_consumed_product_ids()
-                columns = ids.get_produced_product_ids()
-                self.L = self.model_intermediates(self.L, rows, columns, tech_change)  # previously name Y
-                '''
+                # TODO
                 L_modified = True
 
         if Y_modified is True:
@@ -85,18 +78,18 @@ class Modelling:
 
         return self.Y, self.L
 
-    def model_final_demand(self, Y, rows, columns, tech_change):
+    @staticmethod
+    def model_final_demand(Y, rows, columns, tech_change):
         """
         It allows for modification of values within final demand
         for scenario building
         """
         Y = Y.copy()
-
-        Y[np.ix_(rows, columns)] = Y[np.ix_(rows, columns)] * (1 - -tech_change[0] * 1e-2)
-
+        Y[np.ix_(rows, columns)] = Y[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
         return Y
 
-    def model_intermediates(self, L, rows, columns, tech_change):
+    @staticmethod
+    def model_intermediates(L, rows, columns, tech_change):
         """
         It allows for modification of values within intermediates
         for scenario building

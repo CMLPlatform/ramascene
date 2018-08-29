@@ -103,7 +103,7 @@ Check status of nginx:
 ``sudo nginx -t``
 
 Allow Nginx to interact with the host machine on the network:
-``sudo ufw allow �Nginx Full�``
+``sudo ufw allow ‘Nginx Full’``
 
 
 
