@@ -56,7 +56,7 @@ WEBPACK_LOADER = {
 }
 
 #path to datasets directory
-DATASET_DIR = 'path to datasets directory'
+DATASET_DIR = os.environment.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\rawData')
 #name of numpy objects for timeseries
 NAME_L = 'L_v3.npy'
 NAME_B = 'B_v3.npy'
