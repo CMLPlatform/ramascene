@@ -56,7 +56,7 @@ WEBPACK_LOADER = {
 }
 
 #path to datasets directory
-DATASET_DIR = os.environment.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\rawData')
+DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\rawData')
 #name of numpy objects for timeseries
 NAME_L = 'L_v3.npy'
 NAME_B = 'B_v3.npy'
@@ -110,7 +110,7 @@ ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 REDIS_FOR_CELERY = True
 BROKER_URL = 'redis://localhost:6379/0'  # our redis address
 #CELERY_BROKER_URL = 'amqp://localhost'#
-CELERY_BROKER_URL = os.environment.get('BROKER_URL', 'redis://localhost:6379/1')
+CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'redis://localhost:6379/1')
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
