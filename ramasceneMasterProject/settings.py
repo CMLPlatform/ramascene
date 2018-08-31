@@ -104,18 +104,15 @@ CHANNEL_LAYERS = {
 # ASGI_APPLICATION should be set to your outermost router
 ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 
-
-
 # Celery settings
-REDIS_FOR_CELERY = True
-BROKER_URL = 'redis://localhost:6379/0'  # our redis address
-#CELERY_BROKER_URL = 'amqp://localhost'#
-CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'redis://localhost:6379/1')
+CELERY_BROKER_URL = 'amqp://localhost' # rabbitmq message broker address
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
+# as the calculations are CPU and MEM intensive, enforce a new worker after a task is finished to release memory
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
