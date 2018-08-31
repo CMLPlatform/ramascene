@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from ramascene.models import Country, Product, Indicator
 
+import os
 import sys
-
-
-
 
 class Command(BaseCommand):
     """
@@ -12,9 +11,10 @@ class Command(BaseCommand):
     """
     def handle(self, *args, **options):
         try:
-            indicatorData = getfile('python_ini/data/mod_indicators.csv')
-            countryData = getfile('python_ini/data/mod_final_countryTree_exiovisuals.csv')
-            productData = getfile('python_ini/data/mod_final_productTree_exiovisuals.csv')
+            project_root_dir = settings.BASE_DIR
+            indicatorData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_indicators.csv'))
+            countryData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_countryTree_exiovisuals.csv'))
+            productData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_productTree_exiovisuals.csv'))
 
             populate(indicatorData, "Indicator")
             populate(countryData, "Country")
