@@ -72,7 +72,7 @@ SECRET_KEY = ramasceneMasterProject.settings_secret.SECRET_KEY
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['ramascene-staging.local', '127.0.0.1']
 
 
 # Application definition
@@ -110,7 +110,7 @@ ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 REDIS_FOR_CELERY = True
 BROKER_URL = 'redis://localhost:6379/0'  # our redis address
 #CELERY_BROKER_URL = 'amqp://localhost'#
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = os.environment.get('BROKER_URL', 'redis://localhost:6379/1')
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
