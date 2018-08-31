@@ -3,8 +3,9 @@ import numpy as np
 import math
 
 """
-Supporting  file  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
+Supporting  module  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
 """
+
 
 def get_leafs_product(product_global_ids):
     """    Returns the leaf nodes of a given global id
@@ -35,6 +36,8 @@ def get_leafs_product(product_global_ids):
     # flatten lists
     product_calc_indices = [item for sublist in product_calc_indices for item in sublist]
     return product_calc_indices
+
+
 def get_leafs_country(country_global_ids):
     """    Returns the leaf nodes of a given global id
 
@@ -65,6 +68,7 @@ def get_leafs_country(country_global_ids):
     country_calc_indices = [item for sublist in country_calc_indices for item in sublist]
     return country_calc_indices
 
+
 def get_calc_names_product(prod_result_data):
     """Get name of products.
 
@@ -84,6 +88,7 @@ def get_calc_names_product(prod_result_data):
         product_name = (Product.objects.values_list('name', flat=True).get(global_id=key))
         product_result_named[product_name] = value
     return product_result_named
+
 
 def get_calc_names_country(country_result_data):
     """Get name of countries.
@@ -105,6 +110,7 @@ def get_calc_names_country(country_result_data):
         country_result_named[country_name] = value
     return country_result_named
 
+
 def get_names_product(prod_ids):
     """Get name of products
 
@@ -122,6 +128,7 @@ def get_names_product(prod_ids):
         prod_name = (Product.objects.values_list('name', flat=True).get(global_id=prod))
         prod_names.append(prod_name)
     return prod_names
+
 
 def get_names_country(country_ids):
     """Get name of countries
@@ -141,6 +148,7 @@ def get_names_country(country_ids):
         country_names.append(country_name)
     return country_names
 
+
 def get_names_indicator(indicator_ids):
     """Get name of indicators
 
@@ -159,6 +167,7 @@ def get_names_indicator(indicator_ids):
         indicator_name = (Indicator.objects.values_list('name', flat=True).get(global_id=indicator))
         indicator_names.append(indicator_name)
     return indicator_names
+
 
 def get_aggregations_countries(querySelection, result_data):
     """Sum to construct aggregates results for countries.
@@ -208,6 +217,7 @@ def get_aggregations_countries(querySelection, result_data):
 
     return result_container
 
+
 def get_aggregations_products(querySelection, result_data):
     """Sum to construct aggregates results for products.
 
@@ -255,6 +265,7 @@ def get_aggregations_products(querySelection, result_data):
             result_container[global_product_id] = tmp_agg_result
     return result_container
 
+
 def identify_product(prod_id):
     """Helper function.
 
@@ -270,6 +281,7 @@ def identify_product(prod_id):
     prod_identifier = (Product.objects.values_list('identifier', flat=True).get(global_id=prod_id))
     return prod_identifier
 
+
 def identify_country(country_id):
     """Helper function.
 
@@ -284,6 +296,7 @@ def identify_country(country_id):
     """
     reg_identifier = (Country.objects.values_list('identifier', flat=True).get(global_id=country_id))
     return reg_identifier
+
 
 def clean_local_leafs(a_list):
     """Clean data as preprocessing step for calculation.
@@ -302,6 +315,7 @@ def clean_local_leafs(a_list):
     #convert that list to a list of integers
     a_list = list(map(int, a_list))
     return a_list
+
 
 def clean_single_leafs(leaf, OFFSET):
     """Clean data as preprocessing step for calculation.
@@ -322,6 +336,7 @@ def clean_single_leafs(leaf, OFFSET):
     sm_tmp_list.append(leaf)
     return sm_tmp_list
 
+
 def clean_indicators(idx_lst):
     """Clean data as preprocessing step for calculation.
 
@@ -340,6 +355,27 @@ def clean_indicators(idx_lst):
         i = int(ind) + OFFSET
         return_lst.append(i)
     return return_lst
+
+
+def get_indicator_units(idx_lst):
+    """Get units of passed-in indicators.
+
+        Can be multiple or single units depending on the API implementation version
+
+        Args:
+            idx_lst (list): indicators
+
+        Returns:
+            dict: key/value pair name of indicator and corresponding unit
+
+    """
+    idx_units = {}
+    for idx in idx_lst:
+        idx_unit = (Indicator.objects.values_list('unit', flat=True).get(global_id=idx))
+        idx_name = (Indicator.objects.values_list('name', flat=True).get(global_id=idx))
+        idx_units[idx_name] = idx_unit
+    return idx_units
+
 
 def convert_to_numpy(list_obj):
     """Clean data as preprocessing step for calculation.

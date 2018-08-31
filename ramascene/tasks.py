@@ -7,7 +7,6 @@ import numpy as np
 from asgiref.sync import AsyncToSync
 from celery import shared_task
 from ramascene import querymanagement
-from ramascene.models import Indicator
 from ramascene.analyze import Analyze
 from ramascene.modelling import Modelling
 import os
@@ -78,23 +77,12 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
     """
     # load in the numpy objects
     Y_data, B_data, L_data = get_numpy_objects(query_selection["year"])
-    # retrieve calculation ready indices
-    product_calc_indices = ready_query_selection["nodesSec"]
-    country_calc_indices = ready_query_selection["nodesReg"]
-    indicator_calc_indices = ready_query_selection["extn"]
 
-    # retrieve the units on which the calculation is based
-    indicators = query_selection["extn"]
-    idx_units = {}
-    for idx in indicators:
-        idx_unit = (Indicator.objects.values_list('unit', flat=True).get(global_id=idx))
-        idx_name = (Indicator.objects.values_list('name', flat=True).get(global_id=idx))
-        idx_units[idx_name] = idx_unit
-
-    # sort and convert to numpy array
-    product_calc_indices = querymanagement.convert_to_numpy(product_calc_indices)
-    country_calc_indices = querymanagement.convert_to_numpy(country_calc_indices)
-    indicator_calc_indices = querymanagement.convert_to_numpy(indicator_calc_indices)
+    # retrieve calculation and indicator ready indices and sort and convert to numpy array
+    product_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["nodesSec"])
+    country_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["nodesReg"])
+    indicator_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["extn"])
+    idx_units = ready_query_selection["idx_units"]
 
     # set constant for country selling product ("total")
     s_country_idx = np.arange(0, 49)
@@ -205,7 +193,7 @@ def handle_complete(job_id, channel_name, celery_id):
 
 def get_numpy_objects(year):
     """
-    Retrieve timeseries numpy objects.
+    Retrieve numpy objects per year.
     """
     location = os.path.join(DATASET_DIR, '') + os.path.join(str(year), '')
     Y = np.load(location + os.path.join(NAME_Y))
