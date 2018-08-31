@@ -19,6 +19,10 @@ set :systemd_unit, -> { "sas-gunicorn-#{fetch :application}"}
 
 set :flask, false
 
+set :migration_role, :app
+set :assets_roles, [:app]
+set :yarn_roles, [:app] # In case you use the yarn package manager
+
 after 'deploy:publishing', 'deploy:restart'
 
 # Default branch is :master
@@ -54,3 +58,28 @@ after 'deploy:publishing', 'deploy:restart'
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+namespace :django do
+  task :setup do
+    if fetch(:django_compressor)
+      invoke 'django:compress'
+    end
+    invoke 'django:compilemessages'
+    invoke 'django:collectstatic'
+    invoke 'django:symlink_settings'
+    if !fetch(:nginx)
+      invoke 'django:symlink_wsgi'
+    end
+    invoke 'django:makemigrations'
+    invoke 'django:migrate'
+    invoke 'django:populateHierarchies'
+  end
+
+  task :makemigrations do
+    django("makemigrations", "--noinput", run_on=:web)
+  end
+
+  task :populateHierarchies do
+    django("populateHierarchies", "", run_on=:web)
+  end
+end
