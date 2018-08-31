@@ -32,10 +32,26 @@ $sudo apt-get install nodejs
 ```
 > Note: On debian apt install nodejs-legacy
 
-### Install redis
+### Install redis (for Django Channels)
 ```
 $sudo apt install redis-server
 ```
+
+### Install rabbitMQ (for Celery)
+
+``sudo apt-get install -y erlang``
+
+``sudo apt-get install rabbitmq-server``
+
+Then enable and start the RabbitMQ service:
+
+``systemctl enable rabbitmq-server``
+
+``systemctl start rabbitmq-server``
+
+Check the status to make sure everything is running:
+``systemctl status rabbitmq-server``
+
 
 > Note: Perform all next steps in the virtualenv and in the rootfolder of the project
 
@@ -64,7 +80,6 @@ $./node_modules/.bin/webpack --config webpack.config.js
 ```
 $celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default
 ```
-> Note: The concurrency value can be tweaked
 
 ### Start the development server
 ```
@@ -75,4 +90,4 @@ Access the app via the webrowser: http://127.0.0.1:8000/ramascene/
 
 # Core dependencies
 ---
-The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.0.2] (https://channels.readthedocs.io/en/latest/) and React [16.2.0] (https://reactjs.org/)
+The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.1.3] (https://channels.readthedocs.io/en/latest/)

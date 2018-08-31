@@ -12,8 +12,8 @@ The web-application deployment process is based on the following documentations 
 
 It is advised to read these guides. See the next sections for an example to get started quickly.
 
-Install Redis [message broker]
-==============================
+Install Redis [message broker] for Django Channels websocket support
+====================================================================
 
 Install redis:
 ``sudo apt-get install redis-server``
@@ -105,10 +105,62 @@ Check status of nginx:
 Allow Nginx to interact with the host machine on the network:
 ``sudo ufw allow ‘Nginx Full’``
 
+Celery details and testing results
+==================================
+Celery is used to delegate long lasting CPU jobs and heavy memory usage for performing IO calculations on the fly.
+In this project the message broker rabbitMQ is used. Each user performing a request for calculation
+is set in the queue and that task is handled when ready by the Celery consumer.
+
+Installing the rabbitMQ broker:
+
+``sudo apt-get install -y erlang``
+
+``sudo apt-get install rabbitmq-server``
+
+Then enable and start the RabbitMQ service:
+
+``systemctl enable rabbitmq-server``
+
+``systemctl start rabbitmq-server``
+
+Check the status to make sure everything is running:
+``systemctl status rabbitmq-server``
+
+The Django settings.py is already configured for rabbitMQ use, you can modify the settings if deemed necessary.
+
+Celery CPU use limit:
+
+Each Celery worker spawns a number of child processes and these processes use as much memory as it needs.
+The first limit is setting the concurrency to 1 which only spawns 1 child process per worker, hence limiting the CPU
+use of the system. Concurrency set to 1 follows a first in first out principle for users, if concurrency is increased
+the server's resources (CPU) are more extensively used and Celery could handle requests simultaneously. We have for
+the RaMa-Scene v0.2 only one single worker for default calculations and modeling final demand.
+
+*Note : If some modeling features take more time, a separate worker is needed such that users don't wait in line too long for a user that requests a long lasting modeling calculation.*
+
+Celery MEM limit:
+
+Loading numpy objects over different years can causes severe memory use if Python doesn't release memory
+after a calculation is finished.
+The common idea is that Python does garbage collection and frees up memory once finished.
+However during testing it became apparent that memory wasn't released,
+refer to https://github.com/celery/celery/issues/3339. The next setting implemented
+was to limit the number of task handled per child process. If set to 1 a new worker has to be spawned if a tasks is
+finished, enforcing the release of memory.
+
+*Note: the original Redis broker resulted in bugs when setting the max number of tasks per child, hence a change to the message broker rabbitMQ was used for Celery.*
+
+Test results, short overview:
+
+The longest calculation route was tested with the following query: "TreeMap, Consumption view, Total products, Total regions".
+On average the task takes 8 seconds. If 16 users do a call simultaneously the last user had to wait approx. 2 minutes.
+For 32 users we found similar behaviour, in which the last user had to wait approx. 5 minutes.
+
+*note: this excludes testing for modeling final demand.*
 
 
-Setting up Daphne and Celery
-============================
+Testing the application
+=======================
 Make sure Daphne is installed and start daphne (in virtualenv):
 
 ``daphne -b 0.0.0.0 -p 8001 ramasceneMasterProject.asgi:application``
@@ -117,7 +169,7 @@ Start Celery in virtual env.:
 
 ``celery -A ramasceneMasterProject worker -l info  --concurrency=1 --queue calc_default``
 
-Be careful with load if you raise concurrency.
+Be careful with load if you raise concurrency. For final production setup remove the parameter -l info.
 
 Test the application to see if everything is running correct in a web-browser.
 
@@ -133,10 +185,3 @@ Cron can be used to clear the database results on a regular basis, see example b
 #delete database contents at 5 a.m on every sunday
 ``0 5 * * 0 cd /<path-pr-root>/ && /<path-to-virtual-env>/bin/python /<path-pr-root>/manage.py clear_models``
 
-
-RaMa-Scene memory usage
-=======================
-
-The memory usage of a single query denoting the memory load of numpy objects of a given year is approximately 1.8G.
-Meaning that if we set concurrency to 2 the load can be at least 3.6G. Hence a capable server is needed with sufficient
-memory and CPU to run this application.
