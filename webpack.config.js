@@ -3,9 +3,9 @@ var path = require('path');
 var webpack = require('webpack');
 const { resolve } = require('path');
 var BundleTracker = require('webpack-bundle-tracker');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const APP_DIR = resolve(__dirname, 'assets/js/client');
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = env => {
   return {
@@ -43,6 +43,8 @@ module.exports = env => {
     new webpack.DefinePlugin({
                 'WEBSOCKET_URL': '"ws://127.0.0.1:8000/ramascene/"',
                 'AJAX_URL': '"http://127.0.0.1:8000/ajaxhandling/"'
+                // 'WEBSOCKET_URL': '"ws://cml.liacs.nl:8080/ramascene/"',
+                // 'AJAX_URL': '"http://cml.liacs.nl:8080/ajaxhandling/"'
             })
   ],
 
