@@ -11,7 +11,7 @@ set :wsgi_file, "ramasceneMasterProject.wsgi"
 set :wsgi_path, "#{fetch(:django_settings_dir)}"
 set :wsgi_file_name, "wsgi.py"
 
-append :linked_dirs, 'log', 'datasets', 'assets/bundles', 'node_modules'
+append :linked_dirs, 'log', 'datasets'
 
 set :systemd_use_sudo, true
 set :systemd_roles, %w(web)
@@ -23,6 +23,7 @@ set :webpack, true
 set :migration_role, :web
 set :assets_roles, [:web]
 set :yarn_roles, [:web] # In case you use the yarn package manager
+set :yarn_flags, '--production=false --silent --no-progress'
 
 after 'deploy:publishing', 'deploy:restart'
 
@@ -90,7 +91,7 @@ after 'yarn:install', 'webpack:setup'
 namespace :webpack do
   def webpack(args, flags="", run_on=:all)
     on roles(run_on) do |h|
-      execute "#{shared_path}/node_modules/.bin/webpack #{args}"
+      execute "#{release_path}/node_modules/.bin/webpack #{args}"
     end
   end
 
@@ -101,6 +102,6 @@ namespace :webpack do
   end
 
   task :run do
-    webpack("--config webpack.config.js")
+    webpack("--config #{release_path}/webpack.config.js")
   end
 end
