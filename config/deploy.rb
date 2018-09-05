@@ -11,17 +11,18 @@ set :wsgi_file, "ramasceneMasterProject.wsgi"
 set :wsgi_path, "#{fetch(:django_settings_dir)}"
 set :wsgi_file_name, "wsgi.py"
 
-append :linked_dirs, "log", "datasets"
+append :linked_dirs, 'log', 'datasets', 'assets/bundles', 'node_modules'
 
 set :systemd_use_sudo, true
 set :systemd_roles, %w(web)
 set :systemd_unit, -> { "sas-gunicorn-#{fetch :application}"}
 
 set :flask, false
+set :webpack, true
 
-set :migration_role, :app
-set :assets_roles, [:app]
-set :yarn_roles, [:app] # In case you use the yarn package manager
+set :migration_role, :web
+set :assets_roles, [:web]
+set :yarn_roles, [:web] # In case you use the yarn package manager
 
 after 'deploy:publishing', 'deploy:restart'
 
@@ -81,5 +82,25 @@ namespace :django do
 
   task :populateHierarchies do
     django("populateHierarchies", "", run_on=:web)
+  end
+end
+
+after 'yarn:install', 'webpack:setup'
+
+namespace :webpack do
+  def webpack(args, flags="", run_on=:all)
+    on roles(run_on) do |h|
+      execute "#{shared_path}/node_modules/.bin/webpack #{args}"
+    end
+  end
+
+  task :setup do
+    if fetch(:webpack)
+      invoke 'webpack:run'
+    end
+  end
+
+  task :run do
+    webpack("--config webpack.config.js")
   end
 end

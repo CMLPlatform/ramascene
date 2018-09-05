@@ -105,7 +105,7 @@ CHANNEL_LAYERS = {
 ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 
 # Celery settings
-CELERY_BROKER_URL = 'amqp://localhost' # rabbitmq message broker address
+CELERY_BROKER_URL = os.environ.get('BROKER_URL', 'amqp://localhost') # rabbitmq message broker address
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
