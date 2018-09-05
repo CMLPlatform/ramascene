@@ -5,6 +5,7 @@ const { resolve } = require('path');
 var BundleTracker = require('webpack-bundle-tracker');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const APP_DIR = resolve(__dirname, 'assets/js/client');
+const STATIC_DIR = resolve(__dirname, '/static');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = env => {
@@ -15,7 +16,7 @@ module.exports = env => {
 
   output: {
     //where to store compiled bundle
-    path: path.resolve(__dirname, '/static/bundles/'),
+    path: path.resolve(STATIC_DIR + '/bundles/'),
 
     //webpack naming convention where files are stores
     filename: '[name]-[hash].js'
