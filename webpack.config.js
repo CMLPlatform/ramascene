@@ -23,7 +23,7 @@ module.exports = env => {
 
   plugins: [
     //where to store meta-data about the bundle
-    new BundleTracker({ filename: path.resolve(__dirname, '/webpack-stats.json') }),
+    new BundleTracker({ filename: resolve(__dirname, '/webpack-stats.json') }),
     new ExtractTextPlugin({
         filename:'style.css',
         disable: false,
