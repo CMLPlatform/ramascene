@@ -15,7 +15,7 @@ module.exports = env => {
 
   output: {
     //where to store compiled bundle
-    path: path.resolve('./assets/bundles/'),
+    path: path.resolve('./static/bundles/'),
 
     //webpack naming convention where files are stores
     filename: '[name]-[hash].js'
