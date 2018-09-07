@@ -102,6 +102,6 @@ namespace :webpack do
   end
 
   task :run do
-    webpack("--config #{release_path}/webpack.config.js")
+    webpack("--config #{release_path}/webpack.config.js --env.RELEASE_PATH=\"#{release_path}\"")
   end
 end

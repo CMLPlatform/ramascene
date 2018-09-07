@@ -15,7 +15,7 @@ module.exports = env => {
 
   output: {
     //where to store compiled bundle
-    path: path.resolve('./assets/bundles/'),
+    path: path.resolve(env.RELEASE_PATH + '/assets/bundles/'),
 
     //webpack naming convention where files are stores
     filename: '[name]-[hash].js'
@@ -23,7 +23,7 @@ module.exports = env => {
 
   plugins: [
     //where to store meta-data about the bundle
-    new BundleTracker({ filename: './webpack-stats.json' }),
+    new BundleTracker({ filename: env.RELEASE_PATH + '/webpack-stats.json' }),
     new ExtractTextPlugin({
         filename:'style.css',
         disable: false,
