@@ -33,7 +33,7 @@ TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 
 #get the static directory for images etc
 STATIC_PATH = os.path.join(PROJECT_PATH, 'static_assets')
-STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
+STATIC_ROOT = os.path.join(PROJECT_PATH, os.environ.get('PUBLIC_DIR', ''), 'static')
 STATIC_URL = '/static/'
 
 
