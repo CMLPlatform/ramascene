@@ -480,18 +480,6 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel>
-                            <Panel.Heading>
-                                <Panel.Title toggle>
-                                    Report
-                                </Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                                <Panel.Body>
-                                    Not yet implemented
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
                     </Col>
                     <Col sm={6} md={6} lg={6}>
                         <Panel>
