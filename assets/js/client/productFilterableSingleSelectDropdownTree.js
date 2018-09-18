@@ -46,7 +46,7 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
 
     getLabel(value) {
         var product = this.state.data.find(function(product) {
-            return product.value == value;
+            return value == parseInt(product.value);
         });
         return product.label;
     }

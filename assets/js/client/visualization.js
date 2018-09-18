@@ -45,6 +45,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     year: props.year,
+                    is_modelling_result: props.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -78,6 +79,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     year: props.year,
+                    is_modelling_result: props.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
@@ -132,6 +134,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     year: nextProps.year,
+                    is_modelling_result: nextProps.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -164,6 +167,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     year: nextProps.year,
+                    is_modelling_result: nextProps.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
@@ -189,10 +193,10 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{'Year = ' + this.state.year}</Badge></div>);
+                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Model y' : 'Y') + 'ear = ' + this.state.year}</Badge></div>);
                 break;
             case 'tree':
-                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{'Year = ' + this.state.year}</Badge></div>);
+                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Model y' : 'Y') + 'ear = ' + this.state.year}</Badge></div>);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);

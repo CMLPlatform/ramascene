@@ -86,6 +86,21 @@ namespace :django do
   end
 end
 
+before 'django:collectstatic', 'doc_root:setup'
+
+namespace :doc_root do
+  def doc_root(args, flags="", run_on=:all)
+    on roles(run_on) do |h|
+      execute "mkdir -p #{args}"
+    end
+  end
+
+  task :setup do
+    doc_root("public")
+  end
+end
+
+before 'django:collectstatic', 'yarn:install'
 after 'yarn:install', 'webpack:setup'
 
 namespace :webpack do

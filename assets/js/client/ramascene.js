@@ -143,25 +143,24 @@ class App extends Component {
         var extn = null;
         var year = null;
         if (!Array.isArray(this.state.selectedProductOptions)) {
-            nodesSec = [this.state.selectedProductOptions];
+            nodesSec = [parseInt(this.state.selectedProductOptions)];
         } else {
-            nodesSec = this.state.selectedProductOptions;
+            nodesSec = this.state.selectedProductOptions.map(x => parseInt(x));
         }
         if (!Array.isArray(this.state.selectedRegionOptions)) {
-            nodesReg = [this.state.selectedRegionOptions];
+            nodesReg = [parseInt(this.state.selectedRegionOptions)];
         } else {
-            // nodesReg = this.state.selectedRegionOptions.map(x => x.global_id);
-            nodesReg = this.state.selectedRegionOptions
+            nodesReg = this.state.selectedRegionOptions.map(x => parseInt(x));
         }
         if (!Array.isArray(this.state.selectedIndicatorOptions)) {
-            extn = [this.state.selectedIndicatorOptions];
+            extn = [parseInt(this.state.selectedIndicatorOptions)];
         } else {
-            extn = this.state.selectedIndicatorOptions;
+            extn = this.state.selectedIndicatorOptions.map(x => parseInt(x));
         }
         if (!Array.isArray(this.state.selectedYearOption)) {
-            year = [this.state.selectedYearOption];
+            year = [parseInt(this.state.selectedYearOption)];
         } else {
-            year = this.state.selectedYearOption;
+            year = this.state.selectedYearOption.map(x => parseInt(x));
         }
 
         const query = {
@@ -215,7 +214,7 @@ class App extends Component {
         });
     }
 
-    renderVisualization(data, unit, key) {
+    renderVisualization(data, unit, is_modelling_result, key) {
         // deselect currently in_main_view job
         const current_selected_index = this.state.jobs.findIndex((job) => {
             return job.in_main_view == true;
@@ -246,7 +245,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -254,14 +253,14 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
         }
     }
 
-    renderComparisonVisualisation(data, unit, key) {
+    renderComparisonVisualisation(data, unit, is_modelling_result, key) {
         // deselect currently in_main_view job
         const current_selected_index = this.state.jobs.findIndex((job) => {
             return job.in_comparison_view == true;
@@ -292,7 +291,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -300,7 +299,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             default:
                 break;

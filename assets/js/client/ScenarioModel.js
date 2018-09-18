@@ -168,35 +168,41 @@ class ScenarioModel extends Component {
 
     handleCoefficientChange(e) {
         this.setState({
-            coefficient: e.target.value
+            coefficient: parseInt(e.target.value)
         });
     }
 
     handleAddClick() {
         // make sure for single select dropdown trees the value is presented as an array
         var product = null;
+        var consumer = null;
         var origin = null;
         var destination = null;
         if (!Array.isArray(this.state.selectedProductOption)) {
-            product = [this.state.selectedProductOption];
+            product = [parseInt(this.state.selectedProductOption)];
         } else {
-            product = this.state.selectedProductOption;
+            product = this.state.selectedProductOption.map(x => parseInt(x));
         }
         if (!Array.isArray(this.state.selectedOriginOption)) {
-            origin = [this.state.selectedOriginOption];
+            origin = [parseInt(this.state.selectedOriginOption)];
         } else {
-            origin = this.state.selectedOriginOption;
+            origin = this.state.selectedOriginOption.map(x => parseInt(x));
         }
         if (!Array.isArray(this.state.selectedDestinationOption)) {
-            destination = [this.state.selectedDestinationOption];
+            destination = [parseInt(this.state.selectedDestinationOption)];
         } else {
-            destination = this.state.selectedDestinationOption;
+            destination = this.state.selectedDestinationOption.map(x => parseInt(x));
+        }
+        if (Array.isArray(this.state.selectedConsumerOption)) {
+            consumer = this.state.selectedConsumerOption.shift();
+        } else {
+            consumer = this.state.selectedConsumerOption;
         }
 
         const model_detail = {
             'product': product,
             'originReg': origin,
-            'consumedBy': this.state.selectedConsumerOption,
+            'consumedBy': consumer,
             'consumedReg': destination,
             'techChange': [this.state.coefficient]
         };

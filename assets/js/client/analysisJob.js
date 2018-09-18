@@ -15,9 +15,10 @@ class AnalysisJob extends Component {
 
         this.STATUS_STARTED = 'started';
         this.STATUS_COMPLETED = 'completed';
+        this.STATUS_FAILED = 'Failed';
 
         this.ANALYSIS_JOB = 'analysis';
-        this.MODELLING_JOB = 'modellling';
+        this.MODELLING_JOB = 'modelling';
 
         this.state = {
             busy: props.busy,
@@ -120,6 +121,14 @@ class AnalysisJob extends Component {
             });
 
             this.state.finishHandler();
+        } else if(job.job_status == this.STATUS_FAILED) {
+            console.log('received: %s', JSON.stringify(job));
+            this.setState({
+                job_status: job.job_status,
+                job_id: job.job_id,
+                job_name: job.job_name
+            });
+            this.state.finishHandler();
         }
     }
 
@@ -127,9 +136,15 @@ class AnalysisJob extends Component {
         const result = JSON.parse(this.state.raw_data.rawResultData)['rawResultData'];
         const unit = JSON.parse(this.state.raw_data.rawResultData)['unit'];
         if (comparison) {
-            this.state.comparisonHandler(result, unit, this.state.key);
+            if (this.state.job_type == this.MODELLING_JOB)
+                this.state.comparisonHandler(result, unit, true, this.state.key);
+            else
+                this.state.comparisonHandler(result, unit, false, this.state.key);
         } else {
-            this.state.resultHandler(result, unit, this.state.key);
+            if (this.state.job_type == this.MODELLING_JOB)
+                this.state.resultHandler(result, unit, true, this.state.key);
+            else
+                this.state.resultHandler(result, unit, false, this.state.key);
         }
     }
 
@@ -160,14 +175,22 @@ class AnalysisJob extends Component {
         const extn = job_name['extn'];
         const year = job_name['year'];
         const unit = raw_result_data['unit'];
+
+        // if (this.state.job_type == this.MODELLING_JOB) {
+            const products = job_name['product'];
+            const originRegs = job_name['originReg'];
+            const consumedRegs = job_name['consumedReg'];
+            const techChanges = job_name['techChange'];
+        // }
+
         var result = [];
         if (vizType == 'TreeMap') {
             nodesSec.forEach(function(key) {
-                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year[0], nodesReg: nodesReg[0], nodesSec: key, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: nodesReg[0], nodesSec: key, products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
             });
         } else {
             nodesReg.forEach(function(key) {
-                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year[0], nodesReg: key, nodesSec: nodesSec[0], value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: key, nodesSec: nodesSec[0], products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
             });
         }
         return result;
@@ -188,7 +211,7 @@ class AnalysisJob extends Component {
     }
 
     canModel() {
-        return this.state.job_status == this.STATUS_COMPLETED && this.context.model_details.length > 0 && this.state.job_type == this.ANALYSIS_JOB;
+        return this.context.model_details.length > 0 && ((this.state.job_status == this.STATUS_COMPLETED && this.state.job_type == this.ANALYSIS_JOB) || (this.state.job_status == this.STATUS_FAILED && this.state.job_type == this.MODELLING_JOB));
     }
 
     canCompare() {
@@ -204,7 +227,7 @@ class AnalysisJob extends Component {
     }
 
     canDestroy() {
-        return this.state.job_status == this.STATUS_COMPLETED;
+        return this.state.job_status == this.STATUS_COMPLETED || this.state.job_status == this.STATUS_FAILED;
     }
 
     render() {
@@ -215,6 +238,10 @@ class AnalysisJob extends Component {
             {label: 'year', key: 'year'},
             {label: 'region', key: 'nodesReg'},
             {label: 'product', key: 'nodesSec'},
+            {label: 'modelling products', key: 'products'},
+            {label: 'modelling originating region', key: 'originRegs'},
+            {label: 'modelling consumer region', key: 'consumedRegs'},
+            {label: 'modelling technical changes', key: 'techChanges'},
             {label: 'value', key: 'value'},
             {label: 'unit', key: 'unit'},
         ];

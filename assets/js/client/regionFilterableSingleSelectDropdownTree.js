@@ -46,7 +46,7 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
 
     getLabel(value) {
         var region = this.state.data.find(function(region) {
-            return region.value == value;
+            return value == parseInt(region.value);
         });
         return region.label;
     }
