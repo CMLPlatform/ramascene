@@ -73,7 +73,7 @@ $npm install
 
 ### Built React bundle
 ```
-$./node_modules/.bin/webpack --config webpack.config.js --env.RELEASE_PATH=.
+$./node_modules/.bin/webpack --config webpack.config.js --env.RELEASE_PATH=. --env.HOSTNAME=127.0.0.1
 ```
 
 ### Start Celery
