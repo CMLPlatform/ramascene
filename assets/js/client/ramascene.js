@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, NavItem, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -334,12 +334,26 @@ class App extends Component {
                     <Navbar.Header>
                         <Navbar.Brand>
                             {/*<Image src="../static/logo.png"/>*/}
-                            <a href="../">RaMa-Scene</a>
+                            <a href="../">Home</a>
                         </Navbar.Brand>
+                         <Navbar.Toggle />
                     </Navbar.Header>
+                    <Navbar.Collapse>
                     <Nav>
-
+                      <NavItem eventKey={1} href="../#about">
+                      About
+                    </NavItem>
+                    <NavItem eventKey={2} href="../#methods">
+                      Methods
+                    </NavItem>
+                    <NavItem eventKey={3} href="../#deliverables">
+                      Deliverables
+                    </NavItem>
+                    <NavItem eventKey={4} href="../#contact">
+                      Contact
+                    </NavItem>
                     </Nav>
+                    </Navbar.Collapse>
                 </Navbar>
                 {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert bsStyle={"warning"}>
                     You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
