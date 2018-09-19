@@ -8,11 +8,11 @@ import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSe
 import PropTypes from 'prop-types';
 
 var shortid = require('shortid');
-var {changes_helptext, coefficient_helptext, consumer_helptext, destination_helptext, origin_helptext, product_helptext} = require('./helptexts');
+var {changes_helptext, coefficient_helptext, consumer_helptext, destination_helptext, origin_helptext, product_model_helptext} = require('./helptexts');
 
 function CustomTooltip({id, children, tooltip}) {
     return (
-        <OverlayTrigger trigger="click"
+        <OverlayTrigger trigger="click" rootClose
                         overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
                         delayShow={300}
                         delayHide={150}
@@ -57,7 +57,7 @@ class ScenarioModel extends Component {
             <React.Fragment>
                 <Row>
                     <Col>
-                        <div>product<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>product<CustomTooltip tooltip={product_model_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         <ProductFilterableSingleSelectDropdownTree onChange={this.handleProductChange.bind(this)}
                                                                    value={this.state.selectedProductOption}
                                                                    ref={this.setProductRef}
@@ -97,7 +97,7 @@ class ScenarioModel extends Component {
                     <Col>
                         <div>Technical Change Coefficient<CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         <div className="input-group">
-                            <FormControl type="number" value={this.state.coefficient} onChange={this.handleCoefficientChange.bind(this)}/>
+                            <FormControl type="number" placeholder="0" value={this.state.coefficient} onChange={this.handleCoefficientChange.bind(this)}/>
                             <span className="input-group-addon">%</span>
                         </div>
                     </Col>

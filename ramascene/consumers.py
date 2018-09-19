@@ -55,7 +55,7 @@ class RamasceneConsumer(SyncConsumer):
                 if data["action"] == "model":
                     model_details = (data["model_details"])
                     # update the original year selected with a .1 so we can differentiate with model year
-                    model_year = "model year"
+                    model_year = "Scenario year:"+str(year)
                     origin_regions = []
                     consumed_regions = []
                     products = []
