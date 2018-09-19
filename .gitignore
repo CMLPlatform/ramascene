@@ -9,3 +9,6 @@
 
 #(ignore sqlite)
 sqlite3*
+
+#ignore settings.py for deployment purposes
+/ramasceneMasterProject/settings.py
