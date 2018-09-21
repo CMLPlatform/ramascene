@@ -1,4 +1,4 @@
 Back-end developer: Sidney Niccolson (CML)
 Front-end developer: Bart Daniels (VITO)
 IO calculations: Arjan de Koning (CML)
-Project manager: Franco Donati (CML)
+Project manager and modelling: Franco Donati (CML)

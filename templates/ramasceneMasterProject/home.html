@@ -31,7 +31,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="ramascene">Open tool</a>
+        <a class="navbar-brand js-scroll-trigger" href="ramascene">Open tool </a><img src="{% static 'rama-logo.svg' %}">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fas fa-bars"></i>
@@ -43,6 +43,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#methods">Methods</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#deliverables">Deliverables</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
@@ -57,7 +60,8 @@
       <div class="container d-flex h-100 align-items-center">
         <div class="mx-auto text-center">
           <h1 class="mx-auto my-0 text-uppercase">RaMA-Scene</h1>
-          <h2 class="text-white-50 mx-auto mt-2 mb-5">RAw MAterials SCENario Efficiency improvement blended learning package and assessment tool.</h2>
+          <h2 class="text-white-50 mx-auto mt-2 mb-5">Raw MAterials SCENario Efficiency improvement assessment tool
+            and blended learning package.</h2>
           <a href="#about" class="btn btn-primary js-scroll-trigger">Learn more about the project</a>
         </div>
       </div>
@@ -69,12 +73,11 @@
         <div class="row">
           <div class="col-lg-8 mx-auto">
             <h2 class="text-white mb-4">Project</h2>
-            <p class="text-white-50">RaMaScene is an EIT Raw Materials project with the objective of facilitating decision making and the diffusion of knowledge and skills for raw materials scenarios.
-
-</p>
+            <p class="text-white-50">RaMa-Scene is an EIT Raw Materials project with the objective of facilitating
+              decision making and the diffusion of knowledge and skills for raw materials scenarios.
+            </p>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -89,9 +92,12 @@
           </div>
           <div class="col-xl-4 col-lg-5">
             <div class="featured-text text-center text-lg-left">
-              <h4>EEIO calculations</h4>
-              <p class="text-black-50 mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>
+              <h4>Environmentally Extended Input-Output (EEIO)</h4>
+              <p class="text-black-50 mb-0">EEIO is a linear economic and environmental accounting model which provides
+                details on the relationships between economic actors (e.g. industries and final consumers) and the
+                environmental pressures they exert as a result of their activities. <br>
+                <a href="https://rama-scene.readthedocs.io/en/latest/calculations.html">Read more</a>
+              </p>
             </div>
           </div>
         </div>
@@ -103,9 +109,15 @@
             <div class="bg-black text-center h-100 project">
               <div class="d-flex h-100">
                 <div class="project-text w-100 my-auto text-center text-lg-left">
-                  <h4 class="text-white">[Consumption view] <br> Compare products</h4>
-                    <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>                  <hr class="d-none d-lg-block mb-0 ml-0">
+                  <h4 class="text-white">Data</h4>
+                    <p class="mb-0 text-white-50">The database behind the platform is EXIOBASE V3.3 (1995-2011) in
+                      Industry Technology Assumption (ITA) and product-by-product format. 200 products, 49 countries
+                      and 10 characterised impact indicators are available for selection to allow for complex
+                      multi-variate analysis.
+                    <br>
+                      <a href="http://exiobase.eu/">Read more</a>
+                    </p>
+                  <hr class="d-none d-lg-block mb-0 ml-0">
                 </div>
               </div>
             </div>
@@ -120,9 +132,15 @@
             <div class="bg-black text-center h-100 project">
               <div class="d-flex h-100">
                 <div class="project-text w-100 my-auto text-center text-lg-right">
-                  <h4 class="text-white">[Consumption view] <br> Compare countries</h4>
-                    <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,</p>                  <hr class="d-none d-lg-block mb-0 mr-0">
+                  <h4 class="text-white">Production and consumption views<br></h4>
+                    <p class="mb-0 text-white-50">Explore environmental and economic impact resulting from
+                      the production or consumption of goods and services. The *Production* view allows for the
+                      investigation of impacts in the production of specific product categories while in the
+                      *Final Consumption* view impacts are assessed throughout the entire supply-chain of a consumed
+                      product category.<br>
+                      <a href="https://rama-scene.readthedocs.io/en/latest/calculations.html">Read more</a>
+                    </p>
+                  <hr class="d-none d-lg-block mb-0 mr-0">
                 </div>
               </div>
             </div>
@@ -136,11 +154,9 @@
             <div class="bg-black text-center h-100 project">
               <div class="d-flex h-100">
                 <div class="project-text w-100 my-auto text-center text-lg-left">
-                  <h4 class="text-white">[Production view] <br> Compare products</h4>
-                  <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
-                    nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
-                    consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate </p>
+                  <h4 class="text-white">Compare</h4>
+                  <p class="mb-0 text-white-50">Compare old and new results and modelled scenarios through the split view.
+                  </p>
                   <hr class="d-none d-lg-block mb-0 ml-0">
                 </div>
               </div>
@@ -148,23 +164,6 @@
           </div>
         </div>
 
-         <div class="row justify-content-center no-gutters">
-          <div class="col-lg-6">
-          </div>
-          <div class="col-lg-6 order-lg-first">
-            <div class="bg-black text-center h-100 project">
-              <div class="d-flex h-100">
-                <div class="project-text w-100 my-auto text-center text-lg-right">
-                  <h4 class="text-white">[Production view] <br> Compare countries</h4>
-                  <p class="mb-0 text-white-50">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                    ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
-                     </p>
-                  <hr class="d-none d-lg-block mb-0 mr-0">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <br>
  <div class="row align-items-center no-gutters mb-4 mb-lg-5">
@@ -174,10 +173,10 @@
           <div class="col-xl-4 col-lg-5">
             <div class="featured-text text-center text-lg-left">
               <h4>Modelling</h4>
-              <p class="text-black-50 mb-0">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur
-                ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat
-                massa quis enim. Donec pede justo, fringilla vel, </p>
+              <p class="text-black-50 mb-0">Create final consumption scenarios by applying sets of relative changes to
+                final demand. The changes are applied in sequence and results are recalculated.<br>
+                      <a href="https://rama-scene.readthedocs.io/en/latest/modelling.html">Read more</a>
+              </p>
             </div>
           </div>
         </div>
@@ -185,25 +184,26 @@
       </div>
     </section>
 
-    <section id="signup" class="signup-section">
+  <!-- Deliverables Section (same style as about)-->
+    <section id="deliverables" class="about-section bg-black small text-center text-white-50">
       <div class="container">
         <div class="row">
-          <div class="col-md-10 col-lg-8 mx-auto text-center">
-
-            <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-            <h2 class="text-white mb-5">Contact</h2>
-
-
-
+          <div class="col-lg-8 mx-auto">
+            <h2 class="text-white mb-4">Deliverables</h2>
+            <p class="text-white-50">Coming soon...
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact-section bg-black">
+    <!-- Contact Section (using style of sign-up section)-->
+    <section id="contact" class="signup-section bg-black">
       <div class="container-fluid">
-
+        <div class="col-md-10 col-lg-8 mx-auto text-center">
+            <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
+            <h2 class="text-white mb-5">Contact</h2>
+          </div>
         <div class="row">
             <div class="col-md-3 mb-3 mb-md-0">
             <div class="card py-4 h-100">
@@ -284,23 +284,6 @@
       </div>
 
     </section>
-
-
-
-
-
-<!--
-<h1>Welcome to the RamaScene homepage! </h1>
-Please visit:
-<li class="active"><a href="ramascene">
-  ramascene app</a>
-</li>
-
-<li class="active">
- <a href="ramascene">
-</a>
-</li>
--->
 
 
 {% endblock %}

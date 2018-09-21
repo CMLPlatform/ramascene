@@ -193,10 +193,10 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Model y' : 'Y') + 'ear = ' + this.state.year}</Badge></div>);
+                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Scenario ' : 'Year') + ' = ' + this.state.year}</Badge></div>);
                 break;
             case 'tree':
-                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Model y' : 'Y') + 'ear = ' + this.state.year}</Badge></div>);
+                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Scenario ' : 'Year') + ' = ' + this.state.year}</Badge></div>);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);

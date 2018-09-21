@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, NavItem, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -16,12 +16,12 @@ import ScenarioModel from "./ScenarioModel";
 import PropTypes from 'prop-types';
 
 var shortid = require('shortid');
-var {perspective_helptext,visualization_helptext,visualization_detail_helptext,year_helptext,region_helptext,product_helptext,indicator_helptext} = require('./helptexts');
+var {selection_menu_helptext, perspective_helptext,product_helptext,indicator_helptext,modelling_menu_helptext, analysis_queue_helptext, product_model_helptext} = require('./helptexts');
 
 function CustomTooltip({id, children, tooltip}) {
     return (
-        <OverlayTrigger trigger="click"
-            overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
+        <OverlayTrigger trigger="click" rootClose
+            overlay={<Popover id="{id}"  placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
             delayShow={300}
             delayHide={150}
         >{children}
@@ -330,17 +330,35 @@ class App extends Component {
 
         return (
             <Grid fluid={true}>
-                <Navbar>
-                    <Navbar.Header>
-                        <Navbar.Brand>
-                            {/*<Image src="../static/logo.png"/>*/}
-                            <a href="../">RaMa-Scene</a>
-                        </Navbar.Brand>
-                    </Navbar.Header>
-                    <Nav>
+              <Navbar fluid>
+                  <Navbar.Header>
+                      <Navbar.Brand>
+                          {/*<Image src="../static/rama-logo-big.svgg"/>*/}
+                          <a href="../"> {<Image src="../static/rama-logo-big.svg"/>}</a>
+                      </Navbar.Brand>
+                       <Navbar.Toggle />
+                  </Navbar.Header>
+                  <Navbar.Collapse>
 
-                    </Nav>
-                </Navbar>
+                  <Nav pullRight>
+                    <NavItem eventKey={1} href="../">
+                    Home
+                  </NavItem>
+                    <NavItem eventKey={1} href="../#about">
+                    About
+                  </NavItem>
+                  <NavItem eventKey={2} href="../#methods">
+                    Methods
+                  </NavItem>
+                  <NavItem eventKey={3} href="../#deliverables">
+                    Deliverables
+                  </NavItem>
+                  <NavItem eventKey={4} href="../#contact">
+                    Contact
+                  </NavItem>
+                  </Nav>
+                  </Navbar.Collapse>
+              </Navbar>
                 {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert bsStyle={"warning"}>
                     You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
                 </Alert>}
@@ -350,7 +368,7 @@ class App extends Component {
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Selection menu
-                                </Panel.Title>
+                                </Panel.Title><CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -369,7 +387,7 @@ class App extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <div>Visualization<CustomTooltip tooltip={visualization_helptext} id="visualization-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Visualization</div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTreeMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_TREEMAP}
@@ -383,7 +401,7 @@ class App extends Component {
                                     {(selectedVisualizationOption == this.VIZ_GEOMAP) &&
                                     <Row>
                                         <Col>
-                                            <div>Visualization Detail<CustomTooltip tooltip={visualization_detail_helptext} id="visualization-detail-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Geographic aggregation level</div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTotalClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
@@ -400,7 +418,7 @@ class App extends Component {
                                     }
                                     <Row>
                                         <Col>
-                                            <div>Year<CustomTooltip tooltip={year_helptext} id="year-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Year</div>
                                             <YearFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                     onChange={this.handleYearChange.bind(this)}
                                                                                     value={this.state.selectedYearOption}
@@ -410,7 +428,7 @@ class App extends Component {
                                     <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>{this.state.selectMultiRegion ? 'select multiple regions' : 'select a single region'}<CustomTooltip tooltip={region_helptext} id="region-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>{this.state.selectMultiRegion ? 'select multiple regions' : 'select a single region'}</div>
                                             {!this.state.selectMultiRegion &&
                                                 <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                           onChange={this.handleRegionChange.bind(this)}
@@ -466,7 +484,7 @@ class App extends Component {
                             <Panel.Heading>
                                 <Panel.Title toggle>
                                     Scenario Modelling
-                                </Panel.Title>
+                                </Panel.Title><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -481,31 +499,35 @@ class App extends Component {
                         </Panel>
                     </Col>
                     <Col sm={6} md={6} lg={6}>
-                        <Panel>
+                        <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title>Main View</Panel.Title>
+                                <Panel.Title toggle>Main View</Panel.Title>
                             </Panel.Heading>
+                            <Panel.Collapse>
                             <Panel.Body>
                                 <div id="visualization"></div>
                                 <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
+                          </Panel.Collapse>
                         </Panel>
-                        <Panel>
+                        <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title>Comparison View</Panel.Title>
+                                <Panel.Title toggle>Comparison View</Panel.Title>
                             </Panel.Heading>
+                            <Panel.Collapse>
                             <Panel.Body>
                                 <div id="comparison-visualization"></div>
                                 <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
+                          </Panel.Collapse>
                         </Panel>
                     </Col>
                     <Col sm={3} md={3} lg={3}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>
+                                <Panel.Title>
                                     Analysis queue
-                                </Panel.Title>
+                                </Panel.Title><CustomTooltip tooltip={analysis_queue_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -536,9 +558,9 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
-                        <Panel>
+                        <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>
+                                <Panel.Title >
                                     Resources
                                 </Panel.Title>
                             </Panel.Heading>
@@ -582,7 +604,7 @@ class App extends Component {
                         </Panel>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>
+                                <Panel.Title>
                                     Partners
                                 </Panel.Title>
                             </Panel.Heading>
