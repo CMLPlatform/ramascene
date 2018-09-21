@@ -1,4 +1,5 @@
 set :application, "ramascene_staging"
+set :hostname, "ramascene-staging.local"
 role :web, %w{jenkins@dev.local}
 
 # server-based syntax

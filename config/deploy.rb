@@ -15,7 +15,7 @@ append :linked_dirs, 'log', 'datasets'
 
 set :systemd_use_sudo, true
 set :systemd_roles, %w(web)
-set :systemd_unit, -> { "sas-gunicorn-#{fetch :application}"}
+set :systemd_unit, -> { "sas-daphne-#{fetch :application} celery-#{fetch :application}"}
 
 set :flask, false
 set :webpack, true
@@ -25,7 +25,7 @@ set :assets_roles, [:web]
 set :yarn_roles, [:web] # In case you use the yarn package manager
 set :yarn_flags, '--production=false --silent --no-progress'
 
-after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', 'systemd:restart'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -117,6 +117,6 @@ namespace :webpack do
   end
 
   task :run do
-    webpack("--config #{release_path}/webpack.config.js --env.RELEASE_PATH=\"#{release_path}\"")
+    webpack("--config #{release_path}/webpack.config.js --env.RELEASE_PATH=\"#{release_path}\" --env.HOSTNAME=\"#{fetch :hostname}\"")
   end
 end
