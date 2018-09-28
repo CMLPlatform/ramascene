@@ -214,13 +214,19 @@ class App extends Component {
         });
     }
 
-    renderVisualization(data, unit, is_modelling_result, key) {
+    renderVisualization(data, unit, is_modelling_result, job_name, key) {
+        // jobs array
+        const jobs = Object.assign([], this.state.jobs);
+
         // deselect currently in_main_view job
         const current_selected_index = this.state.jobs.findIndex((job) => {
             return job.in_main_view == true;
         });
-        const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
-        current_selected_job.in_main_view = false;
+        if (current_selected_index >= 0) {
+            const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
+            current_selected_job.in_main_view = false;
+            jobs[current_selected_index] = current_selected_job;
+        }
 
         // select newly in_main_view job
         const index = this.state.jobs.findIndex((job) => {
@@ -228,10 +234,6 @@ class App extends Component {
         });
         const job = Object.assign({}, this.state.jobs[index]);
         job.in_main_view = true;
-
-        // update jobs array
-        const jobs = Object.assign([], this.state.jobs);
-        jobs[current_selected_index] = current_selected_job;
         jobs[index] = job;
 
         this.setState({
@@ -245,7 +247,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -253,20 +255,26 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
         }
     }
 
-    renderComparisonVisualisation(data, unit, is_modelling_result, key) {
-        // deselect currently in_main_view job
+    renderComparisonVisualisation(data, unit, is_modelling_result, job_name, key) {
+        // jobs array
+        const jobs = Object.assign([], this.state.jobs);
+
+        // deselect currently in_comparison_view job
         const current_selected_index = this.state.jobs.findIndex((job) => {
             return job.in_comparison_view == true;
         });
-        const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
-        current_selected_job.in_comparison_view = false;
+        if (current_selected_index >= 0) {
+            const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
+            current_selected_job.in_comparison_view = false;
+            jobs[current_selected_index] = current_selected_job;
+        }
 
         // select newly in_main_view job
         const index = this.state.jobs.findIndex((job) => {
@@ -274,10 +282,6 @@ class App extends Component {
         });
         const job = Object.assign({}, this.state.jobs[index]);
         job.in_comparison_view = true;
-
-        // update jobs array
-        const jobs = Object.assign([], this.state.jobs);
-        jobs[current_selected_index] = current_selected_job;
         jobs[index] = job;
 
         this.setState({
@@ -291,7 +295,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -299,7 +303,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} year={job.query.year} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             default:
                 break;
@@ -532,29 +536,31 @@ class App extends Component {
                             <Panel.Collapse>
                                 <Panel.Body>
                                     {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M symbol if you are ready to model</Alert>}
-                                    <Table striped condensed hover>
-                                        <tbody>
-                                        {
-                                            this.state.jobs.map(function(job) {
-                                                // we cannot pass key to props, but we must use another property name e.g. id
-                                                return (<AnalysisJob key={job.key}
-                                                                     busy={this.state.busy}
-                                                                     id={job.key}
-                                                                     query={job.query}
-                                                                     in_main_view={job.in_main_view}
-                                                                     in_comparison_view={job.in_comparison_view}
-                                                                     auto_render={job.auto_render}
-                                                                     detailLevel={job.detailLevel}
-                                                                     finishHandler={this.handleJobFinished.bind(this)}
-                                                                     resultHandler={this.renderVisualization.bind(this)}
-                                                                     comparisonHandler={this.renderComparisonVisualisation.bind(this)}
-                                                                     deleteHandler={this.deleteJob.bind(this)}
-                                                                     startModellingHandler={this.handleModelling.bind(this)} />)
+                                    <div className="table-responsive">
+                                        <Table striped condensed hover>
+                                            <tbody>
+                                            {
+                                                this.state.jobs.map(function(job) {
+                                                    // we cannot pass key to props, but we must use another property name e.g. id
+                                                    return (<AnalysisJob key={job.key}
+                                                                         busy={this.state.busy}
+                                                                         id={job.key}
+                                                                         query={job.query}
+                                                                         in_main_view={job.in_main_view}
+                                                                         in_comparison_view={job.in_comparison_view}
+                                                                         auto_render={job.auto_render}
+                                                                         detailLevel={job.detailLevel}
+                                                                         finishHandler={this.handleJobFinished.bind(this)}
+                                                                         resultHandler={this.renderVisualization.bind(this)}
+                                                                         comparisonHandler={this.renderComparisonVisualisation.bind(this)}
+                                                                         deleteHandler={this.deleteJob.bind(this)}
+                                                                         startModellingHandler={this.handleModelling.bind(this)} />)
 
-                                            }.bind(this))
-                                        }
-                                        </tbody>
-                                    </Table>
+                                                }.bind(this))
+                                            }
+                                            </tbody>
+                                        </Table>
+                                    </div>
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>

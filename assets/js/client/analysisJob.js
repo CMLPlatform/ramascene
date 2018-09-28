@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { Badge, Button, Glyphicon } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import {csrftoken} from './csrfToken';
@@ -77,8 +77,8 @@ class AnalysisJob extends Component {
             console.log('received: %s', JSON.stringify(job));
             this.setState({
                 job_status: job.job_status,
-                job_id: job.job_id,
-                job_name: job.job_name
+                // job_id: job.job_id,
+                // job_name: job.job_name
             });
 
             $.ajax({
@@ -137,14 +137,14 @@ class AnalysisJob extends Component {
         const unit = JSON.parse(this.state.raw_data.rawResultData)['unit'];
         if (comparison) {
             if (this.state.job_type == this.MODELLING_JOB)
-                this.state.comparisonHandler(result, unit, true, this.state.key);
+                this.state.comparisonHandler(result, unit, true, this.state.job_name, this.state.key);
             else
-                this.state.comparisonHandler(result, unit, false, this.state.key);
+                this.state.comparisonHandler(result, unit, false, this.state.job_name, this.state.key);
         } else {
             if (this.state.job_type == this.MODELLING_JOB)
-                this.state.resultHandler(result, unit, true, this.state.key);
+                this.state.resultHandler(result, unit, true, this.state.job_name, this.state.key);
             else
-                this.state.resultHandler(result, unit, false, this.state.key);
+                this.state.resultHandler(result, unit, false, this.state.job_name, this.state.key);
         }
     }
 
@@ -248,7 +248,10 @@ class AnalysisJob extends Component {
         return (
             <tr className={this.state.job_status == this.STATUS_COMPLETED ? (this.state.job_type == this.ANALYSIS_JOB ? 'success' : (this.state.job_type == this.MODELLING_JOB ? 'info' : 'danger')) : 'default'} key={this.state.key}>
                 <td onClick={this.canVisualize() ? this.retrieveRawResult.bind(this, false) : function() {}} style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
-                    {(this.state.in_main_view || this.state.in_comparison_view) && <Glyphicon glyph={this.state.busy && this.state.job_status == this.STATUS_STARTED ? 'hourglass' : 'chevron-left'}/>} {this.state.job_label}
+                    {this.state.job_status == this.STATUS_STARTED && <Glyphicon glyph='hourglass'/>}&nbsp;
+                    {this.state.in_main_view && <Badge>Main view</Badge>}&nbsp;
+                    {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;
+                    {this.state.job_label}
                 </td>
                 <td>{this.canModel() && <Button onClick={this.startModelling.bind(this)} title={"Model"} disabled={this.state.busy}>M</Button>}
                     {this.canCompare() && <Button onClick={this.retrieveRawResult.bind(this, true)} title={"Compare"}>C</Button>}

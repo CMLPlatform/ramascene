@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
 import {format} from 'd3-format';
-import {Badge} from 'react-bootstrap';
+import {Label, Table} from 'react-bootstrap';
 
 class Visualization extends Component {
 
@@ -44,7 +44,7 @@ class Visualization extends Component {
                     type: props.type,
                     sum: sum,
                     unit: unit,
-                    year: props.year,
+                    query: props.query,
                     is_modelling_result: props.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
@@ -78,7 +78,7 @@ class Visualization extends Component {
                     type: props.type,
                     sum: sum,
                     unit: unit,
-                    year: props.year,
+                    query: props.query,
                     is_modelling_result: props.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
@@ -133,7 +133,7 @@ class Visualization extends Component {
                     type: nextProps.type,
                     sum: sum,
                     unit: unit,
-                    year: nextProps.year,
+                    query: nextProps.query,
                     is_modelling_result: nextProps.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
@@ -166,7 +166,7 @@ class Visualization extends Component {
                     type: nextProps.type,
                     sum: sum,
                     unit: unit,
-                    year: nextProps.year,
+                    query: nextProps.query,
                     is_modelling_result: nextProps.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
@@ -193,10 +193,68 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div><div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Scenario ' : 'Year') + ' = ' + this.state.year}</Badge></div>);
+                return (<div>
+                    <div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div>
+                    <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <div className="table-responsive">
+                        <Table bordered condensed>
+                            <tbody>
+                            <tr>
+                                <td>Perspective</td>
+                                <td>{this.state.query.dimType}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                                <td>{this.state.query.year}</td>
+                            </tr>
+                            <tr>
+                                <td>Region(s)</td>
+                                <td>{this.state.query.nodesReg}</td>
+                            </tr>
+                            <tr>
+                                <td>Product(s)</td>
+                                <td>{this.state.query.nodesSec}</td>
+                            </tr>
+                            <tr>
+                                <td>Indicator</td>
+                                <td>{this.state.query.extn}</td>
+                            </tr>
+                            </tbody>
+                        </Table>
+                    </div>
+                </div>);
                 break;
             case 'tree':
-                return (<div><div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div><Badge>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge><Badge>{(this.state.is_modelling_result ? 'Scenario ' : 'Year') + ' = ' + this.state.year}</Badge></div>);
+                return (<div>
+                    <div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div>
+                    <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <div className="table-responsive">
+                        <Table bordered condensed>
+                            <tbody>
+                                <tr>
+                                    <td>Perspective</td>
+                                    <td>{this.state.query.dimType}</td>
+                                </tr>
+                                <tr>
+                                    <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                                    <td>{this.state.query.year}</td>
+                                </tr>
+                                <tr>
+                                    <td>Region(s)</td>
+                                    <td>{this.state.query.nodesReg}</td>
+                                </tr>
+                                <tr>
+                                    <td>Product(s)</td>
+                                    <td>{this.state.query.nodesSec}</td>
+                                </tr>
+                                <tr>
+                                    <td>Indicator</td>
+                                    <td>{this.state.query.extn}</td>
+                                </tr>
+                            </tbody>
+                        </Table>
+                    </div>
+                </div>);
                 break;
             default:
                 return (<div>Unknown visualization type</div>);
