@@ -70,15 +70,15 @@ class AnalysisJob extends Component {
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
-                job_name: job.job_name,
+                job_name: job.job_name, // job_name is an object
                 job_label: label_parts.join('>')
             });
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
             this.setState({
                 job_status: job.job_status,
-                // job_id: job.job_id,
-                // job_name: job.job_name
+                // job_id: job.job_id, // job_id doesn't change
+                // job_name: job.job_name // job_name is an invalid JSON string
             });
 
             $.ajax({
@@ -199,7 +199,7 @@ class AnalysisJob extends Component {
     startModelling() {
         this.state.startModellingHandler();
 
-        this.setState({job_type: this.MODELLING_JOB});
+        this.setState({job_type: this.MODELLING_JOB, model_details: this.context.model_details});
 
         const ws = new WebSocket(WEBSOCKET_URL);
 

@@ -230,6 +230,11 @@ class Visualization extends Component {
                     <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
                         <Table bordered condensed>
+                            <thead>
+                                <tr>
+                                    <th colSpan='2'>Query Parameters</th>
+                                </tr>
+                            </thead>
                             <tbody>
                                 <tr>
                                     <td>Perspective</td>
@@ -251,6 +256,29 @@ class Visualization extends Component {
                                     <td>Indicator</td>
                                     <td>{this.state.query.extn}</td>
                                 </tr>
+                                {this.state.query.techChange !== undefined &&
+                                <React.Fragment>
+                                    <tr className="active">
+                                        <th colSpan='2'>Scenario Modelling Parameters</th>
+                                    </tr>
+                                    <tr className="active">
+                                        <td>Product(s)</td>
+                                        <td>{this.state.query.product.join(', ')}</td>
+                                    </tr>
+                                    <tr className="active">
+                                        <td>Originating Region(s)</td>
+                                        <td>{this.state.query.originReg.join(', ')}</td>
+                                    </tr>
+                                    <tr className="active">
+                                        <td>Consumed Region(s)</td>
+                                        <td>{this.state.query.comsumedReg.join(', ')}</td>
+                                    </tr>
+                                    <tr className="active">
+                                        <td>Technical Change Coefficient(s)</td>
+                                        <td>{this.state.query.techChange.join(', ')}</td>
+                                    </tr>
+                                </React.Fragment>
+                                }
                             </tbody>
                         </Table>
                     </div>
