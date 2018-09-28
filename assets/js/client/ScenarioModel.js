@@ -194,7 +194,7 @@ class ScenarioModel extends Component {
             destination = this.state.selectedDestinationOption.map(x => parseInt(x));
         }
         if (Array.isArray(this.state.selectedConsumerOption)) {
-            consumer = this.state.selectedConsumerOption.shift();
+            consumer = this.state.selectedConsumerOption[0];
         } else {
             consumer = this.state.selectedConsumerOption;
         }
