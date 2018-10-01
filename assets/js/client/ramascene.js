@@ -58,6 +58,11 @@ class App extends Component {
             jobs: [],
             model_details: []
         };
+
+        this.scenarioCompRef = null;
+        this.setScenarioRef = component => {
+            this.scenarioCompRef = component;
+        };
     }
 
     handleProductionClicked() {
@@ -214,7 +219,7 @@ class App extends Component {
         });
     }
 
-    renderVisualization(data, unit, is_modelling_result, job_name, key) {
+    renderVisualization(data, unit, is_modelling_result, model_details, job_name, key) {
         // jobs array
         const jobs = Object.assign([], this.state.jobs);
 
@@ -240,6 +245,19 @@ class App extends Component {
             jobs: jobs
         });
 
+        // convert model details to human readable
+        var new_model_details = [];
+        if (is_modelling_result) {
+            model_details.forEach(function (model_detail) {
+                new_model_details.push({
+                    product: this.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    originReg: this.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
+                    consumedReg: this.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
+                    techChange: model_detail.techChange[0]
+                });
+            }.bind(this));
+        }
+
         switch (job.query.vizType) {
             case this.VIZ_TREEMAP:
                 var tree_data = [];
@@ -247,7 +265,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -255,14 +273,14 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
         }
     }
 
-    renderComparisonVisualisation(data, unit, is_modelling_result, job_name, key) {
+    renderComparisonVisualisation(data, unit, is_modelling_result, model_details, job_name, key) {
         // jobs array
         const jobs = Object.assign([], this.state.jobs);
 
@@ -288,6 +306,19 @@ class App extends Component {
             jobs: jobs
         });
 
+        // convert model details to human readable
+        var new_model_details = [];
+        if (is_modelling_result) {
+            model_details.forEach(function (model_detail) {
+                new_model_details.push({
+                    product: this.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    originReg: this.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
+                    consumedReg: this.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
+                    techChange: model_detail.techChange[0]
+                });
+            }.bind(this));
+        }
+
         switch (job.query.vizType) {
             case this.VIZ_TREEMAP:
                 var tree_data = [];
@@ -295,7 +326,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -303,7 +334,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
                 break;
             default:
                 break;
@@ -496,7 +527,9 @@ class App extends Component {
                                         {/*saveSettingsCallback: this.saveModellingSettings.bind(this),*/}
                                         {/*clearSettingsCallback: this.clearModellingSettings.bind(this)*/}
                                     {/*}}>*/}
-                                        <ScenarioModel busy={this.state.busy}/>
+                                        <ScenarioModel busy={this.state.busy}
+                                                       ref={this.setScenarioRef}
+                                        />
                                     {/*</ModellingContext.Provider>*/}
                                 </Panel.Body>
                             </Panel.Collapse>
@@ -630,7 +663,8 @@ class App extends Component {
         return {
             model_details: this.state.model_details,
             saveSettingsCallback: this.saveModellingSettings.bind(this),
-            clearSettingsCallback: this.clearModellingSettings.bind(this)
+            clearSettingsCallback: this.clearModellingSettings.bind(this),
+            scenarioCompRef: this.scenarioCompRef
         };
     }
 
@@ -648,7 +682,8 @@ class App extends Component {
 App.childContextTypes = {
     model_details: PropTypes.array,
     saveSettingsCallback: PropTypes.func,
-    clearSettingsCallback: PropTypes.func
+    clearSettingsCallback: PropTypes.func,
+    scenarioCompRef: PropTypes.object
 };
 
 render(<App />, document.getElementById('container'));

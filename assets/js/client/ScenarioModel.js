@@ -221,6 +221,18 @@ class ScenarioModel extends Component {
         this.setState({model_details: []});
         callback();
     }
+
+    getProductLabel(value) {
+        return this.productCompRef.getLabel(value);
+    }
+
+    getOrigLabel(value) {
+        return this.originCompRef.getLabel(value);
+    }
+
+    getDestLabel(value) {
+        return this.destCompRef.getLabel(value);
+    }
 }
 
 ScenarioModel.contextTypes = {

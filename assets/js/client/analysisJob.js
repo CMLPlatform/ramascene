@@ -137,14 +137,14 @@ class AnalysisJob extends Component {
         const unit = JSON.parse(this.state.raw_data.rawResultData)['unit'];
         if (comparison) {
             if (this.state.job_type == this.MODELLING_JOB)
-                this.state.comparisonHandler(result, unit, true, this.state.job_name, this.state.key);
+                this.state.comparisonHandler(result, unit, true, this.state.model_details, this.state.job_name, this.state.key);
             else
-                this.state.comparisonHandler(result, unit, false, this.state.job_name, this.state.key);
+                this.state.comparisonHandler(result, unit, false, null, this.state.job_name, this.state.key);
         } else {
             if (this.state.job_type == this.MODELLING_JOB)
-                this.state.resultHandler(result, unit, true, this.state.job_name, this.state.key);
+                this.state.resultHandler(result, unit, true, this.state.model_details, this.state.job_name, this.state.key);
             else
-                this.state.resultHandler(result, unit, false, this.state.job_name, this.state.key);
+                this.state.resultHandler(result, unit, false, null, this.state.job_name, this.state.key);
         }
     }
 
@@ -177,20 +177,31 @@ class AnalysisJob extends Component {
         const unit = raw_result_data['unit'];
 
         // if (this.state.job_type == this.MODELLING_JOB) {
-            const products = job_name['product'];
-            const originRegs = job_name['originReg'];
-            const consumedRegs = job_name['consumedReg'];
-            const techChanges = job_name['techChange'];
+        //     const products = job_name['product'];
+        //     const originRegs = job_name['originReg'];
+        //     const consumedRegs = job_name['comsumedReg'];
+        //     const techChanges = job_name['techChange'];
         // }
+        var new_model_details = [];
+        if (this.state.job_type == this.MODELLING_JOB) {
+            this.state.model_details.forEach(function (model_detail) {
+                new_model_details.push({
+                    product: this.context.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    originReg: this.context.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
+                    consumedReg: this.context.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
+                    techChange: model_detail.techChange[0]
+                });
+            }.bind(this));
+        }
 
         var result = [];
         if (vizType == 'TreeMap') {
             nodesSec.forEach(function(key) {
-                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: nodesReg[0], nodesSec: key, products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: nodesReg[0], nodesSec: key, /*products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges*/ model_details: JSON.stringify(new_model_details), value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
             });
         } else {
             nodesReg.forEach(function(key) {
-                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: key, nodesSec: nodesSec[0], products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges, value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
+                result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: key, nodesSec: nodesSec[0], /*products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges*/ model_details: JSON.stringify(new_model_details), value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
             });
         }
         return result;
@@ -238,10 +249,11 @@ class AnalysisJob extends Component {
             {label: 'year', key: 'year'},
             {label: 'region', key: 'nodesReg'},
             {label: 'product', key: 'nodesSec'},
-            {label: 'modelling products', key: 'products'},
-            {label: 'modelling originating region', key: 'originRegs'},
-            {label: 'modelling consumer region', key: 'consumedRegs'},
-            {label: 'modelling technical changes', key: 'techChanges'},
+            // {label: 'modelling products', key: 'products'},
+            // {label: 'modelling originating region', key: 'originRegs'},
+            // {label: 'modelling consumer region', key: 'consumedRegs'},
+            // {label: 'modelling technical changes', key: 'techChanges'},
+            {label: 'modelling details', key: 'model_details'},
             {label: 'value', key: 'value'},
             {label: 'unit', key: 'unit'},
         ];
@@ -264,7 +276,8 @@ class AnalysisJob extends Component {
 }
 
 AnalysisJob.contextTypes = {
-    model_details: PropTypes.array
+    model_details: PropTypes.array,
+    scenarioCompRef: PropTypes.object
 };
 
 export default AnalysisJob;

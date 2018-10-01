@@ -45,6 +45,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     query: props.query,
+                    model_details: props.model_details,
                     is_modelling_result: props.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
@@ -79,6 +80,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     query: props.query,
+                    model_details: props.model_details,
                     is_modelling_result: props.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
@@ -134,6 +136,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     query: nextProps.query,
+                    model_details: nextProps.model_details,
                     is_modelling_result: nextProps.is_modelling_result,
                     geoconfig: {
                         colorScaleConfig: {
@@ -167,6 +170,7 @@ class Visualization extends Component {
                     sum: sum,
                     unit: unit,
                     query: nextProps.query,
+                    model_details: nextProps.model_details,
                     is_modelling_result: nextProps.is_modelling_result,
                     treeconfig: {
                         tooltipConfig: {
@@ -197,30 +201,61 @@ class Visualization extends Component {
                     <div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div>
                     <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
-                        <Table bordered condensed>
-                            <tbody>
-                            <tr>
-                                <td>Perspective</td>
-                                <td>{this.state.query.dimType}</td>
-                            </tr>
-                            <tr>
-                                <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
-                                <td>{this.state.query.year}</td>
-                            </tr>
-                            <tr>
-                                <td>Region(s)</td>
-                                <td>{this.state.query.nodesReg}</td>
-                            </tr>
-                            <tr>
-                                <td>Product(s)</td>
-                                <td>{this.state.query.nodesSec}</td>
-                            </tr>
-                            <tr>
-                                <td>Indicator</td>
-                                <td>{this.state.query.extn}</td>
-                            </tr>
-                            </tbody>
-                        </Table>
+                        <div className="table-responsive">
+                            <Table bordered condensed>
+                                <thead>
+                                <tr>
+                                    <th colSpan='4'>Query Parameters</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Perspective</td>
+                                    <td colSpan='3'>{this.state.query.dimType}</td>
+                                </tr>
+                                <tr>
+                                    <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                                    <td colSpan='3'>{this.state.query.year}</td>
+                                </tr>
+                                <tr>
+                                    <td>Region(s)</td>
+                                    <td colSpan='3'>{this.state.query.nodesReg}</td>
+                                </tr>
+                                <tr>
+                                    <td>Product(s)</td>
+                                    <td colSpan='3'>{this.state.query.nodesSec}</td>
+                                </tr>
+                                <tr>
+                                    <td>Indicator</td>
+                                    <td colSpan='3'>{this.state.query.extn}</td>
+                                </tr>
+                                {this.state.is_modelling_result &&
+                                <React.Fragment>
+                                    <tr className="active">
+                                        <th colSpan='4'>Scenario Modelling Parameters</th>
+                                    </tr>
+                                    <tr>
+                                        <th className="col-xs-6">Product</th>
+                                        <th className="col-xs-2">Originating Region</th>
+                                        <th className="col-xs-2">Consumed Region</th>
+                                        <th className="col-xs-2">Technical Change Coefficient</th>
+                                    </tr>
+                                    { this.state.model_details.map(function(model_detail, index) {
+                                        return (
+                                            <tr className="active" key={'model_detail-' + index}>
+                                                {/*<td>Product(s)</td>*/}
+                                                <td>{model_detail.product}</td>
+                                                <td>{model_detail.originReg}</td>
+                                                <td>{model_detail.consumedReg}</td>
+                                                <td>{model_detail.techChange}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                </React.Fragment>
+                                }
+                                </tbody>
+                            </Table>
+                        </div>
                     </div>
                 </div>);
                 break;
@@ -232,51 +267,52 @@ class Visualization extends Component {
                         <Table bordered condensed>
                             <thead>
                                 <tr>
-                                    <th colSpan='2'>Query Parameters</th>
+                                    <th colSpan='4'>Query Parameters</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>Perspective</td>
-                                    <td>{this.state.query.dimType}</td>
+                                    <td colSpan='3'>{this.state.query.dimType}</td>
                                 </tr>
                                 <tr>
                                     <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
-                                    <td>{this.state.query.year}</td>
+                                    <td colSpan='3'>{this.state.query.year}</td>
                                 </tr>
                                 <tr>
                                     <td>Region(s)</td>
-                                    <td>{this.state.query.nodesReg}</td>
+                                    <td colSpan='3'>{this.state.query.nodesReg}</td>
                                 </tr>
                                 <tr>
                                     <td>Product(s)</td>
-                                    <td>{this.state.query.nodesSec}</td>
+                                    <td colSpan='3'>{this.state.query.nodesSec}</td>
                                 </tr>
                                 <tr>
                                     <td>Indicator</td>
-                                    <td>{this.state.query.extn}</td>
+                                    <td colSpan='3'>{this.state.query.extn}</td>
                                 </tr>
-                                {this.state.query.techChange !== undefined &&
+                                {this.state.is_modelling_result &&
                                 <React.Fragment>
                                     <tr className="active">
-                                        <th colSpan='2'>Scenario Modelling Parameters</th>
+                                        <th colSpan='4'>Scenario Modelling Parameters</th>
                                     </tr>
-                                    <tr className="active">
-                                        <td>Product(s)</td>
-                                        <td>{this.state.query.product.join(', ')}</td>
+                                    <tr>
+                                        <th className="col-xs-6">Product</th>
+                                        <th className="col-xs-2">Originating Region</th>
+                                        <th className="col-xs-2">Consumed Region</th>
+                                        <th className="col-xs-2">Technical Change Coefficient</th>
                                     </tr>
-                                    <tr className="active">
-                                        <td>Originating Region(s)</td>
-                                        <td>{this.state.query.originReg.join(', ')}</td>
-                                    </tr>
-                                    <tr className="active">
-                                        <td>Consumed Region(s)</td>
-                                        <td>{this.state.query.comsumedReg.join(', ')}</td>
-                                    </tr>
-                                    <tr className="active">
-                                        <td>Technical Change Coefficient(s)</td>
-                                        <td>{this.state.query.techChange.join(', ')}</td>
-                                    </tr>
+                                    { this.state.model_details.map(function(model_detail, index) {
+                                        return (
+                                            <tr className="active" key={'model_detail-' + index}>
+                                                {/*<td>Product(s)</td>*/}
+                                                <td>{model_detail.product}</td>
+                                                <td>{model_detail.originReg}</td>
+                                                <td>{model_detail.consumedReg}</td>
+                                                <td>{model_detail.techChange}</td>
+                                            </tr>
+                                        )
+                                    })}
                                 </React.Fragment>
                                 }
                             </tbody>
