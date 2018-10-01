@@ -30,7 +30,7 @@ class RegionFilterableMultiSelectDropdownTree extends FilterableMultiSelectDropd
                         new_value = this.state.data.filter(d => d.level == 2 && value.includes(d.value)).map(d => d.value);
                         // if a country is selected than select that continent
                         // [...new Set()] serves to filter out doubles
-                        new_value = [...new Set(value.concat(this.state.data.filter(d => d.level == 3 && value.includes(d.value)).map(d => d.pId.toString())))];
+                        new_value = [...new Set(new_value.concat(this.state.data.filter(d => d.level == 3 && value.includes(d.value)).map(d => d.pId.toString())))];
                     }
                 }
                 break;
