@@ -72,7 +72,7 @@ SECRET_KEY = ramasceneMasterProject.settings_secret.SECRET_KEY
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['ramascene-staging.local', '127.0.0.1']
+ALLOWED_HOSTS = ['ramascene-staging.local', '127.0.0.1', os.environ["HOST"]]
 
 
 # Application definition
