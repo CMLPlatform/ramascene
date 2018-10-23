@@ -45,8 +45,8 @@ module.exports = env => {
 
 
             new webpack.DefinePlugin({
-                'WEBSOCKET_URL': '"ws://' + process.env.HOSTNAME + '/ramascene/"',
-                'AJAX_URL': '"http://' + process.env.HOSTNAME + '/ajaxhandling/"'
+                'WEBSOCKET_URL': '"ws://' + process.env.HOST + '/ramascene/"',
+                'AJAX_URL': '"http://' + process.env.HOST + '/ajaxhandling/"'
                 // 'WEBSOCKET_URL': '"ws://cml.liacs.nl:8080/ramascene/"',
                 // 'AJAX_URL': '"http://cml.liacs.nl:8080/ajaxhandling/"'
             })
