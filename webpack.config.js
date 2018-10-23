@@ -25,7 +25,9 @@ module.exports = env => {
         plugins: [
             //where to store meta-data about the bundle
             new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
-            new Dotenv(),
+            new Dotenv({
+                path: '../.env'
+            }),
             new ExtractTextPlugin({
                 filename: 'style.css',
                 disable: false,
