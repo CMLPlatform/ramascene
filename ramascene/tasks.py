@@ -1,4 +1,3 @@
-
 from channels.layers import get_channel_layer
 from .models import Job
 import logging
@@ -10,7 +9,8 @@ from ramascene import querymanagement
 from ramascene.analyze import Analyze
 from ramascene.modelling import Modelling
 import os
-from ramasceneMasterProject.settings import DATASET_DIR, NAME_B, NAME_L, NAME_Y
+from django.conf import settings
+
 log = logging.getLogger(__name__)
 
 
@@ -195,8 +195,8 @@ def get_numpy_objects(year):
     """
     Retrieve numpy objects per year.
     """
-    location = os.path.join(DATASET_DIR, '') + os.path.join(str(year), '')
-    Y = np.load(location + os.path.join(NAME_Y))
-    B = np.load(location + os.path.join(NAME_B))
-    L = np.load(location + os.path.join(NAME_L))
+    location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
+    Y = np.load(location + os.path.join(os.path.join(str('Y_')+settings.DATASET_VERSION)+".npy"))
+    B = np.load(location + os.path.join(os.path.join(str('B_')+settings.DATASET_VERSION)+".npy"))
+    L = np.load(location + os.path.join(os.path.join(str('L_')+settings.DATASET_VERSION)+".npy"))
     return Y, B, L

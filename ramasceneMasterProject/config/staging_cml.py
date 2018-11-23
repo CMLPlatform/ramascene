@@ -1,0 +1,21 @@
+from .base import *
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+DEBUG = False
+
+ALLOWED_HOSTS = ['127.0.0.1', os.environ["HOST"]]
+
+DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\rawData')
+
+SECRET_KEY = os.environ['SECRET_KEY']
+
+#path to datasets directory
+DATASET_DIR = os.environ['DATASETS_DIR']
+#name of numpy objects for timeseries
+DATASET_VERSION = os.environ['DATASETS_VERSION']
+
+# Celery settings
+CELERY_BROKER_URL = os.environ['BROKER_URL']
+
