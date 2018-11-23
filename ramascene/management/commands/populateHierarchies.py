@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from ramascene.models import Country, Product, Indicator
+from ramascene.models import Country, Product, Indicator, ModellingProduct
 
 import os
 import sys
@@ -15,10 +15,12 @@ class Command(BaseCommand):
             indicatorData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_indicators.csv'))
             countryData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_countryTree_exiovisuals.csv'))
             productData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_productTree_exiovisuals.csv'))
+            model_productData = getfile(os.path.join(project_root_dir, 'python_ini/data/modelling_mod_final_productTree_exiovisuals.csv'))
 
             populate(indicatorData, "Indicator")
             populate(countryData, "Country")
             populate(productData, "Product")
+            populate(model_productData, "ModellingProduct")
         except Exception as e:
             sys.exit("Adding database objects Failed.."+e)
 
@@ -26,6 +28,15 @@ class Command(BaseCommand):
 #function that adds to DB
 def addProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global, leaf_children_local):
     e, created = Product.objects.get_or_create(name=name, code=code, global_id=global_id, parent_id=parent_id,
+                                               local_id=local_id, level=level,identifier=identifier,
+                                               leaf_children_global=leaf_children_global,
+                                               leaf_children_local=leaf_children_local)
+
+    return e
+
+#function that adds to DB
+def addModelProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global, leaf_children_local):
+    e, created = ModellingProduct.objects.get_or_create(name=name, code=code, global_id=global_id, parent_id=parent_id,
                                                local_id=local_id, level=level,identifier=identifier,
                                                leaf_children_global=leaf_children_global,
                                                leaf_children_local=leaf_children_local)
@@ -84,6 +95,9 @@ def populate(data_obj, model_type):
                                leaf_children_local)
                 elif model_type =="Country":
                     addCountry(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global,
+                               leaf_children_local)
+                elif model_type =="ModellingProduct":
+                    addModelProduct(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
                                leaf_children_local)
 
                 else:
