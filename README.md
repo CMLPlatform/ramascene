@@ -17,9 +17,6 @@ Visit our data repository at: https://fdonaticml.stackstorage.com/s/1wYNXkJXkIWq
 git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git 
 ```
 
-### Point in settings.py to the datasets downloaded above
-Adjust DATASET_DIR
-
 ### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure you have python-dev installed via apt-get)
 ``` 
 $pip3 install -r requirements.txt 
@@ -73,7 +70,14 @@ $npm install
 
 ### Built React bundle
 ```
-$./node_modules/.bin/webpack --config webpack.config.js --env.RELEASE_PATH=. --env.HOSTNAME=127.0.0.1:8000
+$./node_modules/.bin/webpack --config dev-webpack.config.js 
+```
+
+### Set the following environment variables (see sample-dev-env.sh):
+```
+export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
+export DATASETS_VERSION=[version downloaded e.g. v3]
+export DATASETS_DIR=[my/path/to/datasets]
 ```
 
 ### Start Celery
