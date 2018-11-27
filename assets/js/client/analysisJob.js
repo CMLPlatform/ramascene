@@ -186,10 +186,10 @@ class AnalysisJob extends Component {
         if (this.state.job_type == this.MODELLING_JOB) {
             this.state.model_details.forEach(function (model_detail) {
                 new_model_details.push({
-                    product: this.context.scenarioCompRef.getProductLabel(model_detail.product[0]),
-                    originReg: this.context.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
-                    consumedReg: this.context.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
-                    techChange: model_detail.techChange[0]
+                    'Product': this.context.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    'Originating from': this.context.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
+                    'Consumed where': this.context.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
+                    'Technical Change Coefficient': model_detail.techChange[0]
                 });
             }.bind(this));
         }

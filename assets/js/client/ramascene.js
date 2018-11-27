@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Nav, Navbar, NavItem, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Modal, Nav, Navbar, NavItem, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -12,8 +12,9 @@ import IndicatorFilterableSingleSelectDropdownTree from './indicatorFilterableSi
 import YearFilterableSingleSelectDropdownTree from './yearFilterableSingleSelectDropdownTree';
 import AnalysisJob from './analysisJob';
 import ScenarioModel from "./ScenarioModel";
-// import {ModellingContext} from "./modellingContext";
 import PropTypes from 'prop-types';
+
+const WAIT_INTERVAL = 5000;
 
 var shortid = require('shortid');
 var {selection_menu_helptext, perspective_helptext,product_helptext,indicator_helptext,modelling_menu_helptext, analysis_queue_helptext, product_model_helptext} = require('./helptexts');
@@ -56,13 +57,16 @@ class App extends Component {
             selectMultiRegion: false,
             busy: true,
             jobs: [],
-            model_details: []
+            model_details: [],
+            waiting_modal_open: false
         };
 
         this.scenarioCompRef = null;
         this.setScenarioRef = component => {
             this.scenarioCompRef = component;
         };
+
+        this.timer = null;
     }
 
     handleProductionClicked() {
@@ -80,7 +84,9 @@ class App extends Component {
     handleTreeMapClicked() {
         this.setState({
             selectedVisualizationOption: this.VIZ_TREEMAP,
-            selectedRegionOptions: (Array.isArray(this.state.selectedRegionOptions) ? this.state.selectedRegionOptions.slice(0,1) : this.state.selectedRegionOptions),
+            // selectedRegionOptions: (Array.isArray(this.state.selectedRegionOptions) ? this.state.selectedRegionOptions.slice(0,1) : this.state.selectedRegionOptions),
+            selectedProductOptions: [],
+            selectedRegionOptions: [],
             selectMultiProduct: true,
             selectMultiRegion: false
         });
@@ -89,7 +95,8 @@ class App extends Component {
     handleGeoMapClicked() {
         this.setState({
             selectedVisualizationOption: this.VIZ_GEOMAP,
-            selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
+            // selectedProductOptions: (Array.isArray(this.state.selectedProductOptions) ? this.state.selectedProductOptions.slice(0,1) : this.state.selectedProductOptions),
+            selectedProductOptions: [],
             selectedRegionOptions: [],
             selectMultiProduct: false,
             selectMultiRegion: true
@@ -115,6 +122,13 @@ class App extends Component {
             selectedVisualizationDetailOption: this.VIZDETAIL_COUNTRY,
             selectedRegionOptions: []
         });
+    }
+
+    handleDeleteAllClicked() {
+        this.setState({jobs: []});
+
+        unmountComponentAtNode(document.getElementById('visualization'));
+        unmountComponentAtNode(document.getElementById('comparison-visualization'));
     }
 
     handleYearChange(value) {
@@ -184,19 +198,34 @@ class App extends Component {
 
         this.setState({
             busy: true,
-            jobs: jobs
+            jobs: jobs,
+            waiting_modal_open: true
         });
+
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.closeModal.bind(this), WAIT_INTERVAL);
     }
 
     handleModelling() {
         this.setState({
-            busy: true
+            busy: true,
+            waiting_modal_open: true
         });
+
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.closeModal.bind(this), WAIT_INTERVAL);
+    }
+
+    closeModal() {
+        clearTimeout(this.timer);
+        this.setState({waiting_modal_open: false});
     }
 
     handleJobFinished() {
+        clearTimeout(this.timer);
         this.setState({
-            busy: false
+            busy: false,
+            waiting_modal_open: false
         });
     }
 
@@ -215,8 +244,12 @@ class App extends Component {
 
         this.setState({
             busy: true,
-            jobs: jobs
+            jobs: jobs,
+            waiting_modal_open: true
         });
+
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.closeModal.bind(this), WAIT_INTERVAL);
     }
 
     renderVisualization(data, unit, is_modelling_result, model_details, job_name, key) {
@@ -265,7 +298,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, document.getElementById('visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -273,7 +306,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, document.getElementById('visualization'));
                 break;
             default:
                 break;
@@ -294,7 +327,7 @@ class App extends Component {
             jobs[current_selected_index] = current_selected_job;
         }
 
-        // select newly in_main_view job
+        // select newly in_comparison_view job
         const index = this.state.jobs.findIndex((job) => {
             return job.key === key;
         });
@@ -326,7 +359,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, document.getElementById('comparison-visualization'));
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -334,11 +367,53 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result}/>, document.getElementById('comparison-visualization'));
+                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, document.getElementById('comparison-visualization'));
                 break;
             default:
                 break;
         }
+    }
+
+    hideMainView() {
+        // jobs array
+        const jobs = Object.assign([], this.state.jobs);
+
+        // deselect currently in_main_view job
+        const current_selected_index = this.state.jobs.findIndex((job) => {
+            return job.in_main_view == true;
+        });
+        if (current_selected_index >= 0) {
+            const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
+            current_selected_job.in_main_view = false;
+            jobs[current_selected_index] = current_selected_job;
+        }
+
+        this.setState({
+            jobs: jobs
+        });
+
+        unmountComponentAtNode(document.getElementById('visualization'));
+    }
+
+    hideComparisonView() {
+        // jobs array
+        const jobs = Object.assign([], this.state.jobs);
+
+        // deselect currently in_comparison_view job
+        const current_selected_index = this.state.jobs.findIndex((job) => {
+            return job.in_comparison_view == true;
+        });
+        if (current_selected_index >= 0) {
+            const current_selected_job = Object.assign({}, this.state.jobs[current_selected_index]);
+            current_selected_job.in_comparison_view = false;
+            jobs[current_selected_index] = current_selected_job;
+        }
+
+        this.setState({
+            jobs: jobs
+        });
+
+        unmountComponentAtNode(document.getElementById('comparison-visualization'));
     }
 
     deleteJob(in_main_view, in_comparison_view, key) {
@@ -539,22 +614,22 @@ class App extends Component {
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title toggle>Main View</Panel.Title>
+                                <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
                                 <div id="visualization"></div>
-                                <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
                           </Panel.Collapse>
                         </Panel>
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title toggle>Comparison View</Panel.Title>
+                                <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
                                 <div id="comparison-visualization"></div>
-                                <sub className="pull-right">EXIOBASE v3.3. data</sub>
                             </Panel.Body>
                           </Panel.Collapse>
                         </Panel>
@@ -594,6 +669,7 @@ class App extends Component {
                                             </tbody>
                                         </Table>
                                     </div>
+                                    <Button disabled={this.state.jobs.length == 0} onClick={this.handleDeleteAllClicked.bind(this)}>Delete all</Button>
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
@@ -655,6 +731,14 @@ class App extends Component {
                         </Panel>
                     </Col>
                 </Row>
+                <Modal show={this.state.waiting_modal_open} onHide={this.closeModal.bind(this)}>
+                    <Modal.Header closeButton>
+                        {/*<Modal.Title></Modal.Title>*/}
+                    </Modal.Header>
+                    <Modal.Body>
+                    <p>This may take a while - expected min. wait time 2 seconds, max wait time 10minutes at heavy traffic and doing modelling</p>
+                    </Modal.Body>
+                </Modal>
             </Grid>
         );
     }

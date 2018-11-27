@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
 import {format} from 'd3-format';
-import {Label, Table} from 'react-bootstrap';
+import {Button, Label, Table} from 'react-bootstrap';
 
 class Visualization extends Component {
 
@@ -47,6 +47,7 @@ class Visualization extends Component {
                     query: props.query,
                     model_details: props.model_details,
                     is_modelling_result: props.is_modelling_result,
+                    callback: props.hide_callback,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -64,7 +65,7 @@ class Visualization extends Component {
                                 var found_item = props.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return format('~s')(found_item.value);
+                                return format('~e')(found_item.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -82,10 +83,11 @@ class Visualization extends Component {
                     query: props.query,
                     model_details: props.model_details,
                     is_modelling_result: props.is_modelling_result,
+                    callback: props.hide_callback,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return format('~s')(d.value);
+                                return format('~e')(d.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -138,6 +140,7 @@ class Visualization extends Component {
                     query: nextProps.query,
                     model_details: nextProps.model_details,
                     is_modelling_result: nextProps.is_modelling_result,
+                    callback: nextProps.hide_callback,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
@@ -154,7 +157,7 @@ class Visualization extends Component {
                                 var found_item = nextProps.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return format('~s')(found_item.value);
+                                return format('~e')(found_item.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -172,10 +175,11 @@ class Visualization extends Component {
                     query: nextProps.query,
                     model_details: nextProps.model_details,
                     is_modelling_result: nextProps.is_modelling_result,
+                    callback: nextProps.hide_callback,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return format('~s')(d.value);
+                                return format('~e')(d.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -199,70 +203,69 @@ class Visualization extends Component {
             case 'geo':
                 return (<div>
                     <div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div>
-                    <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <Label>{'Sum = ' + format('~e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
-                        <div className="table-responsive">
-                            <Table bordered condensed>
-                                <thead>
-                                <tr>
-                                    <th colSpan='4'>Query Parameters</th>
+                        <Table bordered condensed>
+                            <thead>
+                            <tr>
+                                <th colSpan='4'>Query Parameters</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Perspective</td>
+                                <td colSpan='3'>{this.state.query.dimType}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                                <td colSpan='3'>{this.state.query.year}</td>
+                            </tr>
+                            <tr>
+                                <td>Region(s)</td>
+                                <td colSpan='3'>{this.state.query.nodesReg.join('; ')}</td>
+                            </tr>
+                            <tr>
+                                <td>Product(s)</td>
+                                <td colSpan='3'>{this.state.query.nodesSec.join('; ')}</td>
+                            </tr>
+                            <tr>
+                                <td>Indicator</td>
+                                <td colSpan='3'>{this.state.query.extn}</td>
+                            </tr>
+                            {this.state.is_modelling_result &&
+                            <React.Fragment>
+                                <tr className="active">
+                                    <th colSpan='4'>Scenario Modelling Parameters</th>
                                 </tr>
-                                </thead>
-                                <tbody>
                                 <tr>
-                                    <td>Perspective</td>
-                                    <td colSpan='3'>{this.state.query.dimType}</td>
+                                    <th className="col-xs-6">Product</th>
+                                    <th className="col-xs-2">Originating From</th>
+                                    <th className="col-xs-2">Consumed Where</th>
+                                    <th className="col-xs-2">Technical Change Coefficient</th>
                                 </tr>
-                                <tr>
-                                    <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
-                                    <td colSpan='3'>{this.state.query.year}</td>
-                                </tr>
-                                <tr>
-                                    <td>Region(s)</td>
-                                    <td colSpan='3'>{this.state.query.nodesReg}</td>
-                                </tr>
-                                <tr>
-                                    <td>Product(s)</td>
-                                    <td colSpan='3'>{this.state.query.nodesSec}</td>
-                                </tr>
-                                <tr>
-                                    <td>Indicator</td>
-                                    <td colSpan='3'>{this.state.query.extn}</td>
-                                </tr>
-                                {this.state.is_modelling_result &&
-                                <React.Fragment>
-                                    <tr className="active">
-                                        <th colSpan='4'>Scenario Modelling Parameters</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="col-xs-6">Product</th>
-                                        <th className="col-xs-2">Originating Region</th>
-                                        <th className="col-xs-2">Consumed Region</th>
-                                        <th className="col-xs-2">Technical Change Coefficient</th>
-                                    </tr>
-                                    { this.state.model_details.map(function(model_detail, index) {
-                                        return (
-                                            <tr className="active" key={'model_detail-' + index}>
-                                                {/*<td>Product(s)</td>*/}
-                                                <td>{model_detail.product}</td>
-                                                <td>{model_detail.originReg}</td>
-                                                <td>{model_detail.consumedReg}</td>
-                                                <td>{model_detail.techChange}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </React.Fragment>
-                                }
-                                </tbody>
-                            </Table>
-                        </div>
+                                { this.state.model_details.map(function(model_detail, index) {
+                                    return (
+                                        <tr className="active" key={'model_detail-' + index}>
+                                            <td>{model_detail.product}</td>
+                                            <td>{model_detail.originReg}</td>
+                                            <td>{model_detail.consumedReg}</td>
+                                            <td>{model_detail.techChange}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </React.Fragment>
+                            }
+                            </tbody>
+                        </Table>
                     </div>
+                    <Button onClick={this.state.callback}>Close</Button>
+                    <sub className="pull-right">EXIOBASE v3.3. data</sub>
                 </div>);
                 break;
             case 'tree':
                 return (<div>
                     <div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div>
-                    <Label>{'Sum = ' + format('~s')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <Label>{'Sum = ' + format('~e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
                         <Table bordered condensed>
                             <thead>
@@ -281,11 +284,11 @@ class Visualization extends Component {
                                 </tr>
                                 <tr>
                                     <td>Region(s)</td>
-                                    <td colSpan='3'>{this.state.query.nodesReg}</td>
+                                    <td colSpan='3'>{this.state.query.nodesReg.join('; ')}</td>
                                 </tr>
                                 <tr>
                                     <td>Product(s)</td>
-                                    <td colSpan='3'>{this.state.query.nodesSec}</td>
+                                    <td colSpan='3'>{this.state.query.nodesSec.join('; ')}</td>
                                 </tr>
                                 <tr>
                                     <td>Indicator</td>
@@ -298,14 +301,13 @@ class Visualization extends Component {
                                     </tr>
                                     <tr>
                                         <th className="col-xs-6">Product</th>
-                                        <th className="col-xs-2">Originating Region</th>
-                                        <th className="col-xs-2">Consumed Region</th>
+                                        <th className="col-xs-2">Originating From</th>
+                                        <th className="col-xs-2">Consumed Where</th>
                                         <th className="col-xs-2">Technical Change Coefficient</th>
                                     </tr>
                                     { this.state.model_details.map(function(model_detail, index) {
                                         return (
                                             <tr className="active" key={'model_detail-' + index}>
-                                                {/*<td>Product(s)</td>*/}
                                                 <td>{model_detail.product}</td>
                                                 <td>{model_detail.originReg}</td>
                                                 <td>{model_detail.consumedReg}</td>
@@ -318,6 +320,8 @@ class Visualization extends Component {
                             </tbody>
                         </Table>
                     </div>
+                    <Button onClick={this.state.callback}>Close</Button>
+                    <sub className="pull-right">EXIOBASE v3.3. data</sub>
                 </div>);
                 break;
             default:

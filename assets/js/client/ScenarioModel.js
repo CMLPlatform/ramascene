@@ -103,8 +103,11 @@ class ScenarioModel extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Col>
+                    <Col lg={6}>
                         <Button onClick={this.handleAddClick.bind(this)} bsStyle="success" disabled={this.state.selectedProductOption === undefined || this.state.selectedConsumerOption === undefined || this.state.selectedOriginOption === undefined || this.state.selectedDestinationOption === undefined || this.state.coefficient === undefined}>Add change</Button>
+                    </Col>
+                    <Col lg={6}>
+                        <Button onClick={this.handleRemoveClick.bind(this)} bsStyle="success" disabled={this.state.model_details.length == 0}>Remove last</Button>
                     </Col>
                 </Row>
                 <Row>
@@ -211,6 +214,13 @@ class ScenarioModel extends Component {
         model_details.push(model_detail);
 
         this.setState({model_details: model_details, busy: model_details.length == this.MAX_CHANGES});
+    }
+
+    handleRemoveClick() {
+        const model_details = Object.assign([], this.state.model_details);
+        model_details.pop();
+
+        this.setState({model_details: model_details, busy: false});
     }
 
     handleSaveClick(callback) {
