@@ -70,14 +70,15 @@ def constructFinalCSV(data):
             identifier = data[x][6]
             leaf_children_global = data[x][7]
             leaf_children_local = data[x][8]
+            # the total is not relevant, we remove it and replace with final consumption parameter
             if name == "S: Total":
                 name = "Y: Final Consumption"
-                code = "finalconsumption"
-                global_id = MAX_NUMBER_OF_GLOBAL_IDS + OFFSET
+                code = "final_consumption"
+                global_id = MAX_NUMBER_OF_GLOBAL_IDS
                 parent_id = 0
-                local_id = MAX_NUMBER_OF_LOCAL_IDS + OFFSET
+                local_id = data[x][4]
                 level = 2
-                identifier = "FinalConsumption"
+                identifier = "FINALCONSUMPTION"
                 leaf_children_global = "None"
                 leaf_children_local = "None"
                 writer.writerow(
