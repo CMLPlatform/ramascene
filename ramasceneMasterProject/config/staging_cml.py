@@ -11,11 +11,16 @@ DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\raw
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
+#allow cors
 MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
 
+#allow cors
 INSTALLED_APPS += [
     'corsheaders',
 ]
+
+#CORS config
+CORS_ORIGIN_ALLOW_ALL = True
 
 #path to datasets directory
 DATASET_DIR = os.environ['DATASETS_DIR']
