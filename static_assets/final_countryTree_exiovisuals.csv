@@ -1,4 +1,4 @@
-Name	Code	Global_id	Parent_id	Local_id	Level
+name	code	global_id	parent_id	local_id	level
 Total	total	1	0	1	1
 Europe	T_WE	2	1	1	2
 Middle-East	T_WM	3	1	2	2

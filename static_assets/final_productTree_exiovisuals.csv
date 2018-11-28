@@ -1,4 +1,4 @@
-Name	Code	Global_id	Parent_Id	Local_id	Level
+name	code	global_id	parent_id	local_id	level
 Total	total	1	0	1	1
 Agriculture, hunting and forestry	A	2	1	1	2
 Fishing	B	3	1	2	2

@@ -39,7 +39,7 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
         // result = {data, errors, meta}
         var data = [];
         for (var region of result.data) {
-            data.push({id: region.Global_id, pId: region.Parent_id, value: region.Global_id.toString(), label: region.Name});
+            data.push({id: region.global_id, pId: region.parent_id, value: region.global_id.toString(), label: region.name});
         }
         this.setState({data: data, placeholder: "select region"});
     }
