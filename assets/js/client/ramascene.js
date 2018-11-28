@@ -13,6 +13,15 @@ import YearFilterableSingleSelectDropdownTree from './yearFilterableSingleSelect
 import AnalysisJob from './analysisJob';
 import ScenarioModel from "./ScenarioModel";
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('UA-130048269-1', {
+    gaOptions: {
+        siteSpeedSampleRate: 50
+    }
+});
+
+ReactGA.pageview('/ramascene/');
 
 const WAIT_INTERVAL = 5000;
 
@@ -156,6 +165,11 @@ class App extends Component {
     }
 
     handleAnalyse() {
+        ReactGA.event({
+            category: 'User',
+            action: 'started analysis job'
+        });
+
         // make sure for single select dropdown trees that value is presented as an array
         var nodesSec = null;
         var nodesReg = null;
@@ -190,8 +204,6 @@ class App extends Component {
             'extn': extn,
             'year': year
         };
-
-        // this.state.jobs.push(React.createElement(AnalysisJob, {query: query, resultHandler: this.renderVisualization.bind(this), deleteHandler: this.deleteJob.bind(this)}));
 
         const jobs = Object.assign([], this.state.jobs);
         jobs.push({key: shortid.generate(), query: query, in_main_view: false, in_comparison_view: false, auto_render: false, detailLevel: this.state.selectedVisualizationDetailOption});
