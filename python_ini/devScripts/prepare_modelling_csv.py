@@ -57,7 +57,7 @@ def constructFinalCSV(data):
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
         #reconstruct headers with modifications
         writer.writerow(["name", "code", "global_id", "parent_id","local_id","level","identifier", "leaf_children_global", "leaf_children_local"])
-        assets_writer.writerow(["Name", "Code", "Global_id", "Parent_Id", "Local_id", "Level"])
+        assets_writer.writerow(["name", "code", "global_id", "parent_id", "local_id", "level"])
 
         #final loop over dataset
         for x in range(len(data)):

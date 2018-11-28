@@ -10,5 +10,16 @@
 #(ignore sqlite)
 sqlite3*
 
-#ignore settings.py for deployment purposes
-/ramasceneMasterProject/settings.py
+#ignore development environment variables
+dev-env.sh
+
+#ignore production environment variables
+prod-env.sh
+
+#ignore logs
+logs/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class

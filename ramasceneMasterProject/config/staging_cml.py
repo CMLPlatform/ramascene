@@ -11,6 +11,12 @@ DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\raw
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
+MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
+
+INSTALLED_APPS += [
+    'corsheaders',
+]
+
 #path to datasets directory
 DATASET_DIR = os.environ['DATASETS_DIR']
 #name of numpy objects for timeseries
