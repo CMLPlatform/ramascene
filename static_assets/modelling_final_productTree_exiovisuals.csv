@@ -1,5 +1,5 @@
 name	code	global_id	parent_id	local_id	level
-Y: Final Consumption	finalconsumption	277	0	201	2
+Y: Final Consumption	final_consumption	276	0	1	2
 S: Agriculture, hunting and forestry	A	1	0	1	2
 S: Fishing	B	2	0	2	2
 S: Mining and quarrying	C	3	0	3	2

@@ -65,25 +65,28 @@ def default_handler(job_name, job_id, channel_name, ready_query_selection, query
         query_selection (dict): the original query_selection used for aggregations at later stage
 
     """
-    # 1: first invoke the calculations, 2: second send ws message complete
-    calc_default.apply_async((job_name, job_id, channel_name, ready_query_selection, query_selection)
+    # 1: allocate to queue according to model_details 2: first invoke the calculations, 3: second send ws message complete
+    if "model_details" in query_selection:
+        execute_calc.apply_async((job_name, job_id, channel_name, ready_query_selection, query_selection)
+                                 , queue='modelling')
+    else:
+        execute_calc.apply_async((job_name, job_id, channel_name, ready_query_selection, query_selection)
                              , queue='calc_default')
 
 
 @shared_task
-def calc_default(job_name, job_id, channel_name, ready_query_selection, query_selection):
+def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_selection):
     """
     Performs calculations  as a Celery  Task.
     """
-    # load in the numpy objects
-    Y_data, B_data, L_data = get_numpy_objects(query_selection["year"])
 
     # retrieve calculation and indicator ready indices and sort and convert to numpy array
     product_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["nodesSec"])
     country_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["nodesReg"])
     indicator_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["extn"])
     idx_units = ready_query_selection["idx_units"]
-
+    # retrieve standard matrix
+    B = get_numpy_objects(query_selection["year"], "B")
     # set constant for country selling product ("total")
     s_country_idx = np.arange(0, 49)
     try:
@@ -91,19 +94,22 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         if query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Consumption":
             # if there are model_details
             if "model_details" in query_selection:
-                model = Modelling(Y_data,L_data,query_selection["model_details"])
-                Y, L = model.apply_model()
+                # TODO apply modelling
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
+                #model = Modelling(Y_data,L_data,query_selection["model_details"])
+                #Y, L = model.apply_model()
             else:
-                Y = Y_data
-                L = L_data
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p2 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y, B_data, L)
+                         job_name, job_id, s_country_idx, Y, B, L)
             # invoke method for route 2 calculations
             json_data = p2.route_two()
             # Change task status to completed
             job_update(job_id)
-            handle_complete(job_id, channel_name, calc_default.request.id)
+            handle_complete(job_id, channel_name, execute_calc.request.id)
             # save the json result to the celery result database
             return json_data
 
@@ -111,19 +117,22 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Production":
             # if there are model_details
             if "model_details" in query_selection:
-                model = Modelling(Y_data,L_data,query_selection["model_details"])
-                Y, L = model.apply_model()
+                # TODO apply modelling
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
+                #model = Modelling(Y_data,L_data,query_selection["model_details"])
+                #Y, L = model.apply_model()
             else:
-                Y = Y_data
-                L = L_data
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p3 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y, B_data, L)
+                         job_name, job_id, s_country_idx, Y, B, L)
             # invoke method for route 3 calculations
             json_data = p3.route_three()
             # Change task status to completed
             job_update(job_id)
-            handle_complete(job_id, channel_name, calc_default.request.id)
+            handle_complete(job_id, channel_name, execute_calc.request.id)
             # save the json result to the celery result database
             return json_data
 
@@ -131,19 +140,22 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Consumption":
             # if there are model_details
             if "model_details" in query_selection:
-                model = Modelling(Y_data,L_data,query_selection["model_details"])
-                Y, L = model.apply_model()
+                # TODO apply modelling
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
+                #model = Modelling(Y_data,L_data,query_selection["model_details"])
+                #Y, L = model.apply_model()
             else:
-                Y = Y_data
-                L = L_data
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p1 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y, B_data, L)
+                         job_name, job_id, s_country_idx, Y, B, L)
             # invoke method for route 4 calculations
             json_data = p1.route_one()
             # Change task status to completed
             job_update(job_id)
-            handle_complete(job_id, channel_name, calc_default.request.id)
+            handle_complete(job_id, channel_name, execute_calc.request.id)
             # save the json result to the celery result database
             return json_data
 
@@ -151,19 +163,22 @@ def calc_default(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Production":
             #if there are model_details
             if "model_details" in query_selection:
-                model = Modelling(Y_data,L_data,query_selection["model_details"])
-                Y,L = model.apply_model()
+                # TODO apply modelling
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
+                #model = Modelling(Y_data,L_data,query_selection["model_details"])
+                #Y,L = model.apply_model()
             else:
-                Y = Y_data
-                L = L_data
+                Y = get_numpy_objects(query_selection["year"], "Y")
+                L = get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p4 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
-                         job_name, job_id, s_country_idx, Y, B_data, L)
+                         job_name, job_id, s_country_idx, Y, B, L)
             # invoke method for route 4 calculations
             json_data = p4.route_four()
             # Change task status to completed
             job_update(job_id)
-            handle_complete(job_id, channel_name, calc_default.request.id)
+            handle_complete(job_id, channel_name, execute_calc.request.id)
             # save the json result to the celery result database
             return json_data
         else:
@@ -191,12 +206,10 @@ def handle_complete(job_id, channel_name, celery_id):
     async_send(channel_name, job)
 
 
-def get_numpy_objects(year):
+def get_numpy_objects(year, object_name):
     """
     Retrieve numpy objects per year.
     """
     location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
-    Y = np.load(location + os.path.join(os.path.join(str('Y_')+settings.DATASET_VERSION)+".npy"))
-    B = np.load(location + os.path.join(os.path.join(str('B_')+settings.DATASET_VERSION)+".npy"))
-    L = np.load(location + os.path.join(os.path.join(str('L_')+settings.DATASET_VERSION)+".npy"))
-    return Y, B, L
+    object = np.load(location + os.path.join(os.path.join(object_name+str('_')+settings.DATASET_VERSION)+".npy"))
+    return object

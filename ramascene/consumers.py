@@ -56,10 +56,15 @@ class RamasceneConsumer(SyncConsumer):
                     model_details = (data["model_details"])
                     # update the original year selected with a .1 so we can differentiate with model year
                     model_year = "Scenario year:"+str(year)
+                    names_origin_regions = []
+                    names_consumed_regions = []
+                    names_products = []
+                    names_consumed_by_products = []
                     origin_regions = []
                     consumed_regions = []
                     products = []
-
+                    consumed_by_products = []
+                    tech_changes = []
                     # update the year of the query selection to a model year (2011.1)
                     for intervention in model_details:
                         # for each modeling change retrieve the details (global ids)
@@ -69,13 +74,35 @@ class RamasceneConsumer(SyncConsumer):
                             querymanagement.get_names_country(intervention["consumedReg"])
                         name_product  = \
                             querymanagement.get_names_product(intervention["product"])
-                        origin_regions.append(name_origin_reg)
-                        consumed_regions.append(name_consumed_reg)
-                        products.append(name_product)
+                        name_consumed_by_products = \
+                            querymanagement.get_modelled_names_product(intervention["consumedBy"])
+                        names_origin_regions.append(name_origin_reg)
+                        names_consumed_regions.append(name_consumed_reg)
+                        names_products.append(name_product)
+                        names_consumed_by_products.append(name_consumed_by_products)
 
-                    info_query_selection.update({'originReg': origin_regions, 'comsumedReg':consumed_regions
-                                                     ,'product': products, 'techChange': intervention["techChange"],
-                                                 'year':model_year})
+
+                        tech_change = intervention["techChange"]
+
+                        # get calculation ready indices explicitly
+                        calc_ready_product = querymanagement.get_leafs_product(intervention["product"])
+                        calc_ready_origin_reg = querymanagement.get_leafs_country(intervention["originReg"])
+                        calc_ready_consumed_reg = querymanagement.get_leafs_country(intervention["consumedReg"])
+                        calc_ready_consumed_by_products = querymanagement.get_leafs_modelled_product(intervention["consumedBy"])
+                        origin_regions.append(calc_ready_origin_reg)
+                        consumed_regions.append(calc_ready_consumed_reg)
+                        products.append(calc_ready_product)
+                        consumed_by_products.append(calc_ready_consumed_by_products)
+                        tech_changes.append(tech_change)
+
+
+                    info_query_selection.update({'originReg': names_origin_regions, 'consumedReg':names_consumed_regions
+                                                     ,'product': names_products, 'techChange': tech_changes,
+                                                 'year':model_year, 'consumedBy': names_consumed_by_products})
+
+                    ready_query_selection.update({'originReg': origin_regions, 'consumedReg':consumed_regions
+                                                     ,'product': products, 'techChange': tech_changes,
+                                                 'year':model_year, 'consumedBy': consumed_by_products})
                     # as the full data object is not send to Celery, insert model_details into the queryseleciton
                     query_selection.update({'model_details': model_details})
 
@@ -96,7 +123,7 @@ class RamasceneConsumer(SyncConsumer):
                 job = self.save_job(job_name)
 
                 # return websocket response
-                self.ws_response(job, "calc_default")
+                self.ws_response(job)
 
                 # prepare for Celery handler
                 product_calc_indices = \
@@ -110,7 +137,6 @@ class RamasceneConsumer(SyncConsumer):
 
                 idx_units = \
                     querymanagement.get_indicator_units(query_selection["extn"])
-
                 # querySelection ready for calculations
                 ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
                                              'extn': indicator_calc_indices, 'idx_units': idx_units})
@@ -153,7 +179,7 @@ class RamasceneConsumer(SyncConsumer):
         job.save()
         return job
 
-    def ws_response(self,job, queue_name):
+    def ws_response(self,job):
         """
         Sends web socket response that the job is started
         """

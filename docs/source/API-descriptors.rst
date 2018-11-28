@@ -185,8 +185,8 @@ The following table denotes the communication between front-end and back-end for
 |                           |                         |       ex.:  \"originReg\":[3]               |
 +---------------------------+-------------------------+---------------------------------------------+
 | Model type of calculation |  Model details          | **var name: model_details**                 |
-|                           |  : Model type           |  *JSON key: consumedBy, JSON value: string* |
-|                           |                         |    ex.:  \"consumedBy\":\"FinalConsumption\"|
+|                           |  : Model type           |  *JSON key: consumedBy, JSON value: array* |
+|                           |                         |    ex.:  \"consumedBy\":[4]"|
 +---------------------------+-------------------------+---------------------------------------------+
 | Region consuming          |  Model details          | **var name: model_details**                 |
 |                           |  : Region of consumption|  *JSON key: consumedReg, JSON value:  array*|
@@ -215,14 +215,14 @@ The technological change is a single value denoting a percentage. See below for 
 |        {
 |            "product": [1],
 |            "originReg": [3],
-|            "consumedBy": "FinalConsumption",
+|            "consumedBy": [4],
 |            "consumedReg": [5],
 |            "techChange": [-15]
 |        },
 |        {
 |            "product": [6],
 |            "originReg": [5],
-|            "consumedBy": "FinalConsumption",
+|            "consumedBy": [7],
 |            "consumedReg": [18],
 |            "techChange": [20]
 |        }

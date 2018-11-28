@@ -26,13 +26,7 @@ class Modelling:
 
             product_idx = np.arange(0, 200)
             country_idx = np.arange(0, 49)
-            consuming_cat = intervention["consumedBy"]
-            tech_change = intervention["techChange"]
 
-            # get calculation ready indices explicitly
-            calc_ready_product = querymanagement.get_leafs_product(intervention["product"])
-            calc_ready_origin_reg = querymanagement.get_leafs_country(intervention["originReg"])
-            calc_ready_consumed_reg = querymanagement.get_leafs_country(intervention["consumedReg"])
 
             # convert to numpy arrays explicitly
             calc_ready_product = querymanagement.convert_to_numpy(calc_ready_product)

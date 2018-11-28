@@ -10,4 +10,5 @@ app.autodiscover_tasks()
 
 app.conf.task_routes = ([
     ('calc_default.tasks', {'queue': 'calc'}),
+    ('modelling.tasks', {'queue': 'modelling'})
 ],)

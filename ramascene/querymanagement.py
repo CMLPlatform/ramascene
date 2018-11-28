@@ -1,4 +1,4 @@
-from ramascene.models import Country, Product, Indicator
+from ramascene.models import Country, Product, Indicator, ModellingProduct
 import numpy as np
 import math
 
@@ -31,6 +31,38 @@ def get_leafs_product(product_global_ids):
         elif identify_product(id) == "AGG" or identify_product(id) == "TOTAL":
             # perform retrieval
             my_local_leafs = (Product.objects.values_list('leaf_children_local', flat=True).get(global_id=id))
+            leafs = clean_local_leafs(my_local_leafs)
+            product_calc_indices.append(leafs)
+    # flatten lists
+    product_calc_indices = [item for sublist in product_calc_indices for item in sublist]
+    return product_calc_indices
+
+
+def get_leafs_modelled_product(product_global_ids):
+    """    Returns the leaf nodes of a given global id
+
+        Uses the database/model to fetch leaf nodes.
+
+        Args:
+            product_global_ids (list): A list of user selected product global ids
+
+        Returns:
+            list: complete list of  leaf ids (minus a offset of -1 for calculation purposes)
+    """
+    OFFSET = -1
+    product_calc_indices = []
+
+    # It's always a list even if it only has a single element
+    for id in product_global_ids:
+        # perform identification,
+        if identify_modelling_product(id) == "LEAF" or identify_modelling_product(id) == "FINALCONSUMPTION":
+            # perform retrieval
+            leaf = (ModellingProduct.objects.values_list('local_id', flat=True).get(global_id=id))
+            leaf = clean_single_leafs(leaf, OFFSET)
+            product_calc_indices.append(leaf)
+        elif identify_modelling_product(id) == "AGG":
+            # perform retrieval
+            my_local_leafs = (ModellingProduct.objects.values_list('leaf_children_local', flat=True).get(global_id=id))
             leafs = clean_local_leafs(my_local_leafs)
             product_calc_indices.append(leafs)
     # flatten lists
@@ -129,6 +161,23 @@ def get_names_product(prod_ids):
         prod_names.append(prod_name)
     return prod_names
 
+def get_modelled_names_product(prod_ids):
+    """Get name of products consumed by in modelling
+
+    Uses the database/model to fetch names, used for sending selection information to front-end
+
+    Args:
+        prod_ids (list): list of products by global id
+
+    Returns:
+        list: lists of products
+
+    """
+    prod_names = []
+    for prod in prod_ids:
+        prod_name = (ModellingProduct.objects.values_list('name', flat=True).get(global_id=prod))
+        prod_names.append(prod_name)
+    return prod_names
 
 def get_names_country(country_ids):
     """Get name of countries
@@ -297,6 +346,20 @@ def identify_country(country_id):
     reg_identifier = (Country.objects.values_list('identifier', flat=True).get(global_id=country_id))
     return reg_identifier
 
+def identify_modelling_product(prod_id):
+    """Helper function.
+
+            Does database check on products if the global_id the user selected is an aggregate or not
+
+            Args:
+                prod_id (int): global id
+
+            Returns:
+                str: identifier e.g. LEAF or AGG or TOTAL
+
+    """
+    prod_identifier = (ModellingProduct.objects.values_list('identifier', flat=True).get(global_id=prod_id))
+    return prod_identifier
 
 def clean_local_leafs(a_list):
     """Clean data as preprocessing step for calculation.
