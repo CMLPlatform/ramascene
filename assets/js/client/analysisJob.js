@@ -7,6 +7,7 @@ import {csrftoken} from './csrfToken';
 import $ from 'jquery';
 import {CSVLink} from "react-csv";
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
 
 class AnalysisJob extends Component {
 
@@ -54,6 +55,9 @@ class AnalysisJob extends Component {
             } else {
                 ws.send(JSON.stringify({'querySelection': this.state.query, 'action': 'start_calc'}));
             }
+            if (window.performance) {
+                this.setState({performance_start: performance.now()});
+            }
         }.bind(this);
 
         ws.onmessage = this.handleWebSocketResponse.bind(this);
@@ -84,12 +88,22 @@ class AnalysisJob extends Component {
             $.ajax({
                 cache: false,
                 complete: function (jqXHR, textStatus) {
-
+                    if (window.performance) {
+                        ReactGA.timing({
+                            category: this.state.job_type,
+                            variable: 'Calculation timing',
+                            value: Math.round(performance.now() - this.state.performance_start)
+                        });
+                    }
                 },
                 data: {'TaskID': this.state.job_id},
                 dataType: 'json',
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log(errorThrown);
+                    ReactGA.exception({
+                        description: 'AJAX request to retrieve results failed',
+                        fatal: false
+                    });
                 },
                 headers: {
                     'X-CSRFToken': csrftoken
@@ -123,6 +137,10 @@ class AnalysisJob extends Component {
             this.state.finishHandler();
         } else if(job.job_status == this.STATUS_FAILED) {
             console.log('received: %s', JSON.stringify(job));
+            ReactGA.exception({
+                description: 'Websocket message received with job_status = Failed',
+                fatal: false
+            });
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
@@ -208,6 +226,11 @@ class AnalysisJob extends Component {
     }
 
     startModelling() {
+        ReactGA.event({
+            category: 'User',
+            action: 'started modelling job'
+        });
+
         this.state.startModellingHandler();
 
         this.setState({job_type: this.MODELLING_JOB, model_details: this.context.model_details});
@@ -216,6 +239,9 @@ class AnalysisJob extends Component {
 
         ws.onopen = function() {
             ws.send(JSON.stringify({'querySelection': this.state.query, 'model_details': this.context.model_details, 'action': 'model'}));
+            if (window.performance) {
+                this.setState({performance_start: performance.now()});
+            }
         }.bind(this);
 
         ws.onmessage = this.handleWebSocketResponse.bind(this)
