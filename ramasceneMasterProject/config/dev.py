@@ -26,6 +26,7 @@ INSTALLED_APPS += [
 #CORS config
 CORS_ORIGIN_ALLOW_ALL = True
 
+'''
 #logging locally for debugging sqllite
 LOGGING = {
     'version': 1,
@@ -73,3 +74,4 @@ LOGGING = {
         },
     },
 }
+'''
