@@ -11,8 +11,20 @@ CELERY_BROKER_URL = 'amqp://localhost'
 
 #path to datasets directory
 DATASET_DIR = os.environ['DATASETS_DIR']
+
 #name of numpy objects for timeseries
 DATASET_VERSION = os.environ['DATASETS_VERSION']
+
+#allow cors
+MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
+
+#allow cors
+INSTALLED_APPS += [
+    'corsheaders',
+]
+
+#CORS config
+CORS_ORIGIN_ALLOW_ALL = True
 
 #logging locally for debugging sqllite
 LOGGING = {
