@@ -69,7 +69,7 @@ Relevant scripts: ``geo_dissolve_by_level.py``, ``prepare_geomapping_ISO3166_3.p
 2. Run prepare_geomapping_ISO3166_3.py with *mod_final_countryTree_ISO3166_3.csv*
 3. After step 1 and 2, create a virtual environment and install the requirements.txt in the python_ini/geoMapbuilds to enable the use of GeoPandas.
 4. The script geo_dissolve_by_level.py is used to create 3 geojson files, 1) a file for the whole world, 2) a file for continents, 3) a file for countries and rest of regions. This is needed for the visualization library d3plus. Before running the script, please select which of the three files you wish to generate by adjusting the SETTING variable.
-5. The generated files are fairly big, in turn it is key to make these small smaller by converting them to topojson and simplify the polygons using MapShaper.org. This is achieved with 1) importing the files into mapshaper, 2) clicking on "simplify" and check "prevent shape removal" 3) finally export to topojson with command "id-field=id" "drop-table"
+5. The generated files are fairly big, in turn it is key to make these small smaller by converting them to topojson and simplify the polygons using MapShaper.org. This is achieved with 1) importing the files into mapshaper, 2) clicking on "simplify", check "prevent shape removal" and finally set the percentage to 5% 3) finally export to topojson with command "id-field=id" "drop-table"
 
 *Note : see project folder python_ini/geomapBuilds and python_ini/devScripts*
 
