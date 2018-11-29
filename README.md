@@ -56,7 +56,7 @@ Check the status to make sure everything is running:
 ```
 export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
 export DATASETS_VERSION=[version downloaded e.g. v3]
-export DATASETS_DIR=[my/path/to/datasets]
+export DATASETS_DIR=my/path/to/datasets
 ```
 
 ### Prepare the database
@@ -81,11 +81,11 @@ $./node_modules/.bin/webpack --config dev-webpack.config.js
 ```
 
 ### Start Celery
-Start the API to handle analytical calculations:
+Start the default module to enable handling of analytical calculations:
 ```
 $celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default
 ```
-Start the API to handle modelling calculations:
+Start the modelling module to enable handling of modelling calculations:
 ```
 $celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue modelling
 ```

@@ -16,7 +16,7 @@ import os
 import sys
 import django
 sys.path.insert(0, os.path.abspath('../..'))
-os.environ['DJANGO_SETTINGS_MODULE'] = 'ramasceneMasterProject.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'ramasceneMasterProject.config.dev'
 django.setup()
 
 
@@ -32,7 +32,7 @@ author = 'Sidney Niccolson'
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.2-beta'
+release = '0.3-beta'
 
 
 # -- General configuration ---------------------------------------------------
