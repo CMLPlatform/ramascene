@@ -81,7 +81,10 @@ class Modelling:
                 A_modified = True
         
         if A_modified is True:
-            self.L = 1/(np.identity(len(self.A))-self.A)
+            with np.errstate(divide="ignore", invalid="ignore"):
+                self.L = 1 / (np.identity(len(self.A)) - self.A)
+                self.L[self.L == np.inf] = 0
+                self.L[self.L == np.nan] = 0
         # else load the original L
         else:
             self.L = self.L
