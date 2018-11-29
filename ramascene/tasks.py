@@ -8,8 +8,7 @@ from celery import shared_task
 from ramascene import querymanagement
 from ramascene.analyze import Analyze
 from ramascene.modelling import Modelling
-import os
-from django.conf import settings
+
 
 log = logging.getLogger(__name__)
 
@@ -86,7 +85,7 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
     indicator_calc_indices = querymanagement.convert_to_numpy(ready_query_selection["extn"])
     idx_units = ready_query_selection["idx_units"]
     # retrieve standard matrix
-    B = get_numpy_objects(query_selection["year"], "B")
+    B = querymanagement.get_numpy_objects(query_selection["year"], "B")
     # set constant for country selling product ("total")
     s_country_idx = np.arange(0, 49)
     try:
@@ -94,14 +93,14 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
         if query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Consumption":
             # if there are model_details
             if "model_details" in query_selection:
-                # TODO apply modelling
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
-                #model = Modelling(Y_data,L_data,query_selection["model_details"])
-                #Y, L = model.apply_model()
+                Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+
+                model = Modelling(ready_query_selection, Y_data, query_selection["load_A"],
+                                  query_selection["year"], query_selection["model_details"])
+                Y, L = model.apply_model()
             else:
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
+                Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p2 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -117,14 +116,14 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Production":
             # if there are model_details
             if "model_details" in query_selection:
-                # TODO apply modelling
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
-                #model = Modelling(Y_data,L_data,query_selection["model_details"])
-                #Y, L = model.apply_model()
+                Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+
+                model = Modelling(ready_query_selection, Y_data, query_selection["load_A"],
+                                  query_selection["year"], query_selection["model_details"])
+                Y, L = model.apply_model()
             else:
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
+                Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p3 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -140,14 +139,14 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Consumption":
             # if there are model_details
             if "model_details" in query_selection:
-                # TODO apply modelling
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
-                #model = Modelling(Y_data,L_data,query_selection["model_details"])
-                #Y, L = model.apply_model()
+                Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+
+                model = Modelling(ready_query_selection, Y_data, query_selection["load_A"],
+                                  query_selection["year"], query_selection["model_details"])
+                Y, L = model.apply_model()
             else:
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
+                Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p1 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -163,14 +162,14 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Production":
             #if there are model_details
             if "model_details" in query_selection:
-                # TODO apply modelling
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
-                #model = Modelling(Y_data,L_data,query_selection["model_details"])
-                #Y,L = model.apply_model()
+                Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+
+                model = Modelling(ready_query_selection, Y_data, query_selection["load_A"],
+                                  query_selection["year"], query_selection["model_details"])
+                Y,L = model.apply_model()
             else:
-                Y = get_numpy_objects(query_selection["year"], "Y")
-                L = get_numpy_objects(query_selection["year"], "L")
+                Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
             # instantiate Analyze class
             p4 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -205,11 +204,3 @@ def handle_complete(job_id, channel_name, celery_id):
     # send final complete message
     async_send(channel_name, job)
 
-
-def get_numpy_objects(year, object_name):
-    """
-    Retrieve numpy objects per year.
-    """
-    location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
-    object = np.load(location + os.path.join(os.path.join(object_name+str('_')+settings.DATASET_VERSION)+".npy"))
-    return object

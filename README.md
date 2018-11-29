@@ -81,8 +81,13 @@ export DATASETS_DIR=[my/path/to/datasets]
 ```
 
 ### Start Celery
+Start the API to handle analytical calculations:
 ```
 $celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default
+```
+Start the API to handle modelling calculations:
+```
+$celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue modelling
 ```
 
 ### Start the development server

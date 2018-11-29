@@ -2,45 +2,58 @@ import numpy as np
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 
-
 class Modelling:
     """
     This class contains the methods for modeling
     """
 
-    def __init__(self, Y_data, L_data, model_details, A_data=0): # A_data is defaulted to 0 for testing please eliminate default value plus # mock up for testing once ready for integration
+    def __init__(self, ready_model_details, Y_data, load_A, year, model_details):
         self.Y_data = Y_data
-        self.L_data = L_data
-        self.A_data = A_data
+        self.L_data = None
+        self.A_data = None
+        self.ready_model_details = ready_model_details
+        self.load_A = load_A
+        self.year = year
         self.model_details = model_details
 
     def apply_model(self):
-        # copy the original final demand for use
+        #copy Y to prevent any race conditions
         self.Y = self.Y_data.copy()
-        self.L = self.L_data.copy()
-        self.A = self.A_data.copy()
+        # if we need to load A
+        if True in self.load_A:
+            self.A = querymanagement.get_numpy_objects(self.year, "A")
+        # else just use L
+        else:
+            self.L = querymanagement.get_numpy_objects(self.year, "L")
 
         # loop over the different interventions, such that we can apply changes individually
         A_modified = False
-        for intervention in self.model_details:
+
+        # unpack data structures
+        products = self.unpack(self.ready_model_details.items(),'product')
+        consumed_by = self.unpack(self.ready_model_details.items(),'consumedBy')
+        origin_reg = self.unpack(self.ready_model_details.items(),'originReg')
+        consumed_reg = self.unpack(self.ready_model_details.items(),'consumedReg')
+        tech_changes = self.unpack(self.ready_model_details.items(),'techChange')
+        identifiers = self.unpack(self.ready_model_details.items(),'identifiers')
+
+        # loop over any of the unpacked datastructures as their length are the same
+        for intervention_idx, value in enumerate(products):
+            product = value
 
             product_idx = np.arange(0, 200)
             country_idx = np.arange(0, 49)
 
-
             # convert to numpy arrays explicitly
-            calc_ready_product = querymanagement.convert_to_numpy(calc_ready_product)
-            calc_ready_origin_reg = querymanagement.convert_to_numpy(calc_ready_origin_reg)
-            calc_ready_consumed_reg = querymanagement.convert_to_numpy(calc_ready_consumed_reg)
-
-# =============================================================================
-#             # TODO after front-end change, we don't need to explicitly get the first element out of the list
-#             if isinstance(consuming_cat, (list,)):
-#                 consuming_cat = consuming_cat[0]
-# =============================================================================
+            calc_ready_product = querymanagement.convert_to_numpy(product)
+            calc_ready_origin_reg = querymanagement.convert_to_numpy(origin_reg[intervention_idx])
+            calc_ready_consumed_reg = querymanagement.convert_to_numpy(consumed_reg[intervention_idx])
+            calc_ready_consumed_by = querymanagement.convert_to_numpy(consumed_by[intervention_idx])
+            tech_change = tech_changes[intervention_idx]
 
             # consuming_cat = [0, 1, 10, 76, 199] # mock up for testing
-            if consuming_cat == "FinalConsumption": # needs to be adapted to take ids
+            if identifiers[intervention_idx] == "FINALCONSUMPTION": # needs to be adapted to take ids
+
                 # identify local coordinates
                 ids = pim.ProductIndexManager(calc_ready_product,
                                               calc_ready_origin_reg,
@@ -52,12 +65,11 @@ class Modelling:
 
                 self.Y = self.model_final_demand(self.Y, rows, columns, tech_change)
 
-            elif consuming_cat != "FinalConsumption":  # needs to be adapted to take ids
-                calc_ready_production = querymanagement.get_leafs_product(consuming_cat)
-                calc_ready_production = querymanagement.convert_to_numpy(calc_ready_production)
+            else:  # needs to be adapted to take ids
+
                 ids = pim.ProductIndexManager(calc_ready_product,
                                               calc_ready_origin_reg,
-                                              calc_ready_production,
+                                              calc_ready_consumed_by,
                                               calc_ready_consumed_reg
                                               )
 
@@ -67,10 +79,13 @@ class Modelling:
                 self.A = self.model_intermediates(self.A, rows, columns, tech_change)
 
                 A_modified = True
-
+        
         if A_modified is True:
             self.L = 1/(np.identity(len(self.A))-self.A)
-            
+        # else load the original L
+        else:
+            self.L = self.L
+
         return self.Y, self.L
 
     # noinspection PyMethodMayBeStatic
@@ -94,3 +109,13 @@ class Modelling:
 
         return A
 
+    # noinspection PyMethodMayBeStatic
+    def unpack(self, structure, name):
+        """
+        Unpack deep structure of modelling details (these are arrays of local ids per intervention)
+
+        """
+        array_obj = [val for key, val in structure if key == name]
+        # remove outer list
+        [array_obj] = array_obj
+        return array_obj

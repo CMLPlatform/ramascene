@@ -1,6 +1,8 @@
 from ramascene.models import Country, Product, Indicator, ModellingProduct
 import numpy as np
 import math
+import os
+from django.conf import settings
 
 """
 Supporting  module  for  cleaning  up  query  data  for  calculations,  data  aggregations  and  cleaning  result  data.
@@ -459,3 +461,17 @@ def convert_to_numpy(list_obj):
     numpy_array = np.asarray(list_obj, dtype=np.int64)
 
     return numpy_array
+
+def get_numpy_objects(year, object_name):
+    """
+    Retrieve numpy objects per year.
+            Args:
+            year (int): selected year
+            object_name (str): L, A, B, or Y
+
+        Returns:
+            numpy object: numpy object of the given object_name
+    """
+    location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
+    object = np.load(location + os.path.join(os.path.join(object_name+str('_')+settings.DATASET_VERSION)+".npy"))
+    return object

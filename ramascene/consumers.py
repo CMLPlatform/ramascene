@@ -44,8 +44,8 @@ class RamasceneConsumer(SyncConsumer):
 
                 # as we always get an array from the API, we need to get the first value from the query,
                 # In future versions this might differ and we allow multiple years or multiple indicators
-                # TODO explicit 'int' is not needed after front-end change
-                year = int(query_selection["year"][0])
+                year = query_selection["year"][0]
+
                 # update the query_selection to only contain a single value
                 query_selection.update({'year': year})
 
@@ -53,9 +53,13 @@ class RamasceneConsumer(SyncConsumer):
                 ready_query_selection = query_selection.copy()
 
                 if data["action"] == "model":
-                    model_details = (data["model_details"])
+                    model_details = data["model_details"]
                     # update the original year selected with a .1 so we can differentiate with model year
                     model_year = "Scenario year:"+str(year)
+
+                    # boolean elements in list to determine if we need to load in the A matrix
+                    load_A = []
+                    identifiers = []
                     names_origin_regions = []
                     names_consumed_regions = []
                     names_products = []
@@ -94,6 +98,16 @@ class RamasceneConsumer(SyncConsumer):
                         products.append(calc_ready_product)
                         consumed_by_products.append(calc_ready_consumed_by_products)
                         tech_changes.append(tech_change)
+                        # as optimisation step check if there is any modelling query that needs the A matrix
+                        identifier = querymanagement.identify_modelling_product(intervention["consumedBy"][0])
+                        identifiers.append(identifier)
+                        # if the identifier returns FINALCONSUMPTION it is for final demand modelling
+                        # if the identifier also returns others, we need to load in A instead of default L matrix
+                        if identifier != "FINALCONSUMPTION":
+                            # explicitly append
+                            load_A.append(True)
+                        else:
+                            load_A.append(False)
 
 
                     info_query_selection.update({'originReg': names_origin_regions, 'consumedReg':names_consumed_regions
@@ -102,9 +116,10 @@ class RamasceneConsumer(SyncConsumer):
 
                     ready_query_selection.update({'originReg': origin_regions, 'consumedReg':consumed_regions
                                                      ,'product': products, 'techChange': tech_changes,
-                                                 'year':model_year, 'consumedBy': consumed_by_products})
+                                                 'year':year, 'consumedBy': consumed_by_products, 'identifiers':
+                                                  identifiers})
                     # as the full data object is not send to Celery, insert model_details into the queryseleciton
-                    query_selection.update({'model_details': model_details})
+                    query_selection.update({'model_details': model_details, 'load_A': load_A})
 
                 # clean query for info (job_name)
                 names_products = \
@@ -140,6 +155,7 @@ class RamasceneConsumer(SyncConsumer):
                 # querySelection ready for calculations
                 ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
                                              'extn': indicator_calc_indices, 'idx_units': idx_units})
+
                 # call default handler
                 default_handler(job_name, job.id, self.channel_name, ready_query_selection, query_selection)
             # if action is not received
