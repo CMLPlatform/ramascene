@@ -17,7 +17,8 @@ import sys
 import django
 sys.path.insert(0, os.path.abspath('../..'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'ramasceneMasterProject.config.base'
-SECRET_KEY = '__SECRET__'
+
+os.environ['SECRET_KEY'] = '__SECRET__'
 django.setup()
 
 
