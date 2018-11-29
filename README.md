@@ -52,6 +52,13 @@ Check the status to make sure everything is running:
 
 > Note: Perform all next steps in the virtualenv and in the rootfolder of the project
 
+### Set the following environment variables (see sample-dev-env.sh):
+```
+export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
+export DATASETS_VERSION=[version downloaded e.g. v3]
+export DATASETS_DIR=[my/path/to/datasets]
+```
+
 ### Prepare the database
 ```
 $python3 manage.py makemigrations
@@ -71,13 +78,6 @@ $npm install
 ### Built React bundle
 ```
 $./node_modules/.bin/webpack --config dev-webpack.config.js 
-```
-
-### Set the following environment variables (see sample-dev-env.sh):
-```
-export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
-export DATASETS_VERSION=[version downloaded e.g. v3]
-export DATASETS_DIR=[my/path/to/datasets]
 ```
 
 ### Start Celery
