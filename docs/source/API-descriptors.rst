@@ -185,8 +185,8 @@ The following table denotes the communication between front-end and back-end for
 |                           |                         |       ex.:  \"originReg\":[3]               |
 +---------------------------+-------------------------+---------------------------------------------+
 | Model type of calculation |  Model details          | **var name: model_details**                 |
-|                           |  : Model type           |  *JSON key: consumedBy, JSON value: array* |
-|                           |                         |    ex.:  \"consumedBy\":[4]"|
+|                           |  : Model type           |  *JSON key: consumedBy, JSON value: array*  |
+|                           |                         |    ex.:  \"consumedBy\":[4]"                |
 +---------------------------+-------------------------+---------------------------------------------+
 | Region consuming          |  Model details          | **var name: model_details**                 |
 |                           |  : Region of consumption|  *JSON key: consumedReg, JSON value:  array*|
