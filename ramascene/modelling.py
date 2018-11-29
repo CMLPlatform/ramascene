@@ -9,8 +9,8 @@ class Modelling:
 
     def __init__(self, ready_model_details, Y_data, load_A, year, model_details):
         self.Y_data = Y_data
-        self.L_data = None
-        self.A_data = None
+        self.L = None
+        self.A = None
         self.ready_model_details = ready_model_details
         self.load_A = load_A
         self.year = year
