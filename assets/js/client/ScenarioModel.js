@@ -4,7 +4,6 @@ import {Button, Col, FormControl, Glyphicon, OverlayTrigger, Popover, Row, Well}
 import ProductFilterableSingleSelectDropdownTree from './productFilterableSingleSelectDropdownTree';
 import ConsumerFilterableSingleSelectDropdownTree from './consumerFilterableSingleSelectDropdownTree';
 import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
-// import {ModellingContext} from "./modellingContext";
 import PropTypes from 'prop-types';
 
 var shortid = require('shortid');
@@ -28,7 +27,7 @@ class ScenarioModel extends Component {
 
         this.MAX_CHANGES = 5;
 
-        this.state = {busy: props.busy, model_details: [], coefficient: 0, selectedConsumerOption: ['FinalConsumption']};
+        this.state = {busy: props.busy, model_details: [], coefficient: 0};
 
         this.productCompRef = null;
         this.setProductRef = component => {
@@ -196,10 +195,10 @@ class ScenarioModel extends Component {
         } else {
             destination = this.state.selectedDestinationOption.map(x => parseInt(x));
         }
-        if (Array.isArray(this.state.selectedConsumerOption)) {
-            consumer = this.state.selectedConsumerOption[0];
+        if (!Array.isArray(this.state.selectedConsumerOption)) {
+            consumer = [parseInt(this.state.selectedConsumerOption)];
         } else {
-            consumer = this.state.selectedConsumerOption;
+            consumer = this.state.selectedConsumerOption.map(x => parseInt(x));
         }
 
         const model_detail = {
@@ -234,6 +233,10 @@ class ScenarioModel extends Component {
 
     getProductLabel(value) {
         return this.productCompRef.getLabel(value);
+    }
+
+    getConsumerLabel(value) {
+        return this.consumerCompRef.getLabel(value);
     }
 
     getOrigLabel(value) {

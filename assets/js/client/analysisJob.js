@@ -205,6 +205,7 @@ class AnalysisJob extends Component {
             this.state.model_details.forEach(function (model_detail) {
                 new_model_details.push({
                     'Product': this.context.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    'Consumed by': this.context.scenarioCompRef.getConsumerLabel(model_detail.consumedBy[0]),
                     'Originating from': this.context.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
                     'Consumed where': this.context.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
                     'Technical Change Coefficient': model_detail.techChange[0]
