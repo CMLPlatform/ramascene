@@ -82,7 +82,6 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                         names_consumed_regions.append(name_consumed_reg)
                         names_products.append(name_product)
                         names_consumed_by_products.append(name_consumed_by_products)
-                        print(intervention["consumedBy"])
 
                         tech_change = intervention["techChange"]
 
@@ -163,7 +162,6 @@ class RamasceneConsumer(JsonWebsocketConsumer):
 
         except Exception as e:
             log.debug("ws message isn't json text=%s", event['text'])
-            print("error: " + str(e))
             return
 
     def websocket_disconnect(self, message):

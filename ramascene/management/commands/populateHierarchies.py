@@ -62,7 +62,9 @@ def addIndicator(name, unit, global_id, parent_id, local_id, level):
     return e
 
 def populate(data_obj, model_type):
+    counter = 0
     if model_type =="Indicator":
+        print("Adding values to table: ", model_type)
         # add children now
         for x in data_obj:
             try:
@@ -73,10 +75,14 @@ def populate(data_obj, model_type):
                 local_id = int(x[4])
                 level = int(x[5])
                 addIndicator(name, unit, global_id, parent_id, local_id, level)
-                print("Adding to database: " + name)
+                counter += 1
+                print("number of records: " + str(counter), end='\r')
             except Exception as e:
                 sys.exit("Adding database objects Failed.." + e)
+        print("\n")
     else:
+        print("Adding values to table: ", model_type)
+        counter = 0
         # add children now
         for x in data_obj:
             try:
@@ -89,7 +95,7 @@ def populate(data_obj, model_type):
                 identifier = x[6]
                 leaf_children_global = x[7]
                 leaf_children_local = x[8]
-
+                counter += 1
                 if model_type =="Product":
                     addProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global,
                                leaf_children_local)
@@ -102,14 +108,10 @@ def populate(data_obj, model_type):
 
                 else:
                     sys.exit("Model_type not recognized.")
-                print("Adding to database: "+name)
+                print("number of records: " + str(counter), end='\r')
             except Exception as e:
                 sys.exit("Adding database objects Failed.."+e)
-
-    # go through the data
-    print('***Done!! All objects have been added***')
-
-
+        print("\n")
 
 def getfile(myFile):
     # open the file
