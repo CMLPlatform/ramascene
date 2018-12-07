@@ -19,6 +19,8 @@ class TestAjaxCelery(SimpleTestCase):
 
     allow_database_queries = True
 
+
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()

@@ -1,0 +1,51 @@
+view_type	calc_route	year	country_global_id	product_global_id	indicator_global_id	expected_name	expected_unit	expected_indicator	octave_results
+Consumption	GeoMap	2011	7	1	2	Austria	M.EUR	Value Added: Total	300449.98
+Consumption	GeoMap	2011	8	1	2	Belgium	M.EUR	Value Added: Total	376638.37
+Consumption	GeoMap	2011	9	1	2	Bulgaria	M.EUR	Value Added: Total	40522.414
+Consumption	GeoMap	2011	10	1	2	Cyprus	M.EUR	Value Added: Total	20127.778
+Consumption	GeoMap	2011	11	1	2	Czech Republic	M.EUR	Value Added: Total	156850.83
+Consumption	GeoMap	2011	12	1	2	Germany	M.EUR	Value Added: Total	2567528.1
+Consumption	GeoMap	2011	13	1	2	Denmark	M.EUR	Value Added: Total	231715.49
+Consumption	GeoMap	2011	14	1	2	Estonia	M.EUR	Value Added: Total	15691.595
+Consumption	GeoMap	2011	15	1	2	Spain	M.EUR	Value Added: Total	1071606.4
+Consumption	GeoMap	2011	16	1	2	Finland	M.EUR	Value Added: Total	198277.81
+Consumption	GeoMap	2011	17	1	2	France	M.EUR	Value Added: Total	2109211.4
+Consumption	GeoMap	2011	18	1	2	Greece	M.EUR	Value Added: Total	220756.21
+Consumption	GeoMap	2011	19	1	2	Croatia	M.EUR	Value Added: Total	44917.21
+Consumption	GeoMap	2011	20	1	2	Hungary	M.EUR	Value Added: Total	94353.756
+Consumption	GeoMap	2011	21	1	2	Ireland	M.EUR	Value Added: Total	142236.92
+Consumption	GeoMap	2011	22	1	2	Italy	M.EUR	Value Added: Total	1662338.6
+Consumption	GeoMap	2011	23	1	2	Lithuania	M.EUR	Value Added: Total	32052.481
+Consumption	GeoMap	2011	24	1	2	Luxembourg	M.EUR	Value Added: Total	29193.008
+Consumption	GeoMap	2011	25	1	2	Latvia	M.EUR	Value Added: Total	21410.002
+Consumption	GeoMap	2011	26	1	2	Malta	M.EUR	Value Added: Total	6694.712
+Consumption	GeoMap	2011	27	1	2	Netherlands	M.EUR	Value Added: Total	587236.63
+Consumption	GeoMap	2011	28	1	2	Poland	M.EUR	Value Added: Total	387386.5
+Consumption	GeoMap	2011	29	1	2	Portugal	M.EUR	Value Added: Total	183462.34
+Consumption	GeoMap	2011	30	1	2	Romania	M.EUR	Value Added: Total	140575.09
+Consumption	GeoMap	2011	31	1	2	Sweden	M.EUR	Value Added: Total	385502.52
+Consumption	GeoMap	2011	32	1	2	Slovenia	M.EUR	Value Added: Total	36170.461
+Consumption	GeoMap	2011	33	1	2	Slovakia	M.EUR	Value Added: Total	70993.601
+Consumption	GeoMap	2011	34	1	2	United Kingdom	M.EUR	Value Added: Total	1894201.6
+Consumption	GeoMap	2011	35	1	2	United States	M.EUR	Value Added: Total	11564598
+Consumption	GeoMap	2011	36	1	2	Japan	M.EUR	Value Added: Total	4281023.7
+Consumption	GeoMap	2011	37	1	2	China	M.EUR	Value Added: Total	5216297.8
+Consumption	GeoMap	2011	38	1	2	Canada	M.EUR	Value Added: Total	1300431.4
+Consumption	GeoMap	2011	39	1	2	South Korea	M.EUR	Value Added: Total	850925.34
+Consumption	GeoMap	2011	40	1	2	Brazil	M.EUR	Value Added: Total	1893188.3
+Consumption	GeoMap	2011	41	1	2	India	M.EUR	Value Added: Total	1446372.1
+Consumption	GeoMap	2011	42	1	2	Mexico	M.EUR	Value Added: Total	850661.28
+Consumption	GeoMap	2011	43	1	2	Russia	M.EUR	Value Added: Total	1252265.9
+Consumption	GeoMap	2011	44	1	2	Australia	M.EUR	Value Added: Total	1104068.9
+Consumption	GeoMap	2011	45	1	2	Switzerland	M.EUR	Value Added: Total	457811.41
+Consumption	GeoMap	2011	46	1	2	Turkey	M.EUR	Value Added: Total	604852.41
+Consumption	GeoMap	2011	47	1	2	Taiwan	M.EUR	Value Added: Total	325419.5
+Consumption	GeoMap	2011	48	1	2	Norway	M.EUR	Value Added: Total	311913.43
+Consumption	GeoMap	2011	49	1	2	Indonesia	M.EUR	Value Added: Total	625616.26
+Consumption	GeoMap	2011	50	1	2	South Africa	M.EUR	Value Added: Total	296665.26
+Consumption	GeoMap	2011	51	1	2	Rest of Asia and Pacific	M.EUR	Value Added: Total	2010787.5
+Consumption	GeoMap	2011	52	1	2	Rest of America	M.EUR	Value Added: Total	1687792
+Consumption	GeoMap	2011	53	1	2	Rest of Europe	M.EUR	Value Added: Total	307244.8
+Consumption	GeoMap	2011	54	1	2	Rest of Africa	M.EUR	Value Added: Total	1095613.1
+Consumption	GeoMap	2011	55	1	2	Rest of Middle East	M.EUR	Value Added: Total	1792299.4
+Consumption	GeoMap	2011	1	1	2	Total	M.EUR	Value Added: Total	52303949.598
