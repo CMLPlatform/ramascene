@@ -2,7 +2,7 @@ import json
 import logging
 from .models import Job
 from .tasks import default_handler
-from channels.consumer import SyncConsumer
+from channels.generic.websocket import JsonWebsocketConsumer
 from channels.exceptions import StopConsumer
 from ramascene import querymanagement
 import time
@@ -10,7 +10,7 @@ import time
 log = logging.getLogger(__name__)
 
 
-class RamasceneConsumer(SyncConsumer):
+class RamasceneConsumer(JsonWebsocketConsumer):
     """
     This  class  represents  the  Django  Channels  web  socket  interface  functionality.
     """
@@ -18,10 +18,8 @@ class RamasceneConsumer(SyncConsumer):
         """
         websocket first connection, accept immediately
         """
-        print("Connected")
-        print(event)
-        print(self.channel_name)
-        self.send({
+        self.connect()
+        self.send_json({
             "type": "websocket.accept",
         })
 
@@ -84,7 +82,7 @@ class RamasceneConsumer(SyncConsumer):
                         names_consumed_regions.append(name_consumed_reg)
                         names_products.append(name_product)
                         names_consumed_by_products.append(name_consumed_by_products)
-
+                        print(intervention["consumedBy"])
 
                         tech_change = intervention["techChange"]
 
@@ -172,17 +170,20 @@ class RamasceneConsumer(SyncConsumer):
         """
         Websocket disconnect function.
         """
+
+        self.close()
         raise StopConsumer()
 
     def celery_message(self, event):
         """
            Sends Celery task status.
         """
+
         time.sleep(0.5)
-        self.send({
-            "type": "websocket.send",
-            "text": event["text"],
-        })
+        test = json.loads(event["text"])
+        self.send_json(test)
+        # gracefully shutdown connection
+        self.websocket_disconnect(0)
 
     def save_job(self, job_name):
         """
@@ -200,9 +201,9 @@ class RamasceneConsumer(SyncConsumer):
         Sends web socket response that the job is started
         """
         # return data
-        self.send({"type": "websocket.send", "text": json.dumps({
+        self.send_json({
             "action": "started",
             "job_id": job.id,
             "job_name": job.name,
             "job_status": job.status,
-        })})
+        })
