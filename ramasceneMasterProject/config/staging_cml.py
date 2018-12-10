@@ -6,8 +6,6 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', os.environ["HOST"]]
 
-DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\rawData')
-
 SECRET_KEY = os.environ['SECRET_KEY']
 
 # allow cors
