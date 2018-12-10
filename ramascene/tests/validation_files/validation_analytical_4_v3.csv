@@ -1,0 +1,20 @@
+view_type	calc_route	year	country_global_id	product_global_id	indicator_global_id	expected_name	expected_unit	expected_indicator	octave_results
+Production	TreeMap	2011	37	77	5	Paddy rice	kg CO2 eq	GHG emissions: Total	285487435181.853
+Production	TreeMap	2011	37	78	5	Wheat	kg CO2 eq	GHG emissions: Total	40713536166.1715
+Production	TreeMap	2011	37	79	5	Cereal grains nec	kg CO2 eq	GHG emissions: Total	66235302753.3382
+Production	TreeMap	2011	37	80	5	Vegetables, fruit, nuts	kg CO2 eq	GHG emissions: Total	91439775305.6879
+Production	TreeMap	2011	37	81	5	Oil seeds	kg CO2 eq	GHG emissions: Total	18805539035.9827
+Production	TreeMap	2011	37	82	5	Sugar cane, sugar beet	kg CO2 eq	GHG emissions: Total	14151660266.2056
+Production	TreeMap	2011	37	83	5	Plant-based fibers	kg CO2 eq	GHG emissions: Total	3787886330.45621
+Production	TreeMap	2011	37	84	5	Crops nec	kg CO2 eq	GHG emissions: Total	13905842988.8025
+Production	TreeMap	2011	37	85	5	Cattle	kg CO2 eq	GHG emissions: Total	191230866976.408
+Production	TreeMap	2011	37	86	5	Pigs	kg CO2 eq	GHG emissions: Total	67534658728.2716
+Production	TreeMap	2011	37	87	5	Poultry	kg CO2 eq	GHG emissions: Total	30932475514.3893
+Production	TreeMap	2011	37	88	5	Meat animals nec	kg CO2 eq	GHG emissions: Total	49099562515.1619
+Production	TreeMap	2011	37	89	5	Animal products nec	kg CO2 eq	GHG emissions: Total	5401551339.71379
+Production	TreeMap	2011	37	90	5	Raw milk	kg CO2 eq	GHG emissions: Total	56487203577.545
+Production	TreeMap	2011	37	91	5	Wool, silk-worm cocoons	kg CO2 eq	GHG emissions: Total	2869048349.45536
+Production	TreeMap	2011	37	92	5	Manure (conventional treatment)	kg CO2 eq	GHG emissions: Total	0
+Production	TreeMap	2011	37	93	5	Manure (biogas treatment)	kg CO2 eq	GHG emissions: Total	0
+Production	TreeMap	2011	37	94	5	Products of forestry, logging and related services	kg CO2 eq	GHG emissions: Total	7111059737.22876
+Production	TreeMap	2011	37	2	5	Agriculture, hunting and forestry	kg CO2 eq	GHG emissions: Total	945193404766.671

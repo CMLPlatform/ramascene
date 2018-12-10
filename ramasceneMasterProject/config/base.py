@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
-
 # location of manage.py
 BASE_DIR = os.path.dirname(os.path.dirname
                            (os.path.dirname(os.path.abspath(__file__))))
@@ -29,7 +28,6 @@ STATIC_PATH = os.path.join(BASE_DIR, 'static_assets')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
-
 # Additional locations of static files
 STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
@@ -37,7 +35,6 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
     STATIC_PATH,
     os.path.join(BASE_DIR, 'assets'),
-
 
 )
 
@@ -117,7 +114,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ramasceneMasterProject.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
@@ -127,7 +123,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -150,7 +145,6 @@ AUTH_PASSWORD_VALIDATORS = [
             'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/

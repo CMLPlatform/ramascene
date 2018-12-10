@@ -9,6 +9,6 @@ channel_routing = ProtocolTypeRouter({
         URLRouter([
             path('ramascene/', RamasceneConsumer),
 
-            ]),
-        ),
+        ]),
+    ),
 })

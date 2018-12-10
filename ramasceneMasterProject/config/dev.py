@@ -1,6 +1,5 @@
 from .base import *
 
-
 SECRET_KEY = '__SECRET__'
 
 DEBUG = True

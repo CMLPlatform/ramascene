@@ -11,7 +11,8 @@ class Analyze:
     """
     This class contains the method for calculations
     """
-    def __init__(self, product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection,idx_units,
+
+    def __init__(self, product_calc_indices, country_calc_indices, indicator_calc_indices, querySelection, idx_units,
                  job_name, job_id, s_country_idx, Y_data, B_data, L_data):
         self.product_calc_indices = product_calc_indices
         self.country_calc_indices = country_calc_indices
@@ -173,7 +174,8 @@ class Analyze:
         c_country_idx = np.arange(0, 49)
 
         # Expand selected ranges
-        ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices, self.country_calc_indices)
+        ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices,
+                                      self.country_calc_indices)
         full_c_product_idx = ids.get_consumed_product_ids()
         full_p_product_idx = ids.get_produced_product_ids()
         tot_prd_cnt = ids.get_product_count()
@@ -247,7 +249,8 @@ class Analyze:
         c_country_idx = np.arange(0, 49)
 
         # Expand selected ranges
-        ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices, self.country_calc_indices)
+        ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices,
+                                      self.country_calc_indices)
         full_c_product_idx = ids.get_consumed_product_ids()
         full_p_product_idx = ids.get_produced_product_ids()
         tot_prd_cnt = ids.get_product_count()

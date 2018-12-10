@@ -2,6 +2,7 @@ import numpy as np
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 
+
 class Modelling:
     """
     This class contains the methods for modeling
@@ -17,7 +18,7 @@ class Modelling:
         self.model_details = model_details
 
     def apply_model(self):
-        #copy Y to prevent any race conditions
+        # copy Y to prevent any race conditions
         self.Y = self.Y_data.copy()
         # if we need to load A
         if True in self.load_A:
@@ -30,12 +31,12 @@ class Modelling:
         A_modified = False
 
         # unpack data structures
-        products = self.unpack(self.ready_model_details.items(),'product')
-        consumed_by = self.unpack(self.ready_model_details.items(),'consumedBy')
-        origin_reg = self.unpack(self.ready_model_details.items(),'originReg')
-        consumed_reg = self.unpack(self.ready_model_details.items(),'consumedReg')
-        tech_changes = self.unpack(self.ready_model_details.items(),'techChange')
-        identifiers = self.unpack(self.ready_model_details.items(),'identifiers')
+        products = self.unpack(self.ready_model_details.items(), 'product')
+        consumed_by = self.unpack(self.ready_model_details.items(), 'consumedBy')
+        origin_reg = self.unpack(self.ready_model_details.items(), 'originReg')
+        consumed_reg = self.unpack(self.ready_model_details.items(), 'consumedReg')
+        tech_changes = self.unpack(self.ready_model_details.items(), 'techChange')
+        identifiers = self.unpack(self.ready_model_details.items(), 'identifiers')
 
         # loop over any of the unpacked datastructures as their length are the same
         for intervention_idx, value in enumerate(products):
@@ -52,7 +53,7 @@ class Modelling:
             tech_change = tech_changes[intervention_idx]
 
             # consuming_cat = [0, 1, 10, 76, 199] # mock up for testing
-            if identifiers[intervention_idx] == "FINALCONSUMPTION": # needs to be adapted to take ids
+            if identifiers[intervention_idx] == "FINALCONSUMPTION":  # needs to be adapted to take ids
 
                 # identify local coordinates
                 ids = pim.ProductIndexManager(calc_ready_product,
@@ -79,7 +80,7 @@ class Modelling:
                 self.A = self.model_intermediates(self.A, rows, columns, tech_change)
 
                 A_modified = True
-        
+
         if A_modified is True:
             with np.errstate(divide="ignore", invalid="ignore"):
                 self.L = np.linalg.inv(np.identity(len(self.A)) - self.A)

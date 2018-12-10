@@ -14,6 +14,7 @@ class RamasceneConsumer(JsonWebsocketConsumer):
     """
     This  class  represents  the  Django  Channels  web  socket  interface  functionality.
     """
+
     def websocket_connect(self, event):
         """
         websocket first connection, accept immediately
@@ -53,7 +54,7 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                 if data["action"] == "model":
                     model_details = data["model_details"]
                     # update the original year selected with a .1 so we can differentiate with model year
-                    model_year = "Scenario year:"+str(year)
+                    model_year = "Scenario year:" + str(year)
 
                     # boolean elements in list to determine if we need to load in the A matrix
                     load_A = []
@@ -74,7 +75,7 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                             querymanagement.get_names_country(intervention["originReg"])
                         name_consumed_reg = \
                             querymanagement.get_names_country(intervention["consumedReg"])
-                        name_product  = \
+                        name_product = \
                             querymanagement.get_names_product(intervention["product"])
                         name_consumed_by_products = \
                             querymanagement.get_modelled_names_product(intervention["consumedBy"])
@@ -89,7 +90,8 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                         calc_ready_product = querymanagement.get_leafs_product(intervention["product"])
                         calc_ready_origin_reg = querymanagement.get_leafs_country(intervention["originReg"])
                         calc_ready_consumed_reg = querymanagement.get_leafs_country(intervention["consumedReg"])
-                        calc_ready_consumed_by_products = querymanagement.get_leafs_modelled_product(intervention["consumedBy"])
+                        calc_ready_consumed_by_products = querymanagement.get_leafs_modelled_product(
+                            intervention["consumedBy"])
                         origin_regions.append(calc_ready_origin_reg)
                         consumed_regions.append(calc_ready_consumed_reg)
                         products.append(calc_ready_product)
@@ -106,15 +108,15 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                         else:
                             load_A.append(False)
 
+                    info_query_selection.update(
+                        {'originReg': names_origin_regions, 'consumedReg': names_consumed_regions
+                            , 'product': names_products, 'techChange': tech_changes,
+                         'year': model_year, 'consumedBy': names_consumed_by_products})
 
-                    info_query_selection.update({'originReg': names_origin_regions, 'consumedReg':names_consumed_regions
-                                                     ,'product': names_products, 'techChange': tech_changes,
-                                                 'year':model_year, 'consumedBy': names_consumed_by_products})
-
-                    ready_query_selection.update({'originReg': origin_regions, 'consumedReg':consumed_regions
-                                                     ,'product': products, 'techChange': tech_changes,
-                                                 'year':year, 'consumedBy': consumed_by_products, 'identifiers':
-                                                  identifiers})
+                    ready_query_selection.update({'originReg': origin_regions, 'consumedReg': consumed_regions
+                                                     , 'product': products, 'techChange': tech_changes,
+                                                  'year': year, 'consumedBy': consumed_by_products, 'identifiers':
+                                                      identifiers})
                     # as the full data object is not send to Celery, insert model_details into the queryseleciton
                     query_selection.update({'model_details': model_details, 'load_A': load_A})
 
@@ -151,7 +153,7 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                     querymanagement.get_indicator_units(query_selection["extn"])
                 # querySelection ready for calculations
                 ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
-                                             'extn': indicator_calc_indices, 'idx_units': idx_units})
+                                              'extn': indicator_calc_indices, 'idx_units': idx_units})
 
                 # call default handler
                 default_handler(job_name, job.id, self.channel_name, ready_query_selection, query_selection)
@@ -194,7 +196,7 @@ class RamasceneConsumer(JsonWebsocketConsumer):
         job.save()
         return job
 
-    def ws_response(self,job):
+    def ws_response(self, job):
         """
         Sends web socket response that the job is started
         """

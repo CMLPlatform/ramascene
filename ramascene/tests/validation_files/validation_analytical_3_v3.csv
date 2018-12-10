@@ -1,0 +1,4 @@
+view_type	calc_route	year	country_global_id	product_global_id	indicator_global_id	expected_name	expected_unit	expected_indicator	octave_results
+Consumption	GeoMap	2011	3	1	2	Middle-East	M.EUR	Value Added: Total	2397151.81
+Consumption	GeoMap	2011	46	1	2	Turkey	M.EUR	Value Added: Total	604852.41
+Consumption	GeoMap	2011	55	1	2	Rest of Middle East	M.EUR	Value Added: Total	1792299.4

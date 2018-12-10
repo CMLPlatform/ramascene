@@ -5,65 +5,75 @@ from ramascene.models import Country, Product, Indicator, ModellingProduct
 import os
 import sys
 
+
 class Command(BaseCommand):
     """
     Populate database with pre developed csv files residing in python_ini folder
     """
+
     def handle(self, *args, **options):
         try:
             project_root_dir = settings.BASE_DIR
             indicatorData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_indicators.csv'))
-            countryData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_countryTree_exiovisuals.csv'))
-            productData = getfile(os.path.join(project_root_dir, 'python_ini/data/mod_final_productTree_exiovisuals.csv'))
-            model_productData = getfile(os.path.join(project_root_dir, 'python_ini/data/modelling_mod_final_productTree_exiovisuals.csv'))
+            countryData = getfile(
+                os.path.join(project_root_dir, 'python_ini/data/mod_final_countryTree_exiovisuals.csv'))
+            productData = getfile(
+                os.path.join(project_root_dir, 'python_ini/data/mod_final_productTree_exiovisuals.csv'))
+            model_productData = getfile(
+                os.path.join(project_root_dir, 'python_ini/data/modelling_mod_final_productTree_exiovisuals.csv'))
 
             populate(indicatorData, "Indicator")
             populate(countryData, "Country")
             populate(productData, "Product")
             populate(model_productData, "ModellingProduct")
         except Exception as e:
-            sys.exit("Adding database objects Failed.."+e)
+            sys.exit("Adding database objects Failed.." + e)
 
 
-#function that adds to DB
-def addProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global, leaf_children_local):
+# function that adds to DB
+def addProduct(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
+               leaf_children_local):
     e, created = Product.objects.get_or_create(name=name, code=code, global_id=global_id, parent_id=parent_id,
-                                               local_id=local_id, level=level,identifier=identifier,
+                                               local_id=local_id, level=level, identifier=identifier,
                                                leaf_children_global=leaf_children_global,
                                                leaf_children_local=leaf_children_local)
 
     return e
 
-#function that adds to DB
-def addModelProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global, leaf_children_local):
+
+# function that adds to DB
+def addModelProduct(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
+                    leaf_children_local):
     e, created = ModellingProduct.objects.get_or_create(name=name, code=code, global_id=global_id, parent_id=parent_id,
-                                               local_id=local_id, level=level,identifier=identifier,
-                                               leaf_children_global=leaf_children_global,
-                                               leaf_children_local=leaf_children_local)
+                                                        local_id=local_id, level=level, identifier=identifier,
+                                                        leaf_children_global=leaf_children_global,
+                                                        leaf_children_local=leaf_children_local)
 
     return e
 
-#function that adds to DB
-def addCountry(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global, leaf_children_local):
+
+# function that adds to DB
+def addCountry(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
+               leaf_children_local):
     e, created = Country.objects.get_or_create(name=name, code=code, global_id=global_id, parent_id=parent_id,
-                                               local_id=local_id, level=level,identifier=identifier,
+                                               local_id=local_id, level=level, identifier=identifier,
                                                leaf_children_global=leaf_children_global,
                                                leaf_children_local=leaf_children_local)
 
-
     return e
 
-#function that adds to DB
+
+# function that adds to DB
 def addIndicator(name, unit, global_id, parent_id, local_id, level):
     e, created = Indicator.objects.get_or_create(name=name, unit=unit, global_id=global_id, parent_id=parent_id,
-                                               local_id=local_id, level=level)
-
+                                                 local_id=local_id, level=level)
 
     return e
+
 
 def populate(data_obj, model_type):
     counter = 0
-    if model_type =="Indicator":
+    if model_type == "Indicator":
         print("Adding values to table: ", model_type)
         # add children now
         for x in data_obj:
@@ -96,22 +106,23 @@ def populate(data_obj, model_type):
                 leaf_children_global = x[7]
                 leaf_children_local = x[8]
                 counter += 1
-                if model_type =="Product":
-                    addProduct(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global,
+                if model_type == "Product":
+                    addProduct(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
                                leaf_children_local)
-                elif model_type =="Country":
-                    addCountry(name, code, global_id, parent_id, local_id, level,identifier, leaf_children_global,
+                elif model_type == "Country":
+                    addCountry(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
                                leaf_children_local)
-                elif model_type =="ModellingProduct":
+                elif model_type == "ModellingProduct":
                     addModelProduct(name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
-                               leaf_children_local)
+                                    leaf_children_local)
 
                 else:
                     sys.exit("Model_type not recognized.")
                 print("number of records: " + str(counter), end='\r')
             except Exception as e:
-                sys.exit("Adding database objects Failed.."+e)
+                sys.exit("Adding database objects Failed.." + e)
         print("\n")
+
 
 def getfile(myFile):
     # open the file

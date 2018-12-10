@@ -4,17 +4,28 @@ from ramascene.models import ModellingProduct, Country, Product, Indicator
 
 
 class ModelsTests(TestCase):
-
     def setUp(self):
         print("Testing Models..")
-        ModellingProduct.objects.create(name='ModProduct', code='ABC', global_id=1, parent_id=0, local_id=0, level=1,
-                                        identifier='AGG', leaf_children_global='#3', leaf_children_local="#2")
+        ModellingProduct.objects.create(name='ModProduct', code='ABC',
+                                        global_id=1, parent_id=0,
+                                        local_id=0, level=1,
+                                        identifier='AGG',
+                                        leaf_children_global='#3',
+                                        leaf_children_local="#2")
 
-        Country.objects.create(name='Country', code='ABC', global_id=1, parent_id=0, local_id=0, level=1,
-                                        identifier='AGG', leaf_children_global='#3', leaf_children_local="#2")
-        Product.objects.create(name='Product', code='ABC', global_id=1, parent_id=0, local_id=0, level=1,
-                                        identifier='AGG', leaf_children_global='#3', leaf_children_local="#2")
-        Indicator.objects.create(name='Indicator', unit='kg', global_id=1, parent_id=0, local_id=0, level=1,)
+        Country.objects.create(name='Country', code='ABC', global_id=1,
+                               parent_id=0, local_id=0, level=1,
+                               identifier='AGG',
+                               leaf_children_global='#3',
+                               leaf_children_local="#2")
+        Product.objects.create(name='Product', code='ABC', global_id=1,
+                               parent_id=0, local_id=0, level=1,
+                               identifier='AGG',
+                               leaf_children_global='#3',
+                               leaf_children_local="#2")
+        Indicator.objects.create(name='Indicator', unit='kg',
+                                 global_id=1, parent_id=0,
+                                 local_id=0, level=1, )
 
     def test_content_ModellingProduct(self):
         self.post = ModellingProduct.objects.get(id=1)

@@ -9,7 +9,6 @@ from ramascene import querymanagement
 from ramascene.analyze import Analyze
 from ramascene.modelling import Modelling
 
-
 log = logging.getLogger(__name__)
 
 
@@ -25,15 +24,15 @@ def async_send(channel_name, job):
     channel_layer = get_channel_layer()
 
     AsyncToSync(channel_layer.send)(
-            channel_name,
-            {"type": "celery.message",
-                "text": json.dumps({
-                 "action": "check status",
-                 "job_id": job.id,
-                 "job_name": job.name,
-                 "job_status": job.status,
-                })
-             })
+        channel_name,
+        {"type": "celery.message",
+         "text": json.dumps({
+             "action": "check status",
+             "job_id": job.id,
+             "job_name": job.name,
+             "job_status": job.status,
+         })
+         })
 
 
 def job_update(job_id):
@@ -70,7 +69,7 @@ def default_handler(job_name, job_id, channel_name, ready_query_selection, query
                                  , queue='modelling')
     else:
         execute_calc.apply_async((job_name, job_id, channel_name, ready_query_selection, query_selection)
-                             , queue='calc_default')
+                                 , queue='calc_default')
 
 
 @shared_task
@@ -160,13 +159,13 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
 
         # selection state No 4: - sector where emission takes place - multiple select
         elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Production":
-            #if there are model_details
+            # if there are model_details
             if "model_details" in query_selection:
                 Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
 
                 model = Modelling(ready_query_selection, Y_data, query_selection["load_A"],
                                   query_selection["year"], query_selection["model_details"])
-                Y,L = model.apply_model()
+                Y, L = model.apply_model()
             else:
                 Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
                 L = querymanagement.get_numpy_objects(query_selection["year"], "L")
@@ -191,7 +190,8 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
         job.status = "Failed"
         async_send(channel_name, job)
         log.debug("Failed job_name=%s", e)
-        print("failed at:"+str(e))
+        print("failed at:" + str(e))
+
 
 def handle_complete(job_id, channel_name, celery_id):
     """
@@ -203,4 +203,3 @@ def handle_complete(job_id, channel_name, celery_id):
     job.save()
     # send final complete message
     async_send(channel_name, job)
-

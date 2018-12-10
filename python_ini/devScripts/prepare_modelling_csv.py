@@ -23,6 +23,7 @@ MAX_NUMBER_OF_GLOBAL_IDS = 276
 MAX_NUMBER_OF_LOCAL_IDS = 200
 OFFSET = 1
 
+
 def getfile(myFile):
     # open the file
     # *** > give the path to the file.
@@ -41,27 +42,29 @@ def getfile(myFile):
     # fill the empty list with the data (this time split even further by tabs)
     for line in U:
         data.append(line.split('\t'))
-    #remove header and last line -> it is always structured the same and we reconstruct later in a modified manner
+    # remove header and last line -> it is always structured the same and we reconstruct later in a modified manner
     data.pop(0)
     data.pop(-1)
 
     return data
 
-def constructFinalCSV(data):
 
-    with open('../data/modelling_'+os.path.basename(MY_TREE_FILE), 'w') as csvfile:
+def constructFinalCSV(data):
+    with open('../data/modelling_' + os.path.basename(MY_TREE_FILE), 'w') as csvfile:
         assets_fn = open('../data/modelling_' + os.path.basename('final_productTree_exiovisuals.csv'), 'w')
         writer = csv.writer(csvfile, delimiter='\t',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        assets_writer = csv.writer(assets_fn, delimiter='\t',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        #reconstruct headers with modifications
-        writer.writerow(["name", "code", "global_id", "parent_id","local_id","level","identifier", "leaf_children_global", "leaf_children_local"])
+        assets_writer = csv.writer(assets_fn, delimiter='\t',
+                                   quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        # reconstruct headers with modifications
+        writer.writerow(
+            ["name", "code", "global_id", "parent_id", "local_id", "level", "identifier", "leaf_children_global",
+             "leaf_children_local"])
         assets_writer.writerow(["name", "code", "global_id", "parent_id", "local_id", "level"])
 
-        #final loop over dataset
+        # final loop over dataset
         for x in range(len(data)):
-            name= "S: "+ data[x][0]
+            name = "S: " + data[x][0]
             code = data[x][1]
             global_id = int(data[x][2]) - OFFSET
             parent_id = int(data[x][3]) - OFFSET
@@ -82,12 +85,14 @@ def constructFinalCSV(data):
                 leaf_children_global = "None"
                 leaf_children_local = "None"
                 writer.writerow(
-                    [name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global, leaf_children_local])
+                    [name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
+                     leaf_children_local])
                 assets_writer.writerow(
                     [name, code, global_id, parent_id, local_id, level])
             else:
                 writer.writerow(
-                    [name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global, leaf_children_local])
+                    [name, code, global_id, parent_id, local_id, level, identifier, leaf_children_global,
+                     leaf_children_local])
                 assets_writer.writerow(
                     [name, code, global_id, parent_id, local_id, level])
             print("Row :" + name + " added.")

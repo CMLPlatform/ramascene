@@ -2,16 +2,18 @@ from channels.testing import WebsocketCommunicator
 from ramascene.consumers import RamasceneConsumer
 import pytest
 from django.core.management import call_command
-import csv
 import os
 import json
 from django.test.client import Client
 import ast
-import math
-import collections
+
 # waiting time for celery results
 TIMEOUT = 100
-FILES_TO_TEST_AGAINST = ["validation_analytical_1_v3.csv"]
+FILES_TO_TEST_AGAINST = ["validation_analytical_1_v3.csv",
+                         "validation_analytical_2_v3.csv",
+                         "validation_analytical_3_v3.csv",
+                         "validation_analytical_4_v3.csv"]
+
 
 @pytest.fixture()
 def resource():
@@ -21,15 +23,16 @@ def resource():
     call_command('clear_models', verbosity=0)
     print("teardown")
 
+
 @pytest.mark.django_db(transaction=True)
 class TestLifeCycle:
     """
-    This class tests the full life-cycle of the back-end. It uses the real database, but cleans it afterwards.
-    Incorporation tests of websocket connection, API, Celery and database results
+    This class tests the full life-cycle of the back-end.
+    It uses the real database, but cleans it afterwards.
+    Incorporation tests of websocket connection, API, Celery & database results
     It runs outside of the standard django tests, but uses pytest.
-    Please run Celery with the following command as well:
-    $ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h
-    Afterwards the populate command has to be performed again for "live" deployment
+    Please run Celery when you use this test
+    Afterwards the populate command has to be performed again for deployment
     """
 
     @pytest.mark.asyncio
@@ -40,9 +43,11 @@ class TestLifeCycle:
 
         for file in FILES_TO_TEST_AGAINST:
             query, origin_results, origin_unit = self.open_validation_file(
-                os.path.join('./ramascene/tests/validation_files/','') + file)
+                os.path.join('./ramascene/tests/validation_files/',
+                             '') + file)
 
-            communicator = WebsocketCommunicator(RamasceneConsumer, "/ramascene/")
+            communicator = WebsocketCommunicator(RamasceneConsumer,
+                                                 "/ramascene/")
             # test connection
             connected, subprotocol = await communicator.connect()
             assert connected
@@ -65,7 +70,7 @@ class TestLifeCycle:
 
             # retrieve via ajax with job_id the result
             r = client.post('/ajaxhandling/', {'TaskID': response["job_id"], },
-                                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+                            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
             result = json.loads(r.content.decode('UTF-8'))
 
@@ -74,23 +79,26 @@ class TestLifeCycle:
 
             # test
             assert unit == origin_unit
-            # loop over the two dictionaries for comparison (don't assume that the keys match)
+            # loop over the two dictionaries for comparison
+            # While not assuming that the keys auto match
             for k, v in data.items():
                 t = k, origin_results[k], v
                 assert t[2] == pytest.approx(t[1])
 
     def open_validation_file(self, fn):
         with open(fn) as csv_file:
-            csv_reader = csv.reader(csv_file)
-            headers = next(csv_reader)
-            str1 = ''.join(headers)  # Convert list into string
+            F = csv_file.read()
+            U = F.split('\n')
+            data = []
+            for line in U:
+                data.append(line.split('\t'))
             nodesReg = []
             nodesSec = []
             results = {}
             unit = {}
-            for row in csv_reader:
-                str1 = ''.join(row)  # Convert list into string
-                parts = str1.split("\t")
+            data.pop(0)
+            data.pop(-1)
+            for parts in data:
                 nodesReg.append(int(parts[3]))
                 nodesSec.append(int(parts[4]))
                 extn = [int(parts[5])]
@@ -100,9 +108,7 @@ class TestLifeCycle:
                 results[parts[6]] = float(parts[9])
                 unit[parts[8]] = parts[7]
 
-
-            # assess what we need to remove independent of the file loaded (vizType)
-            # if there are no unique values
+            # clean (only single element for list depending on vizType)
             if len(nodesReg) > len(set(nodesReg)):
                 regions = set(nodesReg)
                 nodesReg = list(regions)
@@ -110,10 +116,18 @@ class TestLifeCycle:
                 sectors = set(nodesSec)
                 nodesSec = list(sectors)
 
-        query = {"action":"default","querySelection":{"dimType":dimType,"vizType":vizType,"nodesSec":nodesSec,
-                                                      "nodesReg":nodesReg,"extn":extn,"year":year}}
+        query = {
+            "action": "default",
+            "querySelection": {
+                "dimType": dimType,
+                "vizType": vizType,
+                "nodesSec": nodesSec,
+                "nodesReg": nodesReg,
+                "extn": extn,
+                "year": year
+            }
+        }
         return query, results, unit
-
 
     def unpack(self, json_response):
         result = json_response["rawResultData"]

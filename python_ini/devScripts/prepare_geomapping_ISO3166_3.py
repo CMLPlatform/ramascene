@@ -1,5 +1,6 @@
 import json
 import xlrd
+
 """
 ####
 Date: 13th of April 2018
@@ -19,10 +20,12 @@ EXC_FILE = '../data/mod_CountryMappingDESIRE.xlsx'
 # MOD_file reflect the EXIOBASE coordinates containing countries, rest of categories. It also contains aggregations regarding continents
 MOD_FILE = '../data/mod_final_countryTree_ISO3166_3.csv'
 
-DICT_RF = {"WE": "Rest of Europe",	"WM": "Rest of Middle East", "WL": "Rest of America", "WA": "Rest of Asia and Pacific",
+DICT_RF = {"WE": "Rest of Europe", "WM": "Rest of Middle East", "WL": "Rest of America",
+           "WA": "Rest of Asia and Pacific",
            "WF": "Rest of Africa"}
 
 OFFSET = -1
+
 
 # create dict from file without Rest of.
 def get_dict(file):
@@ -42,34 +45,34 @@ def get_dict(file):
 
     result_dict = {}
 
-    #loop over data object
+    # loop over data object
     for x in range(len(data)):
         identifier = data[x][6]
         global_name = data[x][0]
         # if aggregate
         if identifier == "TOTAL" or identifier == "AGG":
             children_global = data[x][7]
-            #get the list of corresponding global IDs
+            # get the list of corresponding global IDs
             children_global = get_list(children_global)
             ch_is03_list = []
-            #loop over this list to get the actual ISO2 codes using the OFFSET for positions
+            # loop over this list to get the actual ISO2 codes using the OFFSET for positions
             for y in children_global:
                 posidx = y + OFFSET
-                #get ISO number
+                # get ISO number
                 iso3 = (data[posidx][1])
-                #if ISO2 is in Rest Of category
+                # if ISO2 is in Rest Of category
                 if iso3 in DICT_RF:
                     # get the corresponding 'real' ISO3 codes of these Rest of categories
                     iso3_rest = get_iso3_rest(EXC_FILE, iso3)
-                    #returned value is a dict
+                    # returned value is a dict
                     lst = list(iso3_rest.values())
                     for z in lst:
                         for k in z:
                             ch_is03_list.append(k)
-                    #ch_is02_list.append(iso2_new)
+                            # ch_is02_list.append(iso2_new)
 
                 else:
-                    #just append
+                    # just append
                     ch_is03_list.append(iso3)
             # for each aggregate use the name as key and attach iso2 values as array
             result_dict[global_name] = ch_is03_list
@@ -77,16 +80,16 @@ def get_dict(file):
         elif identifier == "LEAF":
             is03_list = []
 
-            #check if it is not a Rest Of country
+            # check if it is not a Rest Of country
             if not global_name in DICT_RF.values():
                 # normal countries so just get the code
                 code = data[x][1]
                 result_dict[global_name] = [code]
 
             else:
-                #use code
+                # use code
                 code = data[x][1]
-                iso2_rest = get_iso3_rest(EXC_FILE,code)
+                iso2_rest = get_iso3_rest(EXC_FILE, code)
                 lst = list(iso2_rest.values())
                 for z in lst:
                     for k in z:
@@ -97,35 +100,35 @@ def get_dict(file):
         else:
             print("Identifier not recognized. Please check the files you are loading in.")
     return result_dict
+
+
 # add to json file
 def get_iso3_rest(file, desire_rest):
-
-    workbook = xlrd.open_workbook(file, on_demand = True)
+    workbook = xlrd.open_workbook(file, on_demand=True)
     worksheet = workbook.sheet_by_name('CountryList')
-    #create dict
+    # create dict
     data_dict = {}
 
-    #get number of rows
+    # get number of rows
     rows = worksheet.nrows
     # create empty list
     em_list = []
-    #loop over each row
+    # loop over each row
     for row in range(rows):
 
-        #get the cell that contains DESIRE region category
+        # get the cell that contains DESIRE region category
         cell = worksheet.cell(row, 6)
-        #we identify rest of by RoW marker
+        # we identify rest of by RoW marker
         identifier = worksheet.cell(row, 7).value
-        #if the given desire region category is found in the cell of interest and it is identified as rest of
-        if desire_rest == cell.value and identifier.startswith('RoW', 0,3):
-            #get the corsponding real iso3 codes
+        # if the given desire region category is found in the cell of interest and it is identified as rest of
+        if desire_rest == cell.value and identifier.startswith('RoW', 0, 3):
+            # get the corsponding real iso3 codes
             iso2 = worksheet.cell(row, 1).value
             if iso2:
                 em_list.append(iso2)
-    #construct dictionary
+    # construct dictionary
     data_dict[desire_rest] = em_list
     return data_dict
-
 
 
 def get_list(a_list):
@@ -137,13 +140,13 @@ def get_list(a_list):
 
 
 def create_json(dct):
-
-
     with open('../data/geomapping_ISO3166_3.json', 'w') as outfile:
         json.dump(dct, outfile, indent=4)
     print("***json mapper file succesfully created as geomapping_ISO3166_3.json***")
+
+
 # Start execution here!
 if __name__ == '__main__':
     data_dict = get_dict(MOD_FILE)
     create_json(data_dict)
-    #final_json = getfileExcel(EXC_FILE, data_dict)
+    # final_json = getfileExcel(EXC_FILE, data_dict)

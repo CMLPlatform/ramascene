@@ -4,6 +4,7 @@ from django.db import models
 from django.db import models
 from django.utils import timezone
 
+
 class Job(models.Model):
     """
     Job model to store Celery jobs
@@ -28,11 +29,12 @@ class Job(models.Model):
     """
             The unique identifier for retrieving the results of the job from Celery
     """
+
     class Meta:
         ordering = ('created',)
+
     def __str__(self):
         return str(self.pk)
-
 
 
 class Country(models.Model):
@@ -75,6 +77,7 @@ class Country(models.Model):
     """
     the local id's of the leafs of this country (if available)
     """
+
     def __str__(self):
         return self.name
 
@@ -119,8 +122,10 @@ class Product(models.Model):
     """
         the local id's of the leafs of this product group (if available)
     """
+
     def __str__(self):
         return self.name
+
 
 class ModellingProduct(models.Model):
     """
@@ -162,8 +167,10 @@ class ModellingProduct(models.Model):
     """
         the local id's of the leafs of this product group (if available)
     """
+
     def __str__(self):
         return self.name
+
 
 class Indicator(models.Model):
     """
@@ -196,8 +203,3 @@ class Indicator(models.Model):
 
     def __str__(self):
         return self.name
-
-
-
-
-

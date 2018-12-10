@@ -3,11 +3,11 @@ from ramascene.models import Job
 from django_celery_results import models
 
 
-
 class Command(BaseCommand):
     """
     Clear database command
     """
+
     def handle(self, *args, **options):
         print("***removing jobs out of DB***")
         Job.objects.all().delete()

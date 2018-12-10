@@ -1,0 +1,15 @@
+{
+  "status": "done",
+  "chunks": {
+    "main": [
+      {
+        "name": "main-6bc3e39a52b2e44236ca.js",
+        "path": "/home/sidney/ramascene_bitbucket/v0.3/rama-scene/assets/bundles/main-6bc3e39a52b2e44236ca.js"
+      },
+      {
+        "name": "style.css",
+        "path": "/home/sidney/ramascene_bitbucket/v0.3/rama-scene/assets/bundles/style.css"
+      }
+    ]
+  }
+}

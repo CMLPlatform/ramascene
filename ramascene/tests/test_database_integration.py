@@ -13,6 +13,7 @@ FN_PRODUCT_STATIC = './static_assets/final_productTree_exiovisuals.csv'
 FN_MODELLING_PRODUCT_STATIC = './static_assets/final_productTree_exiovisuals.csv'
 FN_INDICATOR_STATIC = './static_assets/mod_indicators.csv'
 
+
 class DatabaseTests(TestCase):
     """
     This class tests if the database values are in-line with the CSV files used
@@ -47,8 +48,6 @@ class DatabaseTests(TestCase):
     def test_indicators_static(self):
         self.parse_indicator_static(FN_INDICATOR)
 
-
-
     def parse_default(self, fn, model):
         with open(fn) as csv_file:
             csv_reader = csv.reader(csv_file)
@@ -59,18 +58,26 @@ class DatabaseTests(TestCase):
             for row in csv_reader:
                 str1 = ''.join(row)  # Convert list into string
                 parts = str1.split("\t")
-                name = model.objects.values_list('name', flat=True).get(global_id=int(parts[2]))
-                code = model.objects.values_list('code', flat=True).get(global_id=int(parts[2]))
-                global_id = model.objects.values_list('global_id', flat=True).get(global_id=int(parts[2]))
-                parent_id = model.objects.values_list('parent_id', flat=True).get(global_id=int(parts[2]))
-                local_id = model.objects.values_list('local_id', flat=True).get(global_id=int(parts[2]))
-                level = model.objects.values_list('level', flat=True).get(global_id=int(parts[2]))
-                identifier = model.objects.values_list('identifier', flat=True).get(global_id=int(parts[2]))
-                leaf_children_global = model.objects.values_list('leaf_children_global', flat=True).\
+                name = model.objects.values_list(
+                    'name', flat=True).get(global_id=int(parts[2]))
+                code = model.objects.values_list(
+                    'code', flat=True).get(global_id=int(parts[2]))
+                global_id = model.objects.values_list(
+                    'global_id', flat=True).get(global_id=int(parts[2]))
+                parent_id = model.objects.values_list(
+                    'parent_id', flat=True).get(global_id=int(parts[2]))
+                local_id = model.objects.values_list(
+                    'local_id', flat=True).get(global_id=int(parts[2]))
+                level = model.objects.values_list(
+                    'level', flat=True).get(global_id=int(parts[2]))
+                identifier = model.objects.values_list(
+                    'identifier', flat=True).get(global_id=int(parts[2]))
+                leaf_children_global = model.objects.values_list(
+                    'leaf_children_global', flat=True). \
                     get(global_id=int(parts[2]))
-                leaf_children_local = model.objects.values_list('leaf_children_local', flat=True).\
+                leaf_children_local = model.objects.values_list(
+                    'leaf_children_local', flat=True). \
                     get(global_id=int(parts[2]))
-                # for names replace the comma for empty string due to csv reader module
                 self.assertEqual(parts[0], name.replace(',', ''))
                 self.assertEqual(parts[1], str(code))
                 self.assertEqual(parts[2], str(global_id))
@@ -91,13 +98,18 @@ class DatabaseTests(TestCase):
             for row in csv_reader:
                 str1 = ''.join(row)  # Convert list into string
                 parts = str1.split("\t")
-                name = Indicator.objects.values_list('name', flat=True).get(global_id=int(parts[2]))
-                unit = Indicator.objects.values_list('unit', flat=True).get(global_id=int(parts[2]))
-                global_id = Indicator.objects.values_list('global_id', flat=True).get(global_id=int(parts[2]))
-                parent_id = Indicator.objects.values_list('parent_id', flat=True).get(global_id=int(parts[2]))
-                local_id = Indicator.objects.values_list('local_id', flat=True).get(global_id=int(parts[2]))
-                level = Indicator.objects.values_list('level', flat=True).get(global_id=int(parts[2]))
-                # for names replace the comma for empty string due to csv reader module
+                name = Indicator.objects.values_list(
+                    'name', flat=True).get(global_id=int(parts[2]))
+                unit = Indicator.objects.values_list(
+                    'unit', flat=True).get(global_id=int(parts[2]))
+                global_id = Indicator.objects.values_list(
+                    'global_id', flat=True).get(global_id=int(parts[2]))
+                parent_id = Indicator.objects.values_list(
+                    'parent_id', flat=True).get(global_id=int(parts[2]))
+                local_id = Indicator.objects.values_list(
+                    'local_id', flat=True).get(global_id=int(parts[2]))
+                level = Indicator.objects.values_list(
+                    'level', flat=True).get(global_id=int(parts[2]))
                 self.assertEqual(parts[0], name.replace(',', ''))
                 self.assertEqual(parts[1], str(unit))
                 self.assertEqual(parts[2], str(global_id))
@@ -115,13 +127,18 @@ class DatabaseTests(TestCase):
             for row in csv_reader:
                 str1 = ''.join(row)  # Convert list into string
                 parts = str1.split("\t")
-                name = model.objects.values_list('name', flat=True).get(global_id=int(parts[2]))
-                code = model.objects.values_list('code', flat=True).get(global_id=int(parts[2]))
-                global_id = model.objects.values_list('global_id', flat=True).get(global_id=int(parts[2]))
-                parent_id = model.objects.values_list('parent_id', flat=True).get(global_id=int(parts[2]))
-                local_id = model.objects.values_list('local_id', flat=True).get(global_id=int(parts[2]))
-                level = model.objects.values_list('level', flat=True).get(global_id=int(parts[2]))
-                # for names replace the comma for empty string due to csv reader module
+                name = model.objects.values_list(
+                    'name', flat=True).get(global_id=int(parts[2]))
+                code = model.objects.values_list(
+                    'code', flat=True).get(global_id=int(parts[2]))
+                global_id = model.objects.values_list(
+                    'global_id', flat=True).get(global_id=int(parts[2]))
+                parent_id = model.objects.values_list(
+                    'parent_id', flat=True).get(global_id=int(parts[2]))
+                local_id = model.objects.values_list(
+                    'local_id', flat=True).get(global_id=int(parts[2]))
+                level = model.objects.values_list(
+                    'level', flat=True).get(global_id=int(parts[2]))
                 self.assertEqual(parts[0], name.replace(',', ''))
                 self.assertEqual(parts[1], str(code))
                 self.assertEqual(parts[2], str(global_id))
@@ -139,21 +156,22 @@ class DatabaseTests(TestCase):
             for row in csv_reader:
                 str1 = ''.join(row)  # Convert list into string
                 parts = str1.split("\t")
-                name = Indicator.objects.values_list('name', flat=True).get(global_id=int(parts[2]))
-                unit = Indicator.objects.values_list('unit', flat=True).get(global_id=int(parts[2]))
-                global_id = Indicator.objects.values_list('global_id', flat=True).get(global_id=int(parts[2]))
-                parent_id = Indicator.objects.values_list('parent_id', flat=True).get(global_id=int(parts[2]))
-                local_id = Indicator.objects.values_list('local_id', flat=True).get(global_id=int(parts[2]))
-                level = Indicator.objects.values_list('level', flat=True).get(global_id=int(parts[2]))
-                # for names replace the comma for empty string due to csv reader module
+                name = Indicator.objects.values_list(
+                    'name', flat=True).get(global_id=int(parts[2]))
+                unit = Indicator.objects.values_list(
+                    'unit', flat=True).get(global_id=int(parts[2]))
+                global_id = Indicator.objects.values_list(
+                    'global_id', flat=True).get(global_id=int(parts[2]))
+                parent_id = Indicator.objects.values_list(
+                    'parent_id', flat=True).get(global_id=int(parts[2]))
+                local_id = Indicator.objects.values_list(
+                    'local_id', flat=True).get(global_id=int(parts[2]))
+                level = Indicator.objects.values_list(
+                    'level', flat=True).get(global_id=int(parts[2]))
+
                 self.assertEqual(parts[0], name.replace(',', ''))
                 self.assertEqual(parts[1], str(unit))
                 self.assertEqual(parts[2], str(global_id))
                 self.assertEqual(parts[3], str(parent_id))
                 self.assertEqual(parts[4], str(local_id))
                 self.assertEqual(parts[5], str(level))
-
-
-
-
-

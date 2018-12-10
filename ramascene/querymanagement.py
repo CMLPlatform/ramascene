@@ -98,7 +98,7 @@ def get_leafs_country(country_global_ids):
             my_local_leafs = (Country.objects.values_list('leaf_children_local', flat=True).get(global_id=id))
             leafs = clean_local_leafs(my_local_leafs)
             country_calc_indices.append(leafs)
-    #flatten list
+    # flatten list
     country_calc_indices = [item for sublist in country_calc_indices for item in sublist]
     return country_calc_indices
 
@@ -115,9 +115,9 @@ def get_calc_names_product(prod_result_data):
             dict: key/value pair product with key as name corresponding to querySelection global_id
 
     """
-    #create return dict
+    # create return dict
     product_result_named = {}
-    #loop over dictionary, from key (global ID) get the name
+    # loop over dictionary, from key (global ID) get the name
     for key, value in prod_result_data.items():
         product_name = (Product.objects.values_list('name', flat=True).get(global_id=key))
         product_result_named[product_name] = value
@@ -136,9 +136,9 @@ def get_calc_names_country(country_result_data):
             dict: key/value pair country with key as name corresponding to querySelection global_id
 
     """
-    #create return dict
+    # create return dict
     country_result_named = {}
-    #loop over dictionary, from key (global ID) get the name
+    # loop over dictionary, from key (global ID) get the name
     for key, value in country_result_data.items():
         country_name = (Country.objects.values_list('name', flat=True).get(global_id=key))
         country_result_named[country_name] = value
@@ -163,6 +163,7 @@ def get_names_product(prod_ids):
         prod_names.append(prod_name)
     return prod_names
 
+
 def get_modelled_names_product(prod_ids):
     """Get name of products consumed by in modelling
 
@@ -180,6 +181,7 @@ def get_modelled_names_product(prod_ids):
         prod_name = (ModellingProduct.objects.values_list('name', flat=True).get(global_id=prod))
         prod_names.append(prod_name)
     return prod_names
+
 
 def get_names_country(country_ids):
     """Get name of countries
@@ -237,31 +239,31 @@ def get_aggregations_countries(querySelection, result_data):
     # make a result container
     result_container = {}
 
-    #loop over original querySelection first
+    # loop over original querySelection first
     for global_country_id in querySelection["nodesReg"]:
-        #if the given global id is a leaf
+        # if the given global id is a leaf
         if identify_country(global_country_id) == "LEAF":
             # get local leaf just for lookup in the result_data table
             leaf = (Country.objects.values_list('local_id', flat=True).get(global_id=global_country_id))
             leaf = clean_single_leafs(leaf, OFFSET)
-            #leaf returns a list (artifact of function get_leafs), however its one element so use it
+            # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
-            #assign the the global id instead of local id the value
+            # assign the the global id instead of local id the value
             result_container[global_country_id] = value
-            #if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
-        elif identify_country(global_country_id) == "AGG" or identify_country(global_country_id) =="TOTAL":
+            # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
+        elif identify_country(global_country_id) == "AGG" or identify_country(global_country_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table
             my_local_leafs = \
                 (Country.objects.values_list('leaf_children_local', flat=True).get(global_id=global_country_id))
             cleaned_local_leafs = clean_local_leafs(my_local_leafs)
 
-            #result list for aggregating
+            # result list for aggregating
             tmp_list = []
-            #loop over cleaned_local leafs
+            # loop over cleaned_local leafs
             for a_leaf in cleaned_local_leafs:
-                #for each leaf pull the data value from the dict
+                # for each leaf pull the data value from the dict
                 value = result_data.get(a_leaf)
-                #append to list ready for aggregation
+                # append to list ready for aggregation
                 tmp_list.append(value)
             tmp_agg_result = math.fsum(tmp_list)
             result_container[global_country_id] = tmp_agg_result
@@ -286,31 +288,30 @@ def get_aggregations_products(querySelection, result_data):
     # make a result container
     result_container = {}
 
-    #loop over original querySelection first
+    # loop over original querySelection first
     for global_product_id in querySelection["nodesSec"]:
-        #if the given global id is a leaf
+        # if the given global id is a leaf
         if identify_product(global_product_id) == "LEAF":
             # get local leaf just for lookup in the result_data table
             leaf = (Product.objects.values_list('local_id', flat=True).get(global_id=global_product_id))
             leaf = clean_single_leafs(leaf, OFFSET)
-            #leaf returns a list (artifact of function get_leafs), however its one element so use it
+            # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
-            #assign the the global id instead of local id the value
+            # assign the the global id instead of local id the value
             result_container[global_product_id] = value
-            #if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
-        elif identify_product(global_product_id) == "AGG" or identify_product(global_product_id) =="TOTAL":
+            # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
+        elif identify_product(global_product_id) == "AGG" or identify_product(global_product_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table
             my_local_leafs = \
                 (Product.objects.values_list('leaf_children_local', flat=True).get(global_id=global_product_id))
             cleaned_local_leafs = clean_local_leafs(my_local_leafs)
-            #result list for aggregating
+            # result list for aggregating
             tmp_list = []
-            #loop over cleaned_local leafs
+            # loop over cleaned_local leafs
             for a_leaf in cleaned_local_leafs:
-
-                #for each leaf pull the data value from the dict
+                # for each leaf pull the data value from the dict
                 value = result_data.get(a_leaf)
-                #append to list ready for aggregation
+                # append to list ready for aggregation
                 tmp_list.append(value)
             tmp_agg_result = math.fsum(tmp_list)
             result_container[global_product_id] = tmp_agg_result
@@ -348,6 +349,7 @@ def identify_country(country_id):
     reg_identifier = (Country.objects.values_list('identifier', flat=True).get(global_id=country_id))
     return reg_identifier
 
+
 def identify_modelling_product(prod_id):
     """Helper function.
 
@@ -363,6 +365,7 @@ def identify_modelling_product(prod_id):
     prod_identifier = (ModellingProduct.objects.values_list('identifier', flat=True).get(global_id=prod_id))
     return prod_identifier
 
+
 def clean_local_leafs(a_list):
     """Clean data as preprocessing step for calculation.
 
@@ -375,9 +378,9 @@ def clean_local_leafs(a_list):
             list: country or product list of coordinates as integers
 
     """
-    #split on hashtag if multiple elements
+    # split on hashtag if multiple elements
     a_list = a_list.split("#")
-    #convert that list to a list of integers
+    # convert that list to a list of integers
     a_list = list(map(int, a_list))
     return a_list
 
@@ -394,9 +397,9 @@ def clean_single_leafs(leaf, OFFSET):
             list: country or product list of coordinates (single element, processed)
 
     """
-    #apply offset and make it integers
+    # apply offset and make it integers
     leaf = int(leaf) + OFFSET
-    #make list for heterogenity purposes with AGG nodes
+    # make list for heterogenity purposes with AGG nodes
     sm_tmp_list = []
     sm_tmp_list.append(leaf)
     return sm_tmp_list
@@ -462,6 +465,7 @@ def convert_to_numpy(list_obj):
 
     return numpy_array
 
+
 def get_numpy_objects(year, object_name):
     """
     Retrieve numpy objects per year.
@@ -473,5 +477,5 @@ def get_numpy_objects(year, object_name):
             numpy object: numpy object of the given object_name
     """
     location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
-    object = np.load(location + os.path.join(os.path.join(object_name+str('_')+settings.DATASET_VERSION)+".npy"))
+    object = np.load(location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy"))
     return object

@@ -38,7 +38,6 @@ import copy
 
 
 def main():
-
     # SETTINGS
     years = range(1995, 2000)
     raw_data_dir = os.path.join('..', 'data', 'raw')
@@ -93,34 +92,34 @@ def main():
         W = list_to_numpy_array(factor_inputs, 2, 2)
         va = np.sum(W[va_index, :], axis=0, keepdims=True)
         E = list_to_numpy_array(emissions, 3, 2)
-        E = E[ghg_index, :]                           # select CO2, CH4 and N2O emissions
+        E = E[ghg_index, :]  # select CO2, CH4 and N2O emissions
         M = list_to_numpy_array(materials, 2, 2)
-        M = M[material_index, :]                      # select "domestic extraction used" metals and minerals
-        o_coeff = np.zeros((1, prd_cnt * cntr_cnt))   # dummy place holder, will be filled later
-        M = np.vstack((o_coeff, W, E, M))             # stack all extensions
+        M = M[material_index, :]  # select "domestic extraction used" metals and minerals
+        o_coeff = np.zeros((1, prd_cnt * cntr_cnt))  # dummy place holder, will be filled later
+        M = np.vstack((o_coeff, W, E, M))  # stack all extensions
         H = list_to_numpy_array(indicators, 0, 0)
         M = np.dot(np.transpose(H), M)
 
         # CALCULATE TOTALS
         to = np.sum(Z, axis=1, keepdims=True) + np.sum(Y, axis=1, keepdims=True)  # total output ($)
-        ti = np.transpose(np.sum(Z, axis=0, keepdims=True) + va)                  # total outlays ($)
+        ti = np.transpose(np.sum(Z, axis=0, keepdims=True) + va)  # total outlays ($)
 
         # CALCULATE COEFFICIENTS
-        A = np.dot(Z, invdiag(to[:, 0]))   # input-output coefficients matrix ($/$)
-        B = np.dot(M, invdiag(to[:, 0]))   # extension coefficients (xx/$)
+        A = np.dot(Z, invdiag(to[:, 0]))  # input-output coefficients matrix ($/$)
+        B = np.dot(M, invdiag(to[:, 0]))  # extension coefficients (xx/$)
 
         # FILL IN TOTAL OUTPUT COEFFICIENTS IN B MATRIX AND REPLACE DUMMY
         o_coeff = copy.deepcopy(to)
-        o_coeff[o_coeff>0] = 1
+        o_coeff[o_coeff > 0] = 1
         B[0, :] = np.transpose(o_coeff)
 
         # LEONTIEF INVERSE
-        I = np.eye(prd_cnt * cntr_cnt)     # unity matrix ($)
-        L = np.linalg.inv(I - A)           # Leontief inverse matrix ($/$)
+        I = np.eye(prd_cnt * cntr_cnt)  # unity matrix ($)
+        L = np.linalg.inv(I - A)  # Leontief inverse matrix ($/$)
 
         # CALCULATE EMISSION MULTIPLIERS
         if include_emission_multiplier_matrices:
-            Q = np.dot(B, L)               # multipliers (xx/$)
+            Q = np.dot(B, L)  # multipliers (xx/$)
 
         # CHECK
         # balanced to start with ?
@@ -162,10 +161,10 @@ def main():
         if include_emission_multiplier_matrices:
             ext_cnt = np.size(B, 0)
             P = np.zeros((prd_cnt * cntr_cnt, prd_cnt * cntr_cnt, ext_cnt + 1))
-            P[:, :, ext_cnt] = L   # add total requirements matrix at the end
+            P[:, :, ext_cnt] = L  # add total requirements matrix at the end
             for ext_idx in range(0, ext_cnt):
-                b = B[ext_idx, :]     # take out a single extension from extension coefficients matrix
-                b = np.transpose(b)   # transpose
+                b = B[ext_idx, :]  # take out a single extension from extension coefficients matrix
+                b = np.transpose(b)  # transpose
                 P[:, :, ext_idx] = L
                 for prd_idx in range(0, prd_cnt * cntr_cnt):
                     P[:, prd_idx, ext_idx] = np.multiply(b, P[:, prd_idx, ext_idx])
@@ -202,7 +201,7 @@ def list_to_numpy_array(list_data, row_header_cnt, col_header_cnt):
     matrix = []
     row_idx = 0
     for list_row in list_data:
-        if row_idx >= col_header_cnt:   # skip rows with column headers
+        if row_idx >= col_header_cnt:  # skip rows with column headers
             matrix.append(list_row[row_header_cnt:len(list_row)])
         row_idx += 1
     return np.asarray(matrix, dtype=np.double)
@@ -216,4 +215,3 @@ def read_file(filename):
 
 
 main()
-

@@ -9,8 +9,7 @@ app.config_from_object('django.conf:settings',
                        namespace='CELERY')
 app.autodiscover_tasks()
 
-
 app.conf.task_routes = ([
-    ('calc_default.tasks', {'queue': 'calc'}),
-    ('modelling.tasks', {'queue': 'modelling'})
-],)
+                            ('calc_default.tasks', {'queue': 'calc'}),
+                            ('modelling.tasks', {'queue': 'modelling'})
+                        ],)

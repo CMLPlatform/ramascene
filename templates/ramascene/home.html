@@ -8,24 +8,24 @@
 {% block title %}RaMA-Scene{% endblock %}
 
 
-
 {% block speciality %}
-    <!--js-cookie for storing cookie information of trees
-    -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--js-cookie for storing cookie information of trees
+-->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js"></script>
 
 {# https://github.com/JedWatson/react-select/issues/2454 #}
-{#<link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">#}
+{#
+<link rel="stylesheet" href="https://unpkg.com/react-select/dist/react-select.css">#}
 <link rel="stylesheet" href="https://unpkg.com/react-select@1.2.1/dist/react-select.css">
 
 
 <style type="text/css">
    body { background: #1B262D !important;   } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+
 </style>
-
-
 
 
 {% endblock %}
@@ -34,20 +34,17 @@
 <!-- Add code to initialize the product tree when the document is loaded: -->
 
 
-
 {% block content %}
-
 
 
 <br>
 
 <div id="container">
 
-{% render_bundle 'main' %}
+    {% render_bundle 'main' %}
 
 
 </div>
-
 
 
 {% endblock %}

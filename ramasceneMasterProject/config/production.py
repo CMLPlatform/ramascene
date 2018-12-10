@@ -1,6 +1,5 @@
 from .base import *
 
-
 STATIC_ROOT = os.path.join(BASE_DIR,
                            os.environ.get('PUBLIC_DIR', ''), 'static')
 

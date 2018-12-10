@@ -1,0 +1,51 @@
+view_type	calc_route	year	country_global_id	product_global_id	indicator_global_id	expected_name	expected_unit	expected_indicator	octave_results
+Consumption	GeoMap	2011	7	1	5	Austria	kg CO2 eq	GHG emissions: Total	104112220000
+Consumption	GeoMap	2011	8	1	5	Belgium	kg CO2 eq	GHG emissions: Total	151788000000
+Consumption	GeoMap	2011	9	1	5	Bulgaria	kg CO2 eq	GHG emissions: Total	58238388000
+Consumption	GeoMap	2011	10	1	5	Cyprus	kg CO2 eq	GHG emissions: Total	14249003000
+Consumption	GeoMap	2011	11	1	5	Czech Republic	kg CO2 eq	GHG emissions: Total	124357500000
+Consumption	GeoMap	2011	12	1	5	Germany	kg CO2 eq	GHG emissions: Total	1000715900000
+Consumption	GeoMap	2011	13	1	5	Denmark	kg CO2 eq	GHG emissions: Total	78770272000
+Consumption	GeoMap	2011	14	1	5	Estonia	kg CO2 eq	GHG emissions: Total	17086998000
+Consumption	GeoMap	2011	15	1	5	Spain	kg CO2 eq	GHG emissions: Total	378969710000
+Consumption	GeoMap	2011	16	1	5	Finland	kg CO2 eq	GHG emissions: Total	90830688000
+Consumption	GeoMap	2011	17	1	5	France	kg CO2 eq	GHG emissions: Total	594422260000
+Consumption	GeoMap	2011	18	1	5	Greece	kg CO2 eq	GHG emissions: Total	176243580000
+Consumption	GeoMap	2011	19	1	5	Croatia	kg CO2 eq	GHG emissions: Total	26408174000
+Consumption	GeoMap	2011	20	1	5	Hungary	kg CO2 eq	GHG emissions: Total	68555353000
+Consumption	GeoMap	2011	21	1	5	Ireland	kg CO2 eq	GHG emissions: Total	58934602000
+Consumption	GeoMap	2011	22	1	5	Italy	kg CO2 eq	GHG emissions: Total	620756790000
+Consumption	GeoMap	2011	23	1	5	Lithuania	kg CO2 eq	GHG emissions: Total	25886312000
+Consumption	GeoMap	2011	24	1	5	Luxembourg	kg CO2 eq	GHG emissions: Total	11328792000
+Consumption	GeoMap	2011	25	1	5	Latvia	kg CO2 eq	GHG emissions: Total	15099995000
+Consumption	GeoMap	2011	26	1	5	Malta	kg CO2 eq	GHG emissions: Total	4531360300
+Consumption	GeoMap	2011	27	1	5	Netherlands	kg CO2 eq	GHG emissions: Total	226258070000
+Consumption	GeoMap	2011	28	1	5	Poland	kg CO2 eq	GHG emissions: Total	377856190000
+Consumption	GeoMap	2011	29	1	5	Portugal	kg CO2 eq	GHG emissions: Total	80242892000
+Consumption	GeoMap	2011	30	1	5	Romania	kg CO2 eq	GHG emissions: Total	107556920000
+Consumption	GeoMap	2011	31	1	5	Sweden	kg CO2 eq	GHG emissions: Total	97925242000
+Consumption	GeoMap	2011	32	1	5	Slovenia	kg CO2 eq	GHG emissions: Total	20432650000
+Consumption	GeoMap	2011	33	1	5	Slovakia	kg CO2 eq	GHG emissions: Total	58682095000
+Consumption	GeoMap	2011	34	1	5	United Kingdom	kg CO2 eq	GHG emissions: Total	666547360000
+Consumption	GeoMap	2011	35	1	5	United States	kg CO2 eq	GHG emissions: Total	5901098100000
+Consumption	GeoMap	2011	36	1	5	Japan	kg CO2 eq	GHG emissions: Total	1477424600000
+Consumption	GeoMap	2011	37	1	5	China	kg CO2 eq	GHG emissions: Total	9149846900000
+Consumption	GeoMap	2011	38	1	5	Canada	kg CO2 eq	GHG emissions: Total	595705900000
+Consumption	GeoMap	2011	39	1	5	South Korea	kg CO2 eq	GHG emissions: Total	689345670000
+Consumption	GeoMap	2011	40	1	5	Brazil	kg CO2 eq	GHG emissions: Total	1143112300000
+Consumption	GeoMap	2011	41	1	5	India	kg CO2 eq	GHG emissions: Total	2543722000000
+Consumption	GeoMap	2011	42	1	5	Mexico	kg CO2 eq	GHG emissions: Total	613056850000
+Consumption	GeoMap	2011	43	1	5	Russia	kg CO2 eq	GHG emissions: Total	1556367600000
+Consumption	GeoMap	2011	44	1	5	Australia	kg CO2 eq	GHG emissions: Total	590669080000
+Consumption	GeoMap	2011	45	1	5	Switzerland	kg CO2 eq	GHG emissions: Total	110558640000
+Consumption	GeoMap	2011	46	1	5	Turkey	kg CO2 eq	GHG emissions: Total	436518600000
+Consumption	GeoMap	2011	47	1	5	Taiwan	kg CO2 eq	GHG emissions: Total	246279760000
+Consumption	GeoMap	2011	48	1	5	Norway	kg CO2 eq	GHG emissions: Total	92044015000
+Consumption	GeoMap	2011	49	1	5	Indonesia	kg CO2 eq	GHG emissions: Total	610018760000
+Consumption	GeoMap	2011	50	1	5	South Africa	kg CO2 eq	GHG emissions: Total	316959840000
+Consumption	GeoMap	2011	51	1	5	Rest of Asia and Pacific	kg CO2 eq	GHG emissions: Total	2331610800000
+Consumption	GeoMap	2011	52	1	5	Rest of America	kg CO2 eq	GHG emissions: Total	1233193200000
+Consumption	GeoMap	2011	53	1	5	Rest of Europe	kg CO2 eq	GHG emissions: Total	479109000000
+Consumption	GeoMap	2011	54	1	5	Rest of Africa	kg CO2 eq	GHG emissions: Total	1179264100000
+Consumption	GeoMap	2011	55	1	5	Rest of Middle East	kg CO2 eq	GHG emissions: Total	1827062800000
+Consumption	GeoMap	2011	1	1	5	Total	kg CO2 eq	GHG emissions: Total	38379755831300
