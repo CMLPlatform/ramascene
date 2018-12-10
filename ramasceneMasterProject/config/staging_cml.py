@@ -11,22 +11,21 @@ DATASET_DIR = os.environ.get('DATASETS_DIR', 'C:\\projects\\rama-scene_data\\raw
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
-#allow cors
+# allow cors
 MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
 
-#allow cors
+# allow cors
 INSTALLED_APPS += [
     'corsheaders',
 ]
 
-#CORS config
+# CORS config
 CORS_ORIGIN_ALLOW_ALL = True
 
-#path to datasets directory
+# path to datasets directory
 DATASET_DIR = os.environ['DATASETS_DIR']
-#name of numpy objects for timeseries
+# name of numpy objects for timeseries
 DATASET_VERSION = os.environ['DATASETS_VERSION']
 
 # Celery settings
 CELERY_BROKER_URL = os.environ['BROKER_URL']
-

@@ -5,10 +5,10 @@ from django.urls import path
 
 channel_routing = ProtocolTypeRouter({
 
-"websocket": AuthMiddlewareStack(
-    URLRouter([
-        path('ramascene/', RamasceneConsumer),
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            path('ramascene/', RamasceneConsumer),
 
-        ]),
-    ),
+            ]),
+        ),
 })

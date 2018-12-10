@@ -9,21 +9,21 @@ ALLOWED_HOSTS = ['127.0.0.1']
 
 CELERY_BROKER_URL = 'amqp://localhost'
 
-#path to datasets directory
+# path to datasets directory
 DATASET_DIR = os.environ['DATASETS_DIR']
 
-#name of numpy objects for timeseries
+# name of numpy objects for timeseries
 DATASET_VERSION = os.environ['DATASETS_VERSION']
 
-#allow cors
+# allow cors
 MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
 
-#allow cors
+# allow cors
 INSTALLED_APPS += [
     'corsheaders',
 ]
 
-#CORS config
+# CORS config
 CORS_ORIGIN_ALLOW_ALL = True
 
 '''
@@ -50,7 +50,7 @@ LOGGING = {
     }
 }
 '''
-#logging for Django
+# logging for Django
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

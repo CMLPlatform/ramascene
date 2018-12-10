@@ -14,16 +14,17 @@ import os
 
 
 # location of manage.py
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname
+                           (os.path.dirname(os.path.abspath(__file__))))
 # location of settings.py
 PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__)),
 )
 
-#create the actual template link to tell the project were the template is
+# create the actual template link to tell the project were the template is
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
-#get the static directory for images etc
+# get the static directory for images etc
 STATIC_PATH = os.path.join(BASE_DIR, 'static_assets')
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
@@ -65,8 +66,9 @@ redis_host = os.environ.get('REDIS_HOST', 'localhost')
 # Channels settings
 CHANNEL_LAYERS = {
     "default": {
-        # This example app uses the Redis channel layer implementation channels_redis
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        # The Redis channel layer implementation channels_redis
+        "BACKEND":
+            "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [(redis_host, 6379)],
         },
@@ -76,13 +78,13 @@ CHANNEL_LAYERS = {
 # ASGI_APPLICATION should be set to your outermost router
 ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
 
- # rabbitmq message broker address
-# use json format for everything
+# Celery config
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'django-db'
-# as the calculations are CPU and MEM intensive, enforce a new worker after a task is finished to release memory
+# as the calculations are CPU and MEM intensive,
+# enforce a new worker after a task is finished to release memory
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 1
 
 MIDDLEWARE = [
@@ -132,16 +134,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME':
+            'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -158,4 +164,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-

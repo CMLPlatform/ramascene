@@ -1,10 +1,12 @@
 import os
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ramasceneMasterProject.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'ramasceneMasterProject.settings')
 
 app = Celery('ramasceneMasterProject')
-app.config_from_object('django.conf:settings', namespace='CELERY')
+app.config_from_object('django.conf:settings',
+                       namespace='CELERY')
 app.autodiscover_tasks()
 
 
