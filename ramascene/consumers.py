@@ -157,11 +157,11 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                 default_handler(job_name, job.id, self.channel_name, ready_query_selection, query_selection)
             # if action is not received
             else:
-
                 data.update({"status": "error wrong input"})
 
         except Exception as e:
-            log.debug("ws message isn't json text=%s", event['text'])
+            log.debug("Error during handling websocket message=%s", event['text'])
+            log.debug("Error is related to: %s", e)
             return
 
     def websocket_disconnect(self, message):
