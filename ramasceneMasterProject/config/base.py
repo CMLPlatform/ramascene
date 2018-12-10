@@ -84,6 +84,7 @@ CELERY_RESULT_BACKEND = 'django-db'
 # enforce a new worker after a task is finished to release memory
 CELERY_WORKER_MAX_TASKS_PER_CHILD = 1
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

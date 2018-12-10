@@ -14,7 +14,9 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 4. Modelling_. Overview of modelling procedures.
 5. Deployment_. Details for deploying the application.
 6. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
-7. Modules_. Technical details.
+7. Testing_. Unittests and integration tests
+8. Performance_. Performance of the application and load test results
+9. Modules_. Technical details.
 
 .. _Introduction: intro.html
 .. _modules: modules.html
@@ -27,6 +29,8 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 .. _Calculations: calculations.html
 .. _overview: calculations.html
 .. _modelling: modelling.html
+.. _Testing: testing.html
+.. _Performance: performance.html
 
 .. toctree::
     :maxdepth: 2
@@ -42,4 +46,6 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
     deployment.rst
     python-ini.rst
     modules.rst
+    testing.rst
+    performance.rst
 

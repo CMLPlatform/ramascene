@@ -4,7 +4,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', os.environ["HOST"]]
+ALLOWED_HOSTS = ['127.0.0.1','cml.liacs.nl', os.environ["HOST"]]
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
