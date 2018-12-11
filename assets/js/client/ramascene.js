@@ -296,6 +296,7 @@ class App extends Component {
             model_details.forEach(function (model_detail) {
                 new_model_details.push({
                     product: this.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    consumedBy: this.scenarioCompRef.getConsumerLabel(model_detail.consumedBy[0]),
                     originReg: this.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
                     consumedReg: this.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
                     techChange: model_detail.techChange[0]
@@ -357,6 +358,7 @@ class App extends Component {
             model_details.forEach(function (model_detail) {
                 new_model_details.push({
                     product: this.scenarioCompRef.getProductLabel(model_detail.product[0]),
+                    consumedBy: this.scenarioCompRef.getConsumerLabel(model_detail.consumedBy[0]),
                     originReg: this.scenarioCompRef.getOrigLabel(model_detail.originReg[0]),
                     consumedReg: this.scenarioCompRef.getDestLabel(model_detail.consumedReg[0]),
                     techChange: model_detail.techChange[0]

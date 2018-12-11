@@ -95,7 +95,7 @@ class AnalysisJob extends Component {
                             value: Math.round(performance.now() - this.state.performance_start)
                         });
                     }
-                },
+                }.bind(this),
                 data: {'TaskID': this.state.job_id},
                 dataType: 'json',
                 error: function (jqXHR, textStatus, errorThrown) {
