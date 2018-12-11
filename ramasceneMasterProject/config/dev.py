@@ -48,7 +48,7 @@ LOGGING = {
         }
     }
 }
-'''
+
 # logging for Django
 LOGGING = {
     'version': 1,
@@ -73,3 +73,4 @@ LOGGING = {
         },
     },
 }
+'''
