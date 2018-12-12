@@ -480,7 +480,7 @@ class App extends Component {
                   <NavItem eventKey={4} href="../#contact">
                     Contact
                   </NavItem>
-                  <NavItem eventKey={4} href="https://www.jotform3.leidenuniv.nl/CMLformJweb/rama-scene-feedback">
+                  <NavItem eventKey={5} href="https://www.jotform3.leidenuniv.nl/CMLformJweb/rama-scene-feedback">
                     Feedback
                   </NavItem>
                   </Nav>
