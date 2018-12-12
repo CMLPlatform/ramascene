@@ -27,13 +27,15 @@ Celery flower
 
 For assessing performance of calculations the library Celery Flower is used. Refer to the official docs for more information.
 To setup Flower on a remote server with Django you have to use the proxy server. For safety setup a htpasswd file in the nginx configuration.
-See example configuration here for nginx with Celery Flower (adjust to your needs) :download:`example_supervisord <ystatic/example_supervisord_with_flower.conf>`
+See example configuration here for nginx with Celery Flower (adjust to your needs)
+:download:`example_nginx_flower <ystatic/example_nginx_with_flower.conf>`
 
 For RabbitMQ the management plugin has to be enabled:
 ``$ sudo rabbitmq-plugins enable rabbitmq_management``
 
 An example to start flower (make sure you are in the project root):
-``flower -A ramasceneMasterProject --port=5555 -Q modelling,calc_default --broker=amqp://guest:guest@localhost:5672// --broker_api=http://guest:guest@localhost:15672/api/ --url_prefix=flower``
+
+$ flower -A ramasceneMasterProject --port=5555 -Q modelling,calc_default --broker=amqp://guest:guest@localhost:5672// --broker_api=http://guest:guest@localhost:15672/api/ --url_prefix=flower
 
 In turn you can access flower via the web browser with <domain>/flower/.
 
@@ -41,11 +43,11 @@ Settings for Celery
 ===================
 The following settings are in place:
 
-* CELERY_WORKER_MAX_TASKS_PER_CHILD = 1 in Django settings.py
-* OPENBLAS_NUM_THREADS=2 for default calculations
-* OPENBLAS_NUM_THREADS=5 for modelling calculations
-* --concurrency 1 for default calculations
-* --concurrency 1 for modelling calculations
+* [Django settings] CELERY_WORKER_MAX_TASKS_PER_CHILD = 1
+* [env. variable] OPENBLAS_NUM_THREADS=2 for default calculations
+* [env. variable] OPENBLAS_NUM_THREADS=5 for modelling calculations
+* [Celery] --concurrency 1 for default calculations
+* [Celery] --concurrency 1 for modelling calculations
 
 Each Celery queue has its own dedicated worker (1 worker for default and 1 worker for modelling)
 
@@ -57,8 +59,7 @@ For modelling we select "totals" for all categories except "consumed by" which c
 A single technical change is set to an arbitrary value of 100.
 
 * Scenario A [Analytical]: 30 analytical request whereby 17 requests cover all years. and 13 request use the year 2011.
-* Scenario B [Modelling]: 30 modelling request whereby 17 requests cover all years. and 13 request use the year 2011.
-All requests do heavy calculations covering the modelling of intermediates.
+* Scenario B [Modelling]: 30 modelling request whereby 17 requests cover all years. and 13 request use the year 2011. All requests do heavy calculations covering the modelling of intermediates.
 * Scenario C [Analytical + Modelling]: 15 requests over 15 different years for analytical and 15 request over 15 different years for modelling.
 
 Idle MEM use at point before load test: 572M
@@ -70,7 +71,7 @@ Results scenario A
 * Highest detected MEM load: 2.87G (includes the idle MEM)
 
 .. image:: ystatic/scenarioA.png
-   :width: 300pt
+   :width: 600pt
 
 Conclusion:
 
@@ -86,7 +87,7 @@ Results scenario B
 * Execution time of the first task: 46.09 sec.
 
 .. image:: ystatic/scenarioB.png
-   :width: 300pt
+   :width: 600pt
 
 Conclusion:
 
@@ -103,7 +104,7 @@ Results scenario C
 * Highest detected MEM load: 6.44G (includes the idle MEM)
 
 .. image:: ystatic/scenarioC.png
-   :width: 300pt
+   :width: 600pt
 
 
 Conclusion:

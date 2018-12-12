@@ -39,25 +39,21 @@ In the same virtual env., change directory towards the project root:
 ``$ pip3 install -r requirements.txt``
 
 Make sure you set the following environment variables (see example-prod-env.sh):
-``
-| export DJANGO_SETTINGS_MODULE="ramasceneMasterProject.config.<config file name e.g. staging-cml>"
-| export DATASETS_VERSION="<ramascene database version available e.g. v3>"
-| export DATASETS_DIR="<my/path/to/datasets>"
-| export SECRET_KEY="<django secret key>"
-| export BROKER_URL="<default is amqp://localhost>"
-| export HOST="<ip or domain>"
-| export OPENBLAS_NUM_THREADS=<adjust according to how many cores you want to use>
-``
+
+* export DJANGO_SETTINGS_MODULE="ramasceneMasterProject.config.<config filename>"
+* export DATASETS_VERSION="<ramascene database version available e.g. v3>"
+* export DATASETS_DIR="<my/path/to/datasets>"
+* export SECRET_KEY="<django secret key>"
+* export BROKER_URL="<default is amqp://localhost>"
+* export HOST="<ip or domain>"
+* export OPENBLAS_NUM_THREADS=<adjust according to how many cores you want to use>
 
 If you are on Linux and using the OPENBLAS library for Numpy.
 It is advised to set the number of threads Numpy uses. To find which library is used in python:
 
-``
->>>import numpy as np
->>>np.__config__.show()
-``
+``>>>np.__config__.show()``
 
-For more information on the OPENBLAS_NUM_THREADS settings see Celery section further down the page.
+*Note: For more information on the OPENBLAS_NUM_THREADS settings see Celery section further down the page.*
 
 Prepare SQLlite:
 
@@ -149,6 +145,7 @@ the server's resources (CPU and MEM) are more extensively used and Celery could 
 the RaMa-Scene v0.3 only one single worker for default calculations and a dedicated worker for modeling final demand.
 
 Setting a Celery MEM limit:
+
 Loading numpy objects over different years can causes severe memory use if Python doesn't release memory
 after a calculation is finished.
 The common idea is that Python does garbage collection and frees up memory once finished.
@@ -158,6 +155,7 @@ is a limit on the number of task handled per child process. If set to 1 a new wo
 finished, enforcing the release of memory.
 
 Setting a Numpy limit:
+
 On most linux machines numpy uses the OPENBLAS library. OPENBLAS by default uses all cores available for performing calculations.
 By setting the OPENBLAS_NUM_THREADS we limit the amount of cores used, leaving resources available on the server.
 
@@ -185,16 +183,22 @@ Celery and Daphne need to be deamonized. For example with supervisor. Bare in mi
 See example configuration file :download:`example_supervisord <ystatic/example_supervisord.conf>`
 
 If you make changes to the file you have to do:
-sudo supervisorctl reread
-sudo supervisorctl update
+
+* sudo supervisorctl reread
+* sudo supervisorctl update
 
 If you want to stop or start processes:
-sudo supervisorctl stop <program name e.g. celeryd>
-sudo supervisorctl start <program name e.g. celeryd>
+
+* sudo supervisorctl stop <program name e.g. celeryd>
+* sudo supervisorctl start <program name e.g. celeryd>
 
 Management of database results
 ==============================
 Cron can be used to clear the database results on a regular basis, see example below:
-#delete database contents at 5 a.m on every sunday
-``0 5 * * 0 . <path to environment variables bash>/example-prod-env.sh && cd /<path-pr-root>/ && /<path-to-virtual-env>/bin/python /<path-project-root>/manage.py clear_models``
+
+#at 5 a.m on every sunday
+``0 5 * * 0``
+
+#delete database contents
+``. <path to environment>/env.sh && cd /<proj>/ && /<virtual-env>/bin/python /<proj>/manage.py clear_models``
 
