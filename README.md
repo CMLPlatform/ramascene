@@ -57,7 +57,15 @@ Check the status to make sure everything is running:
 export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
 export DATASETS_VERSION=[version downloaded e.g. v3]
 export DATASETS_DIR=my/path/to/datasets
+export OPENBLAS_NUM_THREADS=<adjust according to how many cores you want to use>
 ```
+If you are on Linux and using the OpenBlas library for Numpy. 
+It is advised to set the number of threads Numpy uses. To find which library is used in python:
+```
+>>>import numpy as np
+>>>np.__config__.show()
+```
+
 
 ### Prepare the database
 ```
@@ -97,6 +105,23 @@ $ python3 manage.py runserver
 
 Access the app via the webrowser: http://127.0.0.1:8000/ramascene/
 
-# Core dependencies
+### [Optional] enable debug logging
+
+To enable debug logging, open the ramasceneMasterProject/config/dev.py file.
+Uncomment the "logging for Django" section.
+
+### [Optional] run tests
+In case you want to run tests you can perform unit tests in the root folder:
+```
+$ python3 manage.py test -v2
+```
+
+For integration tests you need to start the celery workers first (explained above). 
+You can perform the integration test with the following command:
+```
+$ pytest -vs
+```
+
+### Core dependencies
 ---
-The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.1.3] (https://channels.readthedocs.io/en/latest/)
+The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.1.5] (https://channels.readthedocs.io/en/latest/)
