@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import TreeSelect from 'rc-tree-select';
 import 'rc-tree-select/assets/index.css';
+import {getPropValue, labelCompatible} from "rc-tree-select/es/util";
 
 class FilterableSingleSelectDropdownTree extends Component {
 
@@ -25,6 +26,7 @@ class FilterableSingleSelectDropdownTree extends Component {
                 allowClear={true}
                 disabled={this.state.disabled}
                 dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
+                filterTreeNode={this.filterCaseInsensitive}
                 maxTagTextLength={15}
                 multiple={false}
                 notFoundContent={<i>Not found</i>}
@@ -45,6 +47,10 @@ class FilterableSingleSelectDropdownTree extends Component {
                 value={this.state.value}
             />
         );
+    }
+
+    filterCaseInsensitive(inputValue, treeNode) {
+        return String(getPropValue(treeNode, labelCompatible('label'))).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
     }
 }
 

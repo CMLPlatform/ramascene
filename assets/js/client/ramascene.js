@@ -767,9 +767,7 @@ class App extends Component {
     }
 
     saveModellingSettings(model_details) {
-        const state_model_details = Object.assign([], this.state.model_details);
-        var new_model_details = state_model_details.concat(model_details);
-        this.setState({model_details: new_model_details});
+        this.setState({model_details: model_details});
     }
 
     clearModellingSettings() {
