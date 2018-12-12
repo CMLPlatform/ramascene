@@ -110,12 +110,12 @@ Results scenario C
 Conclusion:
 
 As shown in the top left and bottom right graph both workers are active. The analytical queue depletes faster than the modelling queue,
-which is also expected and desired behaviour. The MEM load has increased as both workers use MEM.
+which is also expected and desired behaviour. The MEM load has increased as both workers use memory.
 
 Final conclusion
 ================
 
 Modelling has a significant impact on CPU use, in turn a limit is set on CPU considering the specs of the tested server.
 This limit results in relatively long waiting time for users doing modelling. To circumvent this either a server with more powerful specs is required or
-celery can be configured with workers on different machines. In both cases more CPU is required and optimally more Memory.
+celery can be configured with workers on different machines. In both cases more CPU is required and optimally more memory.
 If more memory is in place, logically concurrency can be increased however new load tests have to be performed.
