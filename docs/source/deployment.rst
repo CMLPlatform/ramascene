@@ -141,8 +141,10 @@ Each Celery worker spawns a number of child processes and these processes use as
 The first limit to set is the concurrency. It is normally advised to run a single worker per machine and the concurrency
 value will define how many processes will run in parallel.
 Concurrency set to 1 follows a first in first out principle for users, if concurrency is increased
-the server's resources (CPU and MEM) are more extensively used and Celery could handle requests simultaneously. We have for
-the RaMa-Scene v0.3 only one single worker for default calculations and a dedicated worker for modeling final demand.
+the server's resources (CPU and MEM) are more extensively used and Celery could handle requests simultaneously. For
+the RaMa-Scene app one single worker for default calculations and a dedicated worker for modeling final demand is advised,
+due to the nature of computation extensive modelling.
+In addition it is recommended to set the concurrency to 1, if increased it is advised to perform load testing.
 
 Setting a Celery MEM limit:
 
@@ -156,8 +158,8 @@ finished, enforcing the release of memory.
 
 Setting a Numpy limit:
 
-On most linux machines numpy uses the OPENBLAS library. OPENBLAS by default uses all cores available for performing calculations.
-By setting the OPENBLAS_NUM_THREADS we limit the amount of cores used, leaving resources available on the server.
+Most linux machines use the OPENBLAS library for numpy. OPENBLAS uses all cores available for performing calculations by default.
+By setting the OPENBLAS_NUM_THREADS it is possible to limit the amount of cores used, leaving resources available on the server.
 
 *Note: For more information on Celery refer to the performance page in this documentation and the official celery docs.*
 

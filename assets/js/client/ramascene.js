@@ -753,7 +753,7 @@ class App extends Component {
                         {/*<Modal.Title></Modal.Title>*/}
                     </Modal.Header>
                     <Modal.Body>
-                    <p>This may take a while - expected min. wait time 2 seconds, max wait time 10minutes at heavy traffic and doing modelling</p>
+                    <p>This may take a while - expected min. wait time 2 seconds for analytical calculations, max. wait time 10minutes or longer at heavy traffic and doing modelling</p>
                     </Modal.Body>
                 </Modal>
             </Grid>
