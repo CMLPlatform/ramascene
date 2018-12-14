@@ -480,6 +480,9 @@ class App extends Component {
                   <NavItem eventKey={4} href="../#contact">
                     Contact
                   </NavItem>
+                  <NavItem eventKey={5} href="https://www.jotform3.leidenuniv.nl/CMLformJweb/rama-scene-feedback">
+                    Feedback
+                  </NavItem>
                   </Nav>
                   </Navbar.Collapse>
               </Navbar>
@@ -750,7 +753,7 @@ class App extends Component {
                         {/*<Modal.Title></Modal.Title>*/}
                     </Modal.Header>
                     <Modal.Body>
-                    <p>This may take a while - expected min. wait time 2 seconds, max wait time 10minutes at heavy traffic and doing modelling</p>
+                    <p>This may take a while - expected min. wait time 2 seconds for analytical calculations, max. wait time 10minutes or longer at heavy traffic and doing modelling</p>
                     </Modal.Body>
                 </Modal>
             </Grid>

@@ -45,7 +45,8 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
     modelling.rst
     deployment.rst
     python-ini.rst
-    modules.rst
     testing.rst
     performance.rst
+    modules.rst
+
 

@@ -38,19 +38,22 @@ Install Django dependencies & prepare SQLlite
 In the same virtual env., change directory towards the project root:
 ``$ pip3 install -r requirements.txt``
 
-Make sure you set the following environment variables:
-``
-| export DJANGO_SETTINGS_MODULE="ramasceneMasterProject.config.<config file name e.g. staging-cml>"
-| export DATASETS_VERSION="<ramascene database version available e.g. v3>"
-| export DATASETS_DIR="<my/path/to/datasets>"
-| export SECRET_KEY="<django secret key>"
-| export BROKER_URL="<default is amqp://localhost>"
-| export HOST="<ip or domain>"
+Make sure you set the following environment variables (see example-prod-env.sh):
 
-``
-For more information on the secret key refer to https://docs.djangoproject.com/en/2.0/ref/settings/#secret-key
+* export DJANGO_SETTINGS_MODULE="ramasceneMasterProject.config.<config filename>"
+* export DATASETS_VERSION="<ramascene database version available e.g. v3>"
+* export DATASETS_DIR="<my/path/to/datasets>"
+* export SECRET_KEY="<django secret key>"
+* export BROKER_URL="<default is amqp://localhost>"
+* export HOST="<ip or domain>"
+* export OPENBLAS_NUM_THREADS=<adjust according to how many cores you want to use>
 
-If you wish you can perform unittests and integration tests see testing page. For deployment continue the next steps.
+If you are on Linux and using the OPENBLAS library for Numpy.
+It is advised to set the number of threads Numpy uses. To find which library is used in python:
+
+``>>>np.__config__.show()``
+
+*Note: For more information on the OPENBLAS_NUM_THREADS settings see Celery section further down the page.*
 
 Prepare SQLlite:
 
@@ -80,7 +83,7 @@ Set webpack conf settings for production:
 
 * Configure webpack.config.js for ajax url and websocket url at webpack.DefinePlugin() to your domain.
 * Adjust process environment to "production" at webpack.DefinePlugin().
-* Configure Dotenv to point to your environment variables
+* Configure Dotenv to point to your environment variables if desired. Alternatively remove dotenv section.
 * Make sure that new UglifyJsPlugin() is set.
 
 Built React bundle:
@@ -132,27 +135,33 @@ Then enable and start the RabbitMQ service:
 Check the status to make sure everything is running:
 ``$ systemctl status rabbitmq-server``
 
-The Django settings.py is already configured for rabbitMQ use, you can modify the settings if deemed necessary.
-
-Celery CPU use limit:
+Celery details:
 
 Each Celery worker spawns a number of child processes and these processes use as much memory as it needs.
-The first limit is setting the concurrency to 1 which only spawns 1 child process per worker, hence limiting the CPU
-use of the system. Concurrency set to 1 follows a first in first out principle for users, if concurrency is increased
-the server's resources (CPU and MEM) are more extensively used and Celery could handle requests simultaneously. We have for
-the RaMa-Scene v0.3 only one single worker for default calculations and one for modeling final demand.
+The first limit to set is the concurrency. It is normally advised to run a single worker per machine and the concurrency
+value will define how many processes will run in parallel.
+Concurrency set to 1 follows a first in first out principle for users, if concurrency is increased
+the server's resources (CPU and MEM) are more extensively used and Celery could handle requests simultaneously. For
+the RaMa-Scene app one single worker for default calculations and a dedicated worker for modeling final demand is advised,
+due to the nature of computation extensive modelling.
+In addition it is recommended to set the concurrency to 1, if increased it is advised to perform load testing.
 
-Celery MEM limit:
+Setting a Celery MEM limit:
 
 Loading numpy objects over different years can causes severe memory use if Python doesn't release memory
 after a calculation is finished.
 The common idea is that Python does garbage collection and frees up memory once finished.
 However during testing it became apparent that memory wasn't released,
-refer to https://github.com/celery/celery/issues/3339. The next setting implemented
-was to limit the number of task handled per child process. If set to 1 a new worker has to be spawned if a tasks is
+refer to https://github.com/celery/celery/issues/3339. The setting implemented in the Django settings.py
+is a limit on the number of task handled per child process. If set to 1 a new worker has to be spawned if a tasks is
 finished, enforcing the release of memory.
 
-*Note: the original Redis broker resulted in bugs when setting the max number of tasks per child, hence a change to the message broker rabbitMQ was used for Celery.*
+Setting a Numpy limit:
+
+Most linux machines use the OPENBLAS library for numpy. OPENBLAS uses all cores available for performing calculations by default.
+By setting the OPENBLAS_NUM_THREADS it is possible to limit the amount of cores used, leaving resources available on the server.
+
+*Note: For more information on Celery refer to the performance page in this documentation and the official celery docs.*
 
 
 Testing the application
@@ -172,12 +181,26 @@ Test the application to see if everything is running correct in a web-browser.
 
 Daemonizing
 ===========
-Celery and Daphne need to be deamonized. For example with supervisor. Bare in mind that the environment variables have to be set.
+Celery and Daphne need to be deamonized. For example with supervisor. Bare in mind that the environment variables have to be set in the configuration file.
 See example configuration file :download:`example_supervisord <ystatic/example_supervisord.conf>`
+
+If you make changes to the file you have to do:
+
+* sudo supervisorctl reread
+* sudo supervisorctl update
+
+If you want to stop or start processes:
+
+* sudo supervisorctl stop <program name e.g. celeryd>
+* sudo supervisorctl start <program name e.g. celeryd>
 
 Management of database results
 ==============================
 Cron can be used to clear the database results on a regular basis, see example below:
-#delete database contents at 5 a.m on every sunday
-``0 5 * * 0 cd /<path-pr-root>/ && /<path-to-virtual-env>/bin/python /<path-pr-root>/manage.py clear_models``
+
+#at 5 a.m on every sunday
+``0 5 * * 0``
+
+#delete database contents
+``. <path to environment>/env.sh && cd /<proj>/ && /<virtual-env>/bin/python /<proj>/manage.py clear_models``
 
