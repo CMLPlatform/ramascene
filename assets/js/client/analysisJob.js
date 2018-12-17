@@ -38,7 +38,8 @@ class AnalysisJob extends Component {
             job_id: null,
             job_name: null,
             job_label: "",
-            job_type: this.ANALYSIS_JOB
+            job_type: this.ANALYSIS_JOB,
+            ws: null
         };
     }
 
@@ -47,7 +48,7 @@ class AnalysisJob extends Component {
     }
 
     componentDidMount() {
-        const ws = new WebSocket(WEBSOCKET_URL);
+        this.ws = new WebSocket(WEBSOCKET_URL);
 
         ws.onopen = function() {
             if (this.state.query.dimType == 'Production' || this.state.query.dimType == 'Consumption') {
@@ -79,6 +80,7 @@ class AnalysisJob extends Component {
             });
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
+            this.ws.close();
             this.setState({
                 job_status: job.job_status,
                 // job_id: job.job_id, // job_id doesn't change
@@ -141,6 +143,7 @@ class AnalysisJob extends Component {
                 description: 'Websocket message received with job_status = Failed',
                 fatal: false
             });
+            this.ws.close();
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
