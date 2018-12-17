@@ -87,14 +87,14 @@ The AnalysisJob component
 
 This component does all the Websocket and AJAX traffic.
 
-The Analysis component most important state variables :
+The AnalysisJob component most important state variables :
 
 * **query** : contains the query
 
 The main AnalysisJob component functions :
 
 * **componentDidMount()** : this is a React lifecycle callback function which is called immediately after the component is inserted into the DOM tree. This function will set up the Websocket connection and sends the analysis query to the RaMa-scene server.
-* **handleWebSocketResponse()** : called when a message is received on the websocket. The received data will be parsed as JSON. When job_status == 'started' the job name can be generated. When job_status == 'completed' an AJAX call is executed to retrieve the raw result data. Upon reception of the raw results, some preparation for CSV download are executed.
+* **handleWebSocketResponse()** : called when a message is received on the websocket. The received data will be parsed as JSON. When job_status == 'started' the job name can be generated. When job_status == 'completed' an AJAX call is executed to retrieve the raw result data. Upon reception of the raw results, some preparations for CSV download are executed.
 * **generateCSVdata()** : prepares the CSV data for download
 * **startModelling()** : will set up a Websocket connection and sends the model_details to the RaMa-scene server.
 
@@ -111,7 +111,7 @@ It uses 3 different topojson files for the geo map : one with a layer over the w
 Dropdown Tree select
 --------------------
 
-Because it seems not possible to switch a multi-select to a single-select box with the rc-tree-select package we're using, two separate base classes are provided :
+Because it seems not possible to switch on the fly a multi-select to a single-select box with the rc-tree-select package we're using, two separate base classes are provided :
 
 * **FilterableMultiSelectDropdownTree**
 * **FilterableSingleSelectDropdownTree**
@@ -127,8 +127,8 @@ The main functions :
 * **filterCaseInsensitive()** : this function will return true if the inputValue and the treeNode label are the same text when ignoring the upper- or lowercase.
 
 Most noticeable derived classes of FilterableMultiSelectDropdownTree are **ProductFilterableMultiSelectDropdownTree** and **RegionFilterableMultiSelectDropdownTree**.
-The ProductFilterableMultiSelectDropdownTree overrides the render() function to add buttons for quickly select all items on one of the three tree levels.
+The ProductFilterableMultiSelectDropdownTree overrides the render() function to add buttons for quickly select all items on one of its three tree levels.
 The ProductFilterableMultiSelectDropdownTree component also implements the handleOnChange super class function which keeps care that a user doesn't mix selecting items from different tree levels.
 The RegionFilterableMultiSelectDropdownTree also implements the handleOnChange super class function. It will take care of selecting only total/continent/country items depending on the 'Geographic aggregation level'.
-If Country aggregation level is chosen and a continent is selected, then select all countries of that continent instead.
-If Continent aggregation level is chosen and counties are selected, then select the continents to which these countries belong instead.
+If Country aggregation level is chosen and a continent is selected, then it selects all countries of that continent instead.
+If Continent aggregation level is chosen and countries are selected, then it selects the continents to which these countries belong instead.

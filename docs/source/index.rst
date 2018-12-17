@@ -17,6 +17,7 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 7. Testing_. Unittests and integration tests
 8. Performance_. Performance of the application and load test results
 9. Modules_. Technical details.
+10. Frontend_. Frontend description
 
 .. _Introduction: intro.html
 .. _modules: modules.html
@@ -31,6 +32,7 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 .. _modelling: modelling.html
 .. _Testing: testing.html
 .. _Performance: performance.html
+.. _Frontend: frontend.html
 
 .. toctree::
     :maxdepth: 2
@@ -48,5 +50,6 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
     testing.rst
     performance.rst
     modules.rst
+    frontend.rst
 
 
