@@ -201,137 +201,78 @@ class Visualization extends Component {
     render() {
         switch (this.state.type) {
             case 'geo':
-                return (<div>
-                    <div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div>
-                    <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
-                    <div className="table-responsive">
-                        <Table bordered condensed>
-                            <thead>
-                            <tr>
-                                <th colSpan='5'>Query Parameters</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>Perspective</td>
-                                <td colSpan='4'>{this.state.query.dimType}</td>
-                            </tr>
-                            <tr>
-                                <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
-                                <td colSpan='4'>{this.state.query.year}</td>
-                            </tr>
-                            <tr>
-                                <td>Region(s)</td>
-                                <td colSpan='4'>{this.state.query.nodesReg.join('; ')}</td>
-                            </tr>
-                            <tr>
-                                <td>Product(s)</td>
-                                <td colSpan='4'>{this.state.query.nodesSec.join('; ')}</td>
-                            </tr>
-                            <tr>
-                                <td>Indicator</td>
-                                <td colSpan='4'>{this.state.query.extn}</td>
-                            </tr>
-                            {this.state.is_modelling_result &&
-                            <React.Fragment>
-                                <tr className="active">
-                                    <th colSpan='5'>Scenario Modelling Parameters</th>
-                                </tr>
-                                <tr>
-                                    <th className="col-xs-3">Product</th>
-                                    <th className="col-xs-3">Consumed by</th>
-                                    <th className="col-xs-2">Originating From</th>
-                                    <th className="col-xs-2">Consumed Where</th>
-                                    <th className="col-xs-2">Technical Change Coefficient</th>
-                                </tr>
-                                { this.state.model_details.map(function(model_detail, index) {
-                                    return (
-                                        <tr className="active" key={'model_detail-' + index}>
-                                            <td>{model_detail.product}</td>
-                                            <td>{model_detail.consumedBy}</td>
-                                            <td>{model_detail.originReg}</td>
-                                            <td>{model_detail.consumedReg}</td>
-                                            <td>{model_detail.techChange}</td>
-                                        </tr>
-                                    )
-                                })}
-                            </React.Fragment>
-                            }
-                            </tbody>
-                        </Table>
-                    </div>
-                    <Button onClick={this.state.callback}>Close</Button>
-                    <sub className="pull-right">EXIOBASE v3.3. data</sub>
-                </div>);
+                var visualization = <Geomap config={this.state.geoconfig} />;
                 break;
             case 'tree':
-                return (<div>
-                    <div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div>
-                    <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
-                    <div className="table-responsive">
-                        <Table bordered condensed>
-                            <thead>
-                                <tr>
-                                    <th colSpan='5'>Query Parameters</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Perspective</td>
-                                    <td colSpan='4'>{this.state.query.dimType}</td>
-                                </tr>
-                                <tr>
-                                    <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
-                                    <td colSpan='4'>{this.state.query.year}</td>
-                                </tr>
-                                <tr>
-                                    <td>Region(s)</td>
-                                    <td colSpan='4'>{this.state.query.nodesReg.join('; ')}</td>
-                                </tr>
-                                <tr>
-                                    <td>Product(s)</td>
-                                    <td colSpan='4'>{this.state.query.nodesSec.join('; ')}</td>
-                                </tr>
-                                <tr>
-                                    <td>Indicator</td>
-                                    <td colSpan='4'>{this.state.query.extn}</td>
-                                </tr>
-                                {this.state.is_modelling_result &&
-                                <React.Fragment>
-                                    <tr className="active">
-                                        <th colSpan='5'>Scenario Modelling Parameters</th>
-                                    </tr>
-                                    <tr>
-                                        <th className="col-xs-3">Product</th>
-                                        <th className="col-xs-3">Consumed by</th>
-                                        <th className="col-xs-2">Originating From</th>
-                                        <th className="col-xs-2">Consumed Where</th>
-                                        <th className="col-xs-2">Technical Change Coefficient</th>
-                                    </tr>
-                                    { this.state.model_details.map(function(model_detail, index) {
-                                        return (
-                                            <tr className="active" key={'model_detail-' + index}>
-                                                <td>{model_detail.product}</td>
-                                                <td>{model_detail.consumedBy}</td>
-                                                <td>{model_detail.originReg}</td>
-                                                <td>{model_detail.consumedReg}</td>
-                                                <td>{model_detail.techChange}</td>
-                                            </tr>
-                                        )
-                                    })}
-                                </React.Fragment>
-                                }
-                            </tbody>
-                        </Table>
-                    </div>
-                    <Button onClick={this.state.callback}>Close</Button>
-                    <sub className="pull-right">EXIOBASE v3.3. data</sub>
-                </div>);
+                var visualization = <Treemap config={this.state.treeconfig} />;
                 break;
             default:
                 return (<div>Unknown visualization type</div>);
                 break;
         }
+        return (<div>
+            <div className="visualization-panel">{visualization}</div>
+            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Scenario Modelling Result' : 'Analysis Result'}</Label>
+            <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+            <div className="table-responsive">
+                <Table bordered condensed>
+                    <thead>
+                    <tr>
+                        <th colSpan='5'>Query Parameters</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Perspective</td>
+                        <td colSpan='4'>{this.state.query.dimType}</td>
+                    </tr>
+                    <tr>
+                        <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                        <td colSpan='4'>{this.state.query.year}</td>
+                    </tr>
+                    <tr>
+                        <td>Region(s)</td>
+                        <td colSpan='4'>{this.state.query.nodesReg.join('; ')}</td>
+                    </tr>
+                    <tr>
+                        <td>Product(s)</td>
+                        <td colSpan='4'>{this.state.query.nodesSec.join('; ')}</td>
+                    </tr>
+                    <tr>
+                        <td>Indicator</td>
+                        <td colSpan='4'>{this.state.query.extn}</td>
+                    </tr>
+                    {this.state.is_modelling_result &&
+                    <React.Fragment>
+                        <tr className="active">
+                            <th colSpan='5'>Scenario Modelling Parameters</th>
+                        </tr>
+                        <tr>
+                            <th className="col-xs-3">Product</th>
+                            <th className="col-xs-3">Consumed by</th>
+                            <th className="col-xs-2">Originating From</th>
+                            <th className="col-xs-2">Consumed Where</th>
+                            <th className="col-xs-2">Technical Change Coefficient</th>
+                        </tr>
+                        { this.state.model_details.map(function(model_detail, index) {
+                            return (
+                                <tr className="active" key={'model_detail-' + index}>
+                                    <td>{model_detail.product}</td>
+                                    <td>{model_detail.consumedBy}</td>
+                                    <td>{model_detail.originReg}</td>
+                                    <td>{model_detail.consumedReg}</td>
+                                    <td>{model_detail.techChange}</td>
+                                </tr>
+                            )
+                        })}
+                    </React.Fragment>
+                    }
+                    </tbody>
+                </Table>
+            </div>
+            <Button onClick={this.state.callback}>Close</Button>
+            <sub className="pull-right">EXIOBASE v3.3. data</sub>
+        </div>);
     }
 }
 
