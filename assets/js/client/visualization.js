@@ -65,7 +65,7 @@ class Visualization extends Component {
                                 var found_item = props.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return format('~e')(found_item.value);
+                                return format('e')(found_item.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -87,7 +87,7 @@ class Visualization extends Component {
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return format('~e')(d.value);
+                                return format('e')(d.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -157,7 +157,7 @@ class Visualization extends Component {
                                 var found_item = nextProps.data.find(function(p) {
                                     return p.id === d.id;
                                 });
-                                return format('~e')(found_item.value);
+                                return format('e')(found_item.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -179,7 +179,7 @@ class Visualization extends Component {
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
-                                return format('~e')(d.value);
+                                return format('e')(d.value);
                             },
                             footer: function(d) {
                                 return unit;
@@ -203,7 +203,7 @@ class Visualization extends Component {
             case 'geo':
                 return (<div>
                     <div className="visualization-panel"><Geomap config={this.state.geoconfig} /></div>
-                    <Label>{'Sum = ' + format('~e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
                         <Table bordered condensed>
                             <thead>
@@ -267,7 +267,7 @@ class Visualization extends Component {
             case 'tree':
                 return (<div>
                     <div className="visualization-panel"><Treemap config={this.state.treeconfig} /></div>
-                    <Label>{'Sum = ' + format('~e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+                    <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
                     <div className="table-responsive">
                         <Table bordered condensed>
                             <thead>
