@@ -9,6 +9,8 @@ import {CSVLink} from "react-csv";
 import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
+let ws = null;
+
 class AnalysisJob extends Component {
 
     constructor(props) {
@@ -38,8 +40,7 @@ class AnalysisJob extends Component {
             job_id: null,
             job_name: null,
             job_label: "",
-            job_type: this.ANALYSIS_JOB,
-            ws: null
+            job_type: this.ANALYSIS_JOB
         };
     }
 
@@ -48,7 +49,7 @@ class AnalysisJob extends Component {
     }
 
     componentDidMount() {
-        this.ws = new WebSocket(WEBSOCKET_URL);
+        ws = new WebSocket(WEBSOCKET_URL);
 
         ws.onopen = function() {
             if (this.state.query.dimType == 'Production' || this.state.query.dimType == 'Consumption') {
@@ -80,7 +81,7 @@ class AnalysisJob extends Component {
             });
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
-            this.ws.close();
+            ws.close();
             this.setState({
                 job_status: job.job_status,
                 // job_id: job.job_id, // job_id doesn't change
@@ -143,7 +144,7 @@ class AnalysisJob extends Component {
                 description: 'Websocket message received with job_status = Failed',
                 fatal: false
             });
-            this.ws.close();
+            ws.close();
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
@@ -239,7 +240,7 @@ class AnalysisJob extends Component {
 
         this.setState({job_type: this.MODELLING_JOB, model_details: this.context.model_details});
 
-        const ws = new WebSocket(WEBSOCKET_URL);
+        ws = new WebSocket(WEBSOCKET_URL);
 
         ws.onopen = function() {
             ws.send(JSON.stringify({'querySelection': this.state.query, 'model_details': this.context.model_details, 'action': 'model'}));
