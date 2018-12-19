@@ -12,12 +12,13 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
 2. API_ descriptors_. The front-end, back-end payloads.
 3. Calculations_ overview_. Overview of calculations performed.
 4. Modelling_. Overview of modelling procedures.
-5. Deployment_. Details for deploying the application.
-6. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
-7. Testing_. Unittests and integration tests
-8. Performance_. Performance of the application and load test results
-9. Modules_. Technical details.
-10. Frontend_. Frontend description
+5. Frontend_. Frontend description.
+6. Deployment_. Details for deploying the application.
+7. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
+8. Testing_. Unittests and integration tests
+9. Performance_. Performance of the application and load test results
+10. Modules_. Technical details.
+
 
 .. _Introduction: intro.html
 .. _modules: modules.html
@@ -45,11 +46,11 @@ Welcome to RaMa-Scene's docs. This documentation is split into several parts:
     API-descriptors.rst
     calculations.rst
     modelling.rst
+    frontend.rst
     deployment.rst
     python-ini.rst
     testing.rst
     performance.rst
     modules.rst
-    frontend.rst
 
 
