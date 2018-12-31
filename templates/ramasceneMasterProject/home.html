@@ -30,8 +30,9 @@
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+
     <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="ramascene">Tool </a><img src="{% static 'rama-logo.svg' %}">
+        <img src="{% static 'rama-logo.svg' %}">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -40,6 +41,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link js-scroll-trigger" href="ramascene">Tool </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" href="#about">About</a>
                 </li>
@@ -66,7 +70,7 @@
         <div class="mx-auto text-center">
             <h1 class="mx-auto my-0 text-uppercase">RaMA-Scene</h1>
             <h2 class="text-white-50 mx-auto mt-2 mb-5">Raw MAterials SCENario Efficiency improvement assessment tool
-                and blended learning package.</h2>
+                and blended learning package.</h2><br><br>
             <a href="ramascene" class="btn btn-primary js-scroll-trigger">Open tool</a>
         </div>
     </div>
@@ -165,12 +169,12 @@
                 <div class="bg-black text-center h-100 project">
                     <div class="d-flex h-100">
                         <div class="project-text w-100 my-auto text-center text-lg-left">
-                            <h4 class="text-white">Compare</h4>
-                            <p class="mb-0 text-white-50">Compare old and new results and modelled scenarios through the
-                                split view.
+                            <h4 class="text-white">Split view</h4>
+                            <p class="mb-0 text-white-50">Compare historic data from EXIOBASE v3.3 with the Production and/or the Consumption view.
+                                Alternatively compare historic data with modelled scenarios. This feature enables a comparative breakdown of dimensions via either treemap or geographic visualizations.
                             </p>
                             <hr class="d-none d-lg-block mb-0 ml-0">
-                        </div>
+                        </div>git a
                     </div>
                 </div>
             </div>
@@ -298,10 +302,11 @@
 {% block footer %}
 <!-- Footer -->
 <footer class="bg-black small text-center text-white-50">
+
     <div class="container">
         The clients and developers of the RaMA-Scene application are not responsible for any incorrect or incomplete
         data (about measurements, standards, visualizations etc.) or information on this website.
-        <br>Copyright &copy; RaMa-Scene 2017 - 2018
+        <br>Copyright &copy; RaMa-Scene 2017 - 2019
     </div>
     <div class="container">
         Credits <a
