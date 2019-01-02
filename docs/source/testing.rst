@@ -11,7 +11,7 @@ Unit testing
 
 Perform unit tests in the root folder:
 
-``| $ python3 manage.py test -v2``
+``$ python3 manage.py test -v2``
 
 
 ================
@@ -27,8 +27,12 @@ Lastly refer to confttest.py to see which scripts are called for performing the 
 
 To test over the full life cycle of the back-end you can run the following command in the root folder:
 
-``| $ pytest -vs``
+``$ pytest -vs``
 
 Make sure to run a celery worker:
 
-``| $ celery -A ramasceneMastoject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h``
+``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h``
+
+If the test has succeeded, you'll need to repopulate the database with the following command:
+
+``$ python3 manage.py populateHierarchies``
