@@ -122,6 +122,11 @@ You can perform the integration test with the following command:
 $ pytest -vs
 ```
 
+If the test has succeeded, you’ll need to repopulate the database with the following command:
+```
+$ python3 manage.py populateHierarchies
+```
+
 ### Core dependencies
 ---
 The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.1.5] (https://channels.readthedocs.io/en/latest/)
