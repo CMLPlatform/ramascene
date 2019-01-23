@@ -271,7 +271,7 @@ class Visualization extends Component {
                 </Table>
             </div>
             <Button onClick={this.state.callback}>Close</Button>
-            <sub className="pull-right">EXIOBASE v3.3. data</sub>
+            <sub className="pull-right">EXIOBASE v3.3.sm data</sub>
         </div>);
     }
 }
