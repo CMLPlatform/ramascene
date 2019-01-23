@@ -25,6 +25,8 @@ Each file contains information to generate a query, send a websocket query, rece
 These results are in turn matched against the validation files expected results with a given tolerance.
 Lastly refer to confttest.py to see which scripts are called for performing the test.
 
+*Please be aware that at the moment only EXIOBASE v3 can be tested this way*
+
 To test over the full life cycle of the back-end you can run the following command in the root folder:
 
 ``$ pytest -vs``

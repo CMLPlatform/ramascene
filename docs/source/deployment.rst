@@ -12,6 +12,8 @@ The web-application deployment process is based on the following documentations 
 
 It is advised to read these guides. See the next sections for an example to get started quickly.
 
+Please refer to our repository for downloading the raw data, see README.md.
+
 Install Redis [message broker] for Django Channels websocket support
 ====================================================================
 
