@@ -1,4 +1,5 @@
 # RaMa-Scene
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](resources/docs/CONTRIBUTING.md)
 ---
 RaMa-Scene is a django 2.0 based web-application that allows for analyzing Environmentally Extended Input-Output (EEIO) tables. EXIOBASE v3.3 is used in this project. 
 Demo version: http://cml.liacs.nl:8080/ramascene/
@@ -130,7 +131,7 @@ You can perform the integration test with the following command:
 $ pytest -vs
 ```
 
-If the test has succeeded, youâ€™ll need to repopulate the database with the following command:
+If the test has succeeded, you’ll need to repopulate the database with the following command:
 ```
 $ python3 manage.py populateHierarchies
 ```
