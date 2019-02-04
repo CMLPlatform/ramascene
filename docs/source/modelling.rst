@@ -14,7 +14,7 @@ They are constructed by adjusting particular elements in the matrices composing 
 
 In order to create counter-factual IO tables, the RaMa-SCENE platform takes as a reference A, the technical
 coefficient matrix, and Y, the final demand matrix. These two matrices are a representation of the relationship of
-input products to outputs (A) and the demand of product outputs by final consumers (Y).
+input products to outputs (A) and the demand of products by final consumers (Y).
 
 Changes in relationships in the way products are manufactured are therefore implemented by modifying the A matrix,
 while variations in the way products are consumed by final consumers are applied on final demand.
@@ -79,7 +79,7 @@ This process is easily applied to final demand in the following way:
 
 However, in order to obtain a counterfactual Leontief inverse matrix **L** :sup:`alt` , these changes need to be applied to the technical coefficient matrix **A**:
 
-.. image:: ystatic/eq_5_6.PNGmode
+.. image:: ystatic/eq_5_6.PNG
 
 From the counter-factual **A** :sup:`alt` the counterfactual **L** :sup:`alt` is calculated by using the following equation:
 
