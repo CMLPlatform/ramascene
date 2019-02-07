@@ -1,0 +1,42 @@
+GIT
+  remote: https://github.com/KoenDierckx/capistrano-sas.git
+  revision: 0fa6d5d6b448b8cac9f318ca5ac12edfaebc2a70
+  specs:
+    capistrano-sas (1.0.0)
+      capistrano (~> 3.5)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    airbrussh (1.3.1)
+      sshkit (>= 1.6.1, != 1.7.0)
+    capistrano (3.11.0)
+      airbrussh (>= 1.0.0)
+      i18n
+      rake (>= 10.0.0)
+      sshkit (>= 1.9.0)
+    capistrano-yarn (2.0.2)
+      capistrano (~> 3.0)
+    concurrent-ruby (1.1.4)
+    dotenv (2.6.0)
+    i18n (1.5.3)
+      concurrent-ruby (~> 1.0)
+    net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-ssh (5.1.0)
+    rake (12.3.2)
+    sshkit (1.18.2)
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  capistrano
+  capistrano-sas!
+  capistrano-yarn
+  dotenv
+
+BUNDLED WITH
+   1.16.4
