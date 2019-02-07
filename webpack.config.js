@@ -3,7 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 const {resolve} = require('path');
 var BundleTracker = require('webpack-bundle-tracker');
-const Dotenv = require('dotenv-webpack');
+var dotenv = require('dotenv').config({path: __dirname + '/../../.env'});
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const APP_DIR = resolve(__dirname, 'assets/js/client');
@@ -25,9 +25,6 @@ module.exports = env => {
         plugins: [
             //where to store meta-data about the bundle
             new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
-            new Dotenv({
-                path: path.resolve(__dirname + '/../../.env')
-            }),
             new ExtractTextPlugin({
                 filename: 'style.css',
                 disable: false,
