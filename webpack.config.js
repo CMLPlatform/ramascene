@@ -42,8 +42,8 @@ module.exports = env => {
 
 
             new webpack.DefinePlugin({
-                'WEBSOCKET_URL': '"wss://' + process.env.HOST + '/ws/ramascene/"',
-                'AJAX_URL': '"https://' + process.env.HOST + '/ajaxhandling/"'
+                'WEBSOCKET_URL': '"' + process.env.WS_PROTOCOL + '://' + process.env.WS_HOST + '/ws/ramascene/"',
+                'AJAX_URL': '"' + process.env.PROTOCOL + '://' + process.env.HOST + '/ajaxhandling/"'
                 // 'WEBSOCKET_URL': '"ws://ramascene.local/ws/ramascene/"',
                 // 'AJAX_URL': '"http://ramascene.local/ajaxhandling/"'
                 // 'WEBSOCKET_URL': '"ws://cml.liacs.nl:8080/ws/ramascene/"',
