@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 group :development do
   gem 'capistrano'
-  gem 'capistrano-django'
+  gem 'dotenv'
   gem 'capistrano-yarn'
-  gem 'capistrano-systemd', git: 'https://github.com/KoenDierckx/capistrano-systemd.git'
+  gem 'capistrano-sas', git: 'https://github.com/KoenDierckx/capistrano-sas.git'
 end
