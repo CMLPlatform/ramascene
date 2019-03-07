@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/KoenDierckx/capistrano-sas.git
-  revision: 0fa6d5d6b448b8cac9f318ca5ac12edfaebc2a70
+  revision: c4b17c9734f28e31d9dc2a2ab16f4f80718e9fa3
   specs:
     capistrano-sas (1.0.0)
       capistrano (~> 3.5)
@@ -18,8 +18,8 @@ GEM
     capistrano-yarn (2.0.2)
       capistrano (~> 3.0)
     concurrent-ruby (1.1.4)
-    dotenv (2.6.0)
-    i18n (1.5.3)
+    dotenv (2.7.1)
+    i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -39,4 +39,4 @@ DEPENDENCIES
   dotenv
 
 BUNDLED WITH
-   1.16.4
+   1.17.3
