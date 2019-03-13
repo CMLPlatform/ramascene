@@ -8,8 +8,7 @@ append :linked_dirs, 'log', 'datasets'
 set :sas_systemd_use_sudo, true
 
 # Using lazy loading trick, to have generic unit names, based on stage dependent application name
-set :sas_systemd_celery_calculation, -> {"sas-celery-#{fetch(:application)}-calculation"}
-set :sas_systemd_celery_modelling, -> {"sas-celery-#{fetch(:application)}-modelling"}
+set :sas_systemd_celery, -> {"sas-celery-#{fetch(:application)}"}
 set :sas_systemd_flower, -> {"sas-flower-#{fetch(:application)}"}
 set :sas_systemd_daphne, -> {"sas-daphne-#{fetch(:application)}"}
 
