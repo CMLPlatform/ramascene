@@ -698,13 +698,27 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
-                                    <h5>Didactics</h5>
+                                    <h5>Tutorials</h5>
                                     <ul>
-                                        <li>Manual</li>
-                                        <li>Excercises</li>
-                                        <li>Slides</li>
-                                        <li>Join the class</li>
-                                        <li>Additional courses</li>
+                                        <li><a onclick="window.open('https://www.youtube.com/watch?v=hrrLnxjRv6g')"></a>User guide</li>
+                                        <li><a onclick="window.open('https://www.youtube.com/watch?v=3-LxNo5giBw')"></a>Exercise</li>
+                                    </ul>
+                                    <h5>Manual</h5>
+                                    <ul>
+                                        <li><a onclick="window.open('../static/RaMaScene_platform_manual.pdf')"></a>Open PDF</li>
+                                    </ul>
+                                    <h5>Lessons on Circular Economy assessment</h5>
+                                    <ul>
+                                        <li><a onclick="window.open('https://youtu.be/ySLqCFfy3n0')"></a>Intro to Circular Economy</li>
+                                        <li><a onclick="window.open('https://youtu.be/hQPQdzGwAhw')"></a>Micro-level assessment - LCA</li>
+                                        <li><a onclick="window.open('https://youtu.be/VcTa8Ln9pJw')"></a>Meso-level assessment - SFA</li>
+                                        <li><a onclick="window.open('https://youtu.be/g-ZiHKnHwZc')"></a>Macro-level assessment - EEIO</li>
+                                    </ul>
+                                    <h5>Lessons on Critical Materials (Courtesy of SusCritMat)</h5>
+                                    <ul>
+                                        <li><a onclick="window.open('https://youtu.be/76AuaNaY9jY')"></a>Scenarios</li>
+                                        <li><a onclick="window.open('https://youtu.be/BFBqiPjjCr8')"></a>Supply risk factors</li>
+                                        <li><a onclick="window.open('https://youtu.be/DWhsKr6OMP4')"></a>Criticality (Interview)</li>
                                     </ul>
                                     <h5>Raw Materials Information System</h5>
                                     <ul>
@@ -743,6 +757,8 @@ class App extends Component {
                             <Panel.Collapse>
                                 <Panel.Body>
                                     <Image src="../static/partners.png" responsive />
+                                    <Image src="../static/EIT_EU_logos/RM-Academy-Logo_300px.png" responsive />
+                                    <Image src="../static/EIT_EU_logos/EU-Flag-2020_100px.png" responsive />
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
