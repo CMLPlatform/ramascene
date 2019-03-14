@@ -700,25 +700,25 @@ class App extends Component {
                                 <Panel.Body>
                                     <h5>Tutorials</h5>
                                     <ul>
-                                        <li><a onclick="window.open('https://www.youtube.com/watch?v=hrrLnxjRv6g')"></a>User guide</li>
-                                        <li><a onclick="window.open('https://www.youtube.com/watch?v=3-LxNo5giBw')"></a>Exercise</li>
+                                        <li><a href="https://www.youtube.com/watch?v=hrrLnxjRv6g"></a>User guide</li>
+                                        <li><a href="https://www.youtube.com/watch?v=3-LxNo5giBw"></a>Exercise</li>
                                     </ul>
                                     <h5>Manual</h5>
                                     <ul>
-                                        <li><a onclick="window.open('../static/RaMaScene_platform_manual.pdf')"></a>Open PDF</li>
+                                        <li><a href="../static/RaMaScene_platform_manual.pdf"></a>Download PDF</li>
                                     </ul>
                                     <h5>Lessons on Circular Economy assessment</h5>
                                     <ul>
-                                        <li><a onclick="window.open('https://youtu.be/ySLqCFfy3n0')"></a>Intro to Circular Economy</li>
-                                        <li><a onclick="window.open('https://youtu.be/hQPQdzGwAhw')"></a>Micro-level assessment - LCA</li>
-                                        <li><a onclick="window.open('https://youtu.be/VcTa8Ln9pJw')"></a>Meso-level assessment - SFA</li>
-                                        <li><a onclick="window.open('https://youtu.be/g-ZiHKnHwZc')"></a>Macro-level assessment - EEIO</li>
+                                        <li><a href="https://youtu.be/ySLqCFfy3n0"></a>Intro to Circular Economy</li>
+                                        <li><a href="https://youtu.be/hQPQdzGwAhw"></a>Micro-level assessment - LCA</li>
+                                        <li><a href="https://youtu.be/VcTa8Ln9pJw"></a>Meso-level assessment - SFA</li>
+                                        <li><a href="https://youtu.be/g-ZiHKnHwZc"></a>Macro-level assessment - EEIO</li>
                                     </ul>
                                     <h5>Lessons on Critical Materials (Courtesy of SusCritMat)</h5>
                                     <ul>
-                                        <li><a onclick="window.open('https://youtu.be/76AuaNaY9jY')"></a>Scenarios</li>
-                                        <li><a onclick="window.open('https://youtu.be/BFBqiPjjCr8')"></a>Supply risk factors</li>
-                                        <li><a onclick="window.open('https://youtu.be/DWhsKr6OMP4')"></a>Criticality (Interview)</li>
+                                        <li><a href="https://youtu.be/76AuaNaY9jY"></a>Scenarios</li>
+                                        <li><a href="https://youtu.be/BFBqiPjjCr8"></a>Supply risk factors</li>
+                                        <li><a href="https://youtu.be/DWhsKr6OMP4"></a>Criticality (Interview)</li>
                                     </ul>
                                     <h5>Raw Materials Information System</h5>
                                     <ul>
