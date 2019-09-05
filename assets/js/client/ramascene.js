@@ -662,7 +662,7 @@ class App extends Component {
                                 <Panel.Body>
                                     {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M symbol if you are ready to model</Alert>}
                                     <div className="table-responsive">
-                                        <Table striped condensed hover>
+                                        <Table striped condensed>
                                             <tbody>
                                             {
                                                 this.state.jobs.map(function(job) {
