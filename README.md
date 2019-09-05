@@ -17,15 +17,15 @@ http://rama-scene.readthedocs.io/en/latest/
  
 * EXIOBASE-Rama-Scene (v3 - unmodified version of EXIOBASE): 
 
-https://fdonaticml.stackstorage.com/s/1wYNXkJXkIWqXGW
+To be updated
 
 * EXIOBASE-Rama-Scene (v4 - modified version including secondary materials): 
 
-https://fdonaticml.stackstorage.com/s/HpghqxdxgW70MLt
+https://fdonaticml.stackstorage.com/s/uIzzoDRkX9xH4Nj
 
 ### Clone the project 
 ``` 
-git clone https://SidneyNiccolson@bitbucket.org/CML-IE/rama-scene.git 
+git clone https://bitbucket.org/CML-IE/rama-scene.git
 ```
 
 ### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure you have python-dev installed via apt-get)
@@ -66,9 +66,9 @@ Check the status to make sure everything is running:
 ### Set the following environment variables (see sample-dev-env.sh):
 ```
 export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
-export DATASETS_VERSION=[version downloaded e.g. v3]
+export DATASETS_VERSION=version downloaded e.g. v3
 export DATASETS_DIR=my/path/to/datasets
-export OPENBLAS_NUM_THREADS=<adjust according to how many cores you want to use>
+export OPENBLAS_NUM_THREADS=adjust according to how many cores you want to use
 ```
 If you are on Linux and using the OpenBlas library for Numpy. 
 It is advised to set the number of threads Numpy uses. To find which library is used in python:
