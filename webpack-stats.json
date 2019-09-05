@@ -1,15 +1,1 @@
-{
-  "status": "done",
-  "chunks": {
-    "main": [
-      {
-        "name": "main-6bc3e39a52b2e44236ca.js",
-        "path": "/home/sidney/ramascene_bitbucket/v0.3/rama-scene/assets/bundles/main-6bc3e39a52b2e44236ca.js"
-      },
-      {
-        "name": "style.css",
-        "path": "/home/sidney/ramascene_bitbucket/v0.3/rama-scene/assets/bundles/style.css"
-      }
-    ]
-  }
-}
+{"status":"done","chunks":{"main":[{"name":"main-a977375aec9cf0846990.js","path":"/home/fdonati/Documents/0_scripts/rama-scene/assets/bundles/main-a977375aec9cf0846990.js"},{"name":"style.css","path":"/home/fdonati/Documents/0_scripts/rama-scene/assets/bundles/style.css"}]}}

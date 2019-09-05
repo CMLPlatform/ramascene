@@ -212,7 +212,7 @@ class Visualization extends Component {
         }
         return (<div>
             <div className="visualization-panel">{visualization}</div>
-            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Scenario Modelling Result' : 'Analysis Result'}</Label>
+            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Counter-factual results' : 'Baseline results'}</Label>
             <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
             <div className="table-responsive">
                 <Table bordered condensed>
@@ -223,19 +223,19 @@ class Visualization extends Component {
                     </thead>
                     <tbody>
                     <tr>
-                        <td>Perspective</td>
+                        <td>Analysis</td>
                         <td colSpan='4'>{this.state.query.dimType}</td>
                     </tr>
                     <tr>
-                        <td>{this.state.is_modelling_result ? 'Scenario ' : 'Year'}</td>
+                        <td>Baseline year</td>
                         <td colSpan='4'>{this.state.query.year}</td>
                     </tr>
                     <tr>
-                        <td>Region(s)</td>
+                        <td>Regions</td>
                         <td colSpan='4'>{this.state.query.nodesReg.join('; ')}</td>
                     </tr>
                     <tr>
-                        <td>Product(s)</td>
+                        <td>Products</td>
                         <td colSpan='4'>{this.state.query.nodesSec.join('; ')}</td>
                     </tr>
                     <tr>
@@ -249,17 +249,17 @@ class Visualization extends Component {
                         </tr>
                         <tr>
                             <th className="col-xs-3">Product</th>
-                            <th className="col-xs-3">Consumed by</th>
-                            <th className="col-xs-2">Originating From</th>
-                            <th className="col-xs-2">Consumed Where</th>
-                            <th className="col-xs-2">Technical Change Coefficient</th>
+                            <th className="col-xs-3">Product's origin</th>
+                            <th className="col-xs-2">Consumption activity</th>
+                            <th className="col-xs-2">Region of consumption</th>
+                            <th className="col-xs-2">Relative change to coefficients</th>
                         </tr>
                         { this.state.model_details.map(function(model_detail, index) {
                             return (
                                 <tr className="active" key={'model_detail-' + index}>
                                     <td>{model_detail.product}</td>
-                                    <td>{model_detail.consumedBy}</td>
                                     <td>{model_detail.originReg}</td>
+                                    <td>{model_detail.consumedBy}</td>
                                     <td>{model_detail.consumedReg}</td>
                                     <td>{model_detail.techChange}</td>
                                 </tr>
@@ -270,7 +270,7 @@ class Visualization extends Component {
                     </tbody>
                 </Table>
             </div>
-            <Button onClick={this.state.callback}>Close</Button>
+            <Button onClick={this.state.callback}>Clear visualization</Button>
             <sub className="pull-right">EXIOBASE v3.3.sm data</sub>
         </div>);
     }

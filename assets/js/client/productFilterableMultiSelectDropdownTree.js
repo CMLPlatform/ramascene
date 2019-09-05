@@ -75,7 +75,7 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
         for (var product of result.data) {
             data.push({id: product.global_id, pId: product.parent_id, value: product.global_id.toString(), label: product.name, level: product.level});
         }
-        this.setState({data: data, placeholder: "select product(s)"});
+        this.setState({data: data, placeholder: "Select products"});
     }
 
     render() {
@@ -83,14 +83,14 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
             <React.Fragment>
                 <ButtonGroup>
                     <Button disabled={this.state.disabled}
-                            onClick={this.handleAllProductsClicked.bind(this)}
-                            active={this.state.quick_select == this.ALL_PRODUCTS}>All Products</Button>
-                    <Button disabled={this.state.disabled}
                             onClick={this.handleAllSectorsClicked.bind(this)}
-                            active={this.state.quick_select == this.ALL_SECTORS}>All Sectors</Button>
+                            active={this.state.quick_select == this.ALL_SECTORS}>Sectors</Button>
                     <Button disabled={this.state.disabled}
                             onClick={this.handleAllSubsectorsClicked.bind(this)}
-                            active={this.state.quick_select == this.ALL_SUBSECTORS}>All Subsectors</Button>
+                            active={this.state.quick_select == this.ALL_SUBSECTORS}>Subsectors</Button>
+                    <Button disabled={this.state.disabled}
+                            onClick={this.handleAllProductsClicked.bind(this)}
+                            active={this.state.quick_select == this.ALL_PRODUCTS}>Products</Button>
                 </ButtonGroup>
                 {super.render()}
             </React.Fragment>

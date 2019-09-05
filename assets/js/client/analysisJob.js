@@ -71,13 +71,13 @@ class AnalysisJob extends Component {
             console.log('received: %s', JSON.stringify(job));
 
             // construct job label
-            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, job.job_name.vizType.length - 3), job.job_name.nodesReg.toString().substr(0, 10), job.job_name.nodesSec.toString().substr(0, 10), job.job_name.extn.toString().substr(0, 10)];
+            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, job.job_name.vizType.length - 3), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.extn.toString().substr(0, 10)];
 
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
                 job_name: job.job_name, // job_name is an object
-                job_label: label_parts.join('>')
+                job_label: label_parts.join('/')
             });
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
@@ -174,7 +174,7 @@ class AnalysisJob extends Component {
 
         confirmAlert({
             title: 'Confirm delete',
-            message: 'Are you sure to delete this job ?',
+            message: 'Are you sure you want to delete this job?',
             buttons: [
                 {
                     label: 'Yes',
@@ -254,7 +254,7 @@ class AnalysisJob extends Component {
 
     canModel() {
         return this.context.model_details.length > 0 && ((this.state.job_status == this.STATUS_COMPLETED && this.state.job_type == this.ANALYSIS_JOB) || (this.state.job_status == this.STATUS_FAILED && this.state.job_type == this.MODELLING_JOB));
-    }
+    }   
 
     canCompare() {
         return this.state.job_status == this.STATUS_COMPLETED && this.state.raw_data !== undefined && !this.state.in_comparison_view;
@@ -290,17 +290,24 @@ class AnalysisJob extends Component {
         ];
         return (
             <tr className={this.state.job_status == this.STATUS_COMPLETED ? (this.state.job_type == this.ANALYSIS_JOB ? 'success' : (this.state.job_type == this.MODELLING_JOB ? 'info' : 'danger')) : 'default'} key={this.state.key}>
-                <td onClick={this.canVisualize() ? this.retrieveRawResult.bind(this, false) : function() {}} style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
-                    {this.state.job_status == this.STATUS_STARTED && <Glyphicon glyph='hourglass'/>}&nbsp;
-                    {this.state.in_main_view && <Badge>Main view</Badge>}&nbsp;
-                    {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;
-                    {this.state.job_label}
+
+                <td style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
+                    <tr>
+                        {this.state.job_status == this.STATUS_STARTED && <Glyphicon glyph='hourglass'/>}&nbsp;
+                        {this.canModel() && <Button onClick={this.startModelling.bind(this)} title={"Model"} disabled={this.state.busy}>M</Button>}
+                        {this.canVisualize() && <Button onClick={this.retrieveRawResult.bind(this, false)} title={"View"}><Glyphicon glyph="eye-open"/></Button>}
+                        {this.canCompare() && <Button onClick={this.retrieveRawResult.bind(this, true)} title={"Compare"}>C</Button>}
+                        {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}} title={"Download RAW result data"}/></CSVLink>}
+                        {this.canDestroy() && <Button onClick={this.destroy.bind(this)} title={"Delete"}><Glyphicon glyph="trash"/></Button>}
+                    </tr>
+                    <tr>
+                        {this.state.in_main_view && <Badge>Main view</Badge>}&nbsp;
+                        {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;
+                    </tr>
+                    <tr>
+                        {this.state.job_label}
+                    </tr>
                 </td>
-                <td>{this.canModel() && <Button onClick={this.startModelling.bind(this)} title={"Model"} disabled={this.state.busy}>M</Button>}
-                    {this.canCompare() && <Button onClick={this.retrieveRawResult.bind(this, true)} title={"Compare"}>C</Button>}
-                    {this.canVisualize() && <Button onClick={this.retrieveRawResult.bind(this, false)} title={"View"}><Glyphicon glyph="eye-open"/></Button>}
-                    {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}} title={"Download RAW result data"}/></CSVLink>}
-                    {this.canDestroy() && <Button onClick={this.destroy.bind(this)} title={"Delete"}><Glyphicon glyph="trash"/></Button>}</td>
             </tr>
         );
     }

@@ -56,7 +56,7 @@ class ScenarioModel extends Component {
             <React.Fragment>
                 <Row>
                     <Col>
-                        <div>product<CustomTooltip tooltip={product_model_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Product <CustomTooltip tooltip={product_model_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         <ProductFilterableSingleSelectDropdownTree onChange={this.handleProductChange.bind(this)}
                                                                    value={this.state.selectedProductOption}
                                                                    ref={this.setProductRef}
@@ -65,16 +65,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Consumed by<CustomTooltip tooltip={consumer_helptext} id="consumer-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
-                        <ConsumerFilterableSingleSelectDropdownTree onChange={this.handleConsumerChange.bind(this)}
-                                                                    value={this.state.selectedConsumerOption}
-                                                                    ref={this.setConsumerRef}
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <div>Originating from<CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Product's origin <CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         {/*TODO how should the country list look like ?*/}
                         <RegionFilterableSingleSelectDropdownTree onChange={this.handleOriginChange.bind(this)}
                                                                   value={this.state.selectedOriginOption}
@@ -84,7 +75,16 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Consumed where<CustomTooltip tooltip={destination_helptext} id="destination-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Consumption activity <CustomTooltip tooltip={consumer_helptext} id="consumer-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <ConsumerFilterableSingleSelectDropdownTree onChange={this.handleConsumerChange.bind(this)}
+                                                                    value={this.state.selectedConsumerOption}
+                                                                    ref={this.setConsumerRef}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div>Consumption location <CustomTooltip tooltip={destination_helptext} id="destination-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         {/*TODO how should the country list look like ?*/}
                         <RegionFilterableSingleSelectDropdownTree onChange={this.handleDestinationChange.bind(this)}
                                                                   value={this.state.selectedDestinationOption}
@@ -94,7 +94,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Technical Change Coefficient<CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Relative change to coefficients <CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         <div className="input-group">
                             <FormControl type="number" placeholder="0" value={this.state.coefficient} onChange={this.handleCoefficientChange.bind(this)}/>
                             <span className="input-group-addon">%</span>
@@ -111,7 +111,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Added changes<CustomTooltip tooltip={changes_helptext} id="changes-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Added changes <CustomTooltip tooltip={changes_helptext} id="changes-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         <Well>{
                             this.state.model_details.map(function(model, index) {
                                 return (<div key={shortid.generate()}>

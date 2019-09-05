@@ -41,7 +41,7 @@ class ConsumerFilterableSingleSelectDropdownTree extends FilterableSingleSelectD
         for (var consumer of result.data) {
             data.push({id: consumer.global_id, pId: consumer.parent_id, value: consumer.global_id.toString(), label: consumer.name});
         }
-        this.setState({data: data, placeholder: "select consumer"});
+        this.setState({data: data, placeholder: "Select consumer"});
     }
 
     getLabel(value) {

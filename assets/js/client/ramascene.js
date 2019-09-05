@@ -52,7 +52,7 @@ class App extends Component {
         this.VIZDETAIL_CONTINENT = 'continent';
         this.VIZDETAIL_COUNTRY = 'country';
 
-        this.MAX_JOB_COUNT = 10;
+        this.MAX_JOB_COUNT = 20;
 
         this.state = {
             selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
@@ -490,72 +490,62 @@ class App extends Component {
                     You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
                 </Alert>}
                 <Row>
-                    <Col sm={3} md={3} lg={3}>
+                    <Col sm={2} md={2} lg={2}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title toggle>
-                                    Selection menu
-                                </Panel.Title><CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
+                                    Baseline settings <CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
                                     <Row>
                                         <Col>
-                                            <div>Perspective<CustomTooltip tooltip={perspective_helptext} id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Analysis <CustomTooltip tooltip={perspective_helptext} id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleProductionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_PRODUCTION}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Production</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Hotspot</Button>
                                                 <Button onClick={this.handleConsumptionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_CONSUMPTION}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Final Consumption</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Contribution</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <div>Visualization</div>
+                                            <div>Detail</div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTreeMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_TREEMAP}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>TreeMap</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Sectoral</Button>
                                                 <Button onClick={this.handleGeoMapClicked.bind(this)}
                                                         active={selectedVisualizationOption == this.VIZ_GEOMAP}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>GeoMap</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Geographic</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
                                     {(selectedVisualizationOption == this.VIZ_GEOMAP) &&
                                     <Row>
                                         <Col>
-                                            <div>Geographic aggregation level</div>
+                                            <div>Geographic resolution</div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleTotalClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_TOTAL}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Total</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Global</Button>
                                                 <Button onClick={this.handleContinentClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_CONTINENT}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Continent</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Macro-region</Button>
                                                 <Button onClick={this.handleCountryClicked.bind(this)}
                                                         active={selectedVisualizationDetailOption == this.VIZDETAIL_COUNTRY}
-                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Country</Button>
+                                                        disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}>Region</Button>
                                             </ButtonGroup>
                                         </Col>
                                     </Row>
                                     }
                                     <Row>
-                                        <Col>
-                                            <div>Year</div>
-                                            <YearFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
-                                                                                    onChange={this.handleYearChange.bind(this)}
-                                                                                    value={this.state.selectedYearOption}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>{this.state.selectMultiRegion ? 'select multiple regions' : 'select a single region'}</div>
+                                            <div>{this.state.selectMultiRegion ? 'Select multiple regions' : 'Select a single region'}</div>
                                             {!this.state.selectMultiRegion &&
                                                 <RegionFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                           onChange={this.handleRegionChange.bind(this)}
@@ -575,7 +565,7 @@ class App extends Component {
                                         {/*<div>Products and Regions</div>*/}
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>{this.state.selectMultiProduct ? 'select multiple products' : 'select a single product'}<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>{this.state.selectMultiProduct ? 'Select multiple products ' : 'Select a single product '}<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             {this.state.selectMultiProduct &&
                                             <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                       onChange={this.handleProductChange.bind(this)}
@@ -591,8 +581,17 @@ class App extends Component {
                                         </Col>
                                     </Row>
                                     <Row>
+                                            <Col>
+                                                <div>Year</div>
+                                                <YearFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
+                                                                                        onChange={this.handleYearChange.bind(this)}
+                                                                                        value={this.state.selectedYearOption}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    <Row>
                                         <Col>
-                                            <div>Indicator<CustomTooltip tooltip={indicator_helptext} id="indicator-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Indicator <CustomTooltip tooltip={indicator_helptext} id="indicator-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                                             <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                         onChange={this.handleIndicatorChange.bind(this)}
                                                                                         value={this.state.selectedIndicatorOptions}
@@ -610,8 +609,7 @@ class App extends Component {
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title toggle>
-                                    Scenario Modelling
-                                </Panel.Title><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
+                                    Counter-factual settings <CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -627,11 +625,10 @@ class App extends Component {
                             </Panel.Collapse>
                         </Panel>
                     </Col>
-                    <Col sm={6} md={6} lg={6}>
+                    <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>Main View</Panel.Title>
-                                <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button>
+                                <Panel.Title toggle>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -639,10 +636,13 @@ class App extends Component {
                             </Panel.Body>
                           </Panel.Collapse>
                         </Panel>
+
+                    </Col>
+
+                    <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>Comparison View</Panel.Title>
-                                <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button>
+                                <Panel.Title toggle>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -651,12 +651,12 @@ class App extends Component {
                           </Panel.Collapse>
                         </Panel>
                     </Col>
-                    <Col sm={3} md={3} lg={3}>
+
+                    <Col sm={2,2} md={2,2} lg={2,2}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title>
-                                    Analysis queue
-                                </Panel.Title><CustomTooltip tooltip={analysis_queue_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip>
+                                    Analysis queue <CustomTooltip tooltip={analysis_queue_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -769,7 +769,7 @@ class App extends Component {
                         {/*<Modal.Title></Modal.Title>*/}
                     </Modal.Header>
                     <Modal.Body>
-                    <p>This may take a while - expected min. wait time 2 seconds for analytical calculations, max. wait time 10minutes or longer at heavy traffic and doing modelling</p>
+                    <p>This may take a while - expected min. wait time 2 seconds for analytical calculations, max. wait time 10 minutes or longer at heavy traffic and doing modelling</p>
                     </Modal.Body>
                 </Modal>
             </Grid>
