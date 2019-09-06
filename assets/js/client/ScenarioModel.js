@@ -11,7 +11,7 @@ var {changes_helptext, coefficient_helptext, consumer_helptext, destination_help
 
 function CustomTooltip({id, children, tooltip}) {
     return (
-        <OverlayTrigger trigger="click" rootClose
+        <OverlayTrigger trigger="hover" rootClose
                         overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
                         delayShow={300}
                         delayHide={150}

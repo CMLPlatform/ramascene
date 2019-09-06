@@ -492,12 +492,13 @@ class App extends Component {
                 <Row>
                     <Col sm={2} md={2} lg={2}>
                         <Panel defaultExpanded>
+                            
                             <Panel.Heading>
-                                <Panel.Title toggle>
-                                    Baseline settings <CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
+                                <Panel.Title><Panel.Toggle>Baseline settings </Panel.Toggle><CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip> </Panel.Title>
                             </Panel.Heading>
+
                             <Panel.Collapse>
-                                <Panel.Body>
+                            <Panel.Body>
                                     <Row>
                                         <Col>
                                             <div>Analysis <CustomTooltip tooltip={perspective_helptext} id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
@@ -608,8 +609,8 @@ class App extends Component {
                         </Panel>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>
-                                    Counter-factual settings <CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
+                                <Panel.Title>
+                                    <Panel.Toggle>Counter-factual settings </Panel.Toggle><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -628,7 +629,7 @@ class App extends Component {
                     <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
+                                <Panel.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -642,7 +643,7 @@ class App extends Component {
                     <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title toggle>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
+                                <Panel.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -656,7 +657,7 @@ class App extends Component {
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title>
-                                    Analysis queue <CustomTooltip tooltip={analysis_queue_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
+                                    Analysis queue <CustomTooltip tooltip={analysis_queue_helptext}  id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
