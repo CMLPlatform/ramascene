@@ -89,7 +89,7 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
     s_country_idx = np.arange(0, 49)
     try:
         # selection state No 2:  - country of consumption - multiple select
-        if query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Consumption":
+        if query_selection["vizType"] == "Geographic" and query_selection["dimType"] == "Contribution":
             # if there are model_details
             if "model_details" in query_selection:
                 Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
@@ -112,7 +112,7 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
             return json_data
 
         # selection state No 3: - country where emission takes place - multiple select
-        elif query_selection["vizType"] == "GeoMap" and query_selection["dimType"] == "Production":
+        elif query_selection["vizType"] == "Geographic" and query_selection["dimType"] == "Hotspot":
             # if there are model_details
             if "model_details" in query_selection:
                 Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
@@ -135,7 +135,7 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
             return json_data
 
         # selection state No 1: - consumed products - multiple select
-        elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Consumption":
+        elif query_selection["vizType"] == "Sectoral" and query_selection["dimType"] == "Contribution":
             # if there are model_details
             if "model_details" in query_selection:
                 Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")
@@ -158,7 +158,7 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
             return json_data
 
         # selection state No 4: - sector where emission takes place - multiple select
-        elif query_selection["vizType"] == "TreeMap" and query_selection["dimType"] == "Production":
+        elif query_selection["vizType"] == "Sectoral" and query_selection["dimType"] == "Hotspot":
             # if there are model_details
             if "model_details" in query_selection:
                 Y_data = querymanagement.get_numpy_objects(query_selection["year"], "Y")

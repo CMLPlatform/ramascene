@@ -44,15 +44,15 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.PERSPECTIVE_PRODUCTION = 'Production';
-        this.PERSPECTIVE_CONSUMPTION = 'Consumption';
-        this.VIZ_TREEMAP = 'TreeMap';
-        this.VIZ_GEOMAP = 'GeoMap';
+        this.PERSPECTIVE_PRODUCTION = 'Hotspot';
+        this.PERSPECTIVE_CONSUMPTION = 'Contribution';
+        this.VIZ_TREEMAP = 'Sectoral';
+        this.VIZ_GEOMAP = 'Geographic';
         this.VIZDETAIL_TOTAL = 'total';
         this.VIZDETAIL_CONTINENT = 'continent';
         this.VIZDETAIL_COUNTRY = 'country';
 
-        this.MAX_JOB_COUNT = 20;
+        this.MAX_JOB_COUNT = 15;
 
         this.state = {
             selectedPerspectiveOption: this.PERSPECTIVE_PRODUCTION,
@@ -691,6 +691,8 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
+
+
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title >

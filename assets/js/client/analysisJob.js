@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-import { Badge, Button, Glyphicon } from 'react-bootstrap';
+import { Badge, Button, Glyphicon} from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import {csrftoken} from './csrfToken';
@@ -52,7 +52,7 @@ class AnalysisJob extends Component {
         ws = new WebSocket(WEBSOCKET_URL);
 
         ws.onopen = function() {
-            if (this.state.query.dimType == 'Production' || this.state.query.dimType == 'Consumption') {
+            if (this.state.query.dimType == 'Hotspot' || this.state.query.dimType == 'Contribution') {
                 ws.send(JSON.stringify({'querySelection': this.state.query, 'action': 'default'}));
             } else {
                 ws.send(JSON.stringify({'querySelection': this.state.query, 'action': 'start_calc'}));
@@ -72,12 +72,14 @@ class AnalysisJob extends Component {
 
             // construct job label
             var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, job.job_name.vizType.length - 3), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.extn.toString().substr(0, 10)];
+            var simplified_id = job.job_id.toString().slice(-2);
 
             this.setState({
                 job_status: job.job_status,
                 job_id: job.job_id,
                 job_name: job.job_name, // job_name is an object
-                job_label: label_parts.join('/')
+                job_label: label_parts.join('/'),
+                job_simplified_ID: simplified_id
             });
         } else if(job.job_status == this.STATUS_COMPLETED) {
             console.log('received: %s', JSON.stringify(job));
@@ -218,7 +220,7 @@ class AnalysisJob extends Component {
         }
 
         var result = [];
-        if (vizType == 'TreeMap') {
+        if (vizType == 'Sectoral') {
             nodesSec.forEach(function(key) {
                 result.push({vizType: vizType, dimType: dimType, extn: extn[0], year: year, nodesReg: nodesReg[0], nodesSec: key, /*products: products, originRegs: originRegs, consumedRegs: consumedRegs, techChanges: techChanges*/ model_details: JSON.stringify(new_model_details), value: raw_result_data['rawResultData'][key], unit: unit[extn[0]]});
             });
@@ -305,6 +307,7 @@ class AnalysisJob extends Component {
                         {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;
                     </tr>
                     <tr>
+                        <div>Analysis ID: {this.state.job_simplified_ID}</div> 
                         {this.state.job_label}
                     </tr>
                 </td>
