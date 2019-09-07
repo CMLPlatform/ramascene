@@ -5,7 +5,7 @@
 
 
 {% load static %}
-{% block title %}RaMA-Scene{% endblock %}
+{% block title %}RaMa-Scene{% endblock %}
 
 
 {% block speciality %}
@@ -32,7 +32,7 @@
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 
     <div class="container">
-        <img src="{% static 'rama-logo.svg' %}">
+        <a href="/"> <img src="{% static 'rama-logo.svg' %}"></a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
                 data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -42,7 +42,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link js-scroll-trigger" href="ramascene">Tool </a>
+                    <a class="nav-link js-scroll-trigger" href="ramascene">Tool</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link js-scroll-trigger" href="#about">About</a>
@@ -68,9 +68,8 @@
 <header class="masthead">
     <div class="container d-flex h-100 align-items-center">
         <div class="mx-auto text-center">
-            <h1 class="mx-auto my-0 text-uppercase">RaMA-Scene</h1>
-            <h2 class="text-white-50 mx-auto mt-2 mb-5">Raw MAterials SCENario Efficiency improvement assessment tool
-                and blended learning package.</h2><br><br>
+            <h1 class="mx-auto my-0">RaMa-Scene</h1>
+            <h2 class="text-white-50 mx-auto mt-2 mb-5">RAw MAterials SCENario Efficiency improvement assessment tool and blended learning package.</h2><br><br>
             <a href="ramascene" class="btn btn-primary js-scroll-trigger">Open tool</a>
         </div>
     </div>
@@ -82,10 +81,8 @@
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <h2 class="text-white mb-4">Project</h2>
-                <p class="text-white-50">RaMa-Scene is an EIT Raw Materials project with the objective of facilitating
-                    decision making and the diffusion of knowledge and skills for raw materials scenarios.
-                <img src="{% static 'EIT_EU_logos/RM-Academy-Logo-White_300px.png' %}" style="width: 30%; height: 30%">
-                <img src="{% static 'EIT_EU_logos/EU-Flag-2020-White_100px.png' %}" style="width: 60%; height: 15%">
+                <p class="text-white-50">RaMa-Scene is an EIT Raw Materials project with the objective of empowering and facilitating students, experts and decision makers in the analysis of the global economy and circular economy improvements. For this purpose, the project developed a blended learning educational package for lifelong learning and an easy to use web-application to create circular economy scenarios using Multi-regional Environmentally Extendend Input-Output Analysis.
+                <img src="{% static 'EIT_EU_logos/RM-Academy-Logo-White_300px_plus_EU_flag.png' %}" style="width: 98%; height: 98%">
                 </p>
             </div>
         </div>
@@ -147,14 +144,12 @@
                 <div class="bg-black text-center h-100 project">
                     <div class="d-flex h-100">
                         <div class="project-text w-100 my-auto text-center text-lg-right">
-                            <h4 class="text-white">Production and consumption views<br></h4>
+                            <h4 class="text-white">Hotspot and Constribution analysis<br></h4>
                             <p class="mb-0 text-white-50">Explore environmental and economic impact resulting from
-                                the production or consumption of goods and services. The *Production* view allows for
-                                the
+                                the production or consumption of goods and services. The *Hotspot* analysis allows for the
                                 investigation of impacts in the production of specific product categories while in the
-                                *Final Consumption* view impacts are assessed throughout the entire supply-chain of a
-                                consumed
-                                product category.<br>
+                                *Contribution* analysis impacts are assessed throughout the entire supply-chain of a
+                                consumed product category.<br>
                                 <a href="https://rama-scene.readthedocs.io/en/latest/calculations.html">Read more</a>
                             </p>
                             <hr class="d-none d-lg-block mb-0 mr-0">
@@ -171,9 +166,9 @@
                 <div class="bg-black text-center h-100 project">
                     <div class="d-flex h-100">
                         <div class="project-text w-100 my-auto text-center text-lg-left">
-                            <h4 class="text-white">Split view</h4>
-                            <p class="mb-0 text-white-50">Compare historic data from EXIOBASE v3.3 with the Production and/or the Consumption view.
-                                Alternatively compare historic data with modelled scenarios. This feature enables a comparative breakdown of dimensions via either treemap or geographic visualizations.
+                            <h4 class="text-white">Main and comparison views</h4>
+                            <p class="mb-0 text-white-50">Compare historic data from EXIOBASE v3.3.sm using different analytical methods.
+                                Alternatively compare historic data with modelled counter-factual scenarios. This feature enables a comparative breakdown of dimensions via either sectoral (tree-map) or geographic (geo-map) visualizations.
                             </p>
                             <hr class="d-none d-lg-block mb-0 ml-0">
                         </div>git a
@@ -191,9 +186,8 @@
             <div class="col-xl-4 col-lg-5">
                 <div class="featured-text text-center text-lg-left">
                     <h4>Modelling</h4>
-                    <p class="text-black-50 mb-0">Create final consumption scenarios by applying sets of relative
-                        changes to
-                        final demand. The changes are applied in sequence and results are recalculated.<br>
+                    <p class="text-black-50 mb-0">Create industrial or final onsumption scenarios by applying sets of relative
+                        changes to final demand or indutrial relationships. Multiple changes can be applied in sequence according to users' scenario modelling needs.<br>
                         <a href="https://rama-scene.readthedocs.io/en/latest/modelling.html">Read more</a>
                     </p>
                 </div>
