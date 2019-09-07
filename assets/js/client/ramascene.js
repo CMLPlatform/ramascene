@@ -696,7 +696,7 @@ class App extends Component {
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title >
-                                    Resources
+                                    Additional Resources
                                 </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
@@ -733,10 +733,10 @@ class App extends Component {
                                         <li><a href="http://rmis.jrc.ec.europa.eu/">Industry & Innovation</a></li>
                                         <li><a href="http://rmis.jrc.ec.europa.eu/">Raw Materials Knowledge Gateway</a></li>
                                     </ul>
-                                    <h5>Other resources</h5>
+                                    <h5>Other web-applications</h5>
                                     <ul>
                                         <li><a href="https://www.exiobase.eu/">EXIOBASE</a></li>
-                                        <li><a href="https://cml.liacs.nl/exiovisuals/">EXIOVISUALS</a></li>
+                                        <li><a href="https://cml.liacs.nl/cmat/">CircuMat</a></li>
                                         <li><a href="https://atlas.media.mit.edu/en/visualize/tree_map/hs92/export/nga/all/show/2016/">Observatory of Economic Complexity</a></li>
                                         <li><a href="https://ielab.info/">Industrial Ecology Virtual Laboratory</a></li>
                                         <li><a href="http://tool.globalcalculator.org">The Global Calculator</a></li>
