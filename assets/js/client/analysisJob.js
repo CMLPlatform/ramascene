@@ -71,7 +71,7 @@ class AnalysisJob extends Component {
             console.log('received: %s', JSON.stringify(job));
 
             // construct job label
-            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, job.job_name.vizType.length - 3), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.extn.toString().substr(0, 10)];
+            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, 4), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.year.toString(), job.job_name.extn.toString().substr(0, 5)];
             var simplified_id = job.job_id.toString().slice(-2);
 
             this.setState({
