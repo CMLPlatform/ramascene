@@ -760,8 +760,7 @@ class App extends Component {
                             <Panel.Collapse>
                                 <Panel.Body>
                                     <Image src="../static/partners.png" responsive />
-                                    <Image src="../static/EIT_EU_logos/RM-Academy-Logo_300px.png" responsive />
-                                    <Image src="../static/EIT_EU_logos/EU-Flag-2020_100px.png" responsive />
+                                    <Image src="../static/EIT_EU_logos/RM-Academy-Logo-White_300px_plus_EU_flag_vertical.png" responsive />
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
