@@ -126,6 +126,7 @@ class Visualization extends Component {
         var sum = 0;
         nextProps.data.forEach(d => {
             sum += d.value;
+
         });
 
         const key = Object.keys(nextProps.unit)[0];
@@ -212,7 +213,7 @@ class Visualization extends Component {
         }
         return (<div>
             <div className="visualization-panel">{visualization}</div>
-            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Counter-factual results' : 'Baseline results'}</Label>
+            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Counterfactual results' : 'Baseline results'}</Label>
             <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
             <div className="table-responsive">
                 <Table bordered condensed>
@@ -249,9 +250,9 @@ class Visualization extends Component {
                         </tr>
                         <tr>
                             <th className="col-xs-3">Product</th>
-                            <th className="col-xs-3">Product's origin</th>
+                            <th className="col-xs-3">Production location</th>
                             <th className="col-xs-2">Consumption activity</th>
-                            <th className="col-xs-2">Region of consumption</th>
+                            <th className="col-xs-2">Consumption location</th>
                             <th className="col-xs-2">Relative change to coefficients</th>
                         </tr>
                         { this.state.model_details.map(function(model_detail, index) {

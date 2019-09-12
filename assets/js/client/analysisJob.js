@@ -71,7 +71,7 @@ class AnalysisJob extends Component {
             console.log('received: %s', JSON.stringify(job));
 
             // construct job label
-            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, 4), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.year.toString(), job.job_name.extn.toString().substr(0, 5)];
+            var label_parts = [job.job_name.dimType.substr(0, 4), job.job_name.vizType.substr(0, 4), job.job_name.nodesReg.toString().substr(0, 5), job.job_name.nodesSec.toString().substr(0, 5), job.job_name.year.toString().slice(-4), job.job_name.extn.toString().substr(0, 5)];
             var simplified_id = job.job_id.toString().slice(-2);
 
             this.setState({
@@ -294,22 +294,17 @@ class AnalysisJob extends Component {
             <tr className={this.state.job_status == this.STATUS_COMPLETED ? (this.state.job_type == this.ANALYSIS_JOB ? 'success' : (this.state.job_type == this.MODELLING_JOB ? 'info' : 'danger')) : 'default'} key={this.state.key}>
 
                 <td style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
-                    <tr>
                         {this.state.job_status == this.STATUS_STARTED && <Glyphicon glyph='hourglass'/>}&nbsp;
                         {this.canModel() && <Button onClick={this.startModelling.bind(this)} title={"Model"} disabled={this.state.busy}>M</Button>}
                         {this.canVisualize() && <Button onClick={this.retrieveRawResult.bind(this, false)} title={"View"}><Glyphicon glyph="eye-open"/></Button>}
                         {this.canCompare() && <Button onClick={this.retrieveRawResult.bind(this, true)} title={"Compare"}>C</Button>}
                         {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}} title={"Download RAW result data"}/></CSVLink>}
                         {this.canDestroy() && <Button onClick={this.destroy.bind(this)} title={"Delete"}><Glyphicon glyph="trash"/></Button>}
-                    </tr>
-                    <tr>
+                        <br />
                         {this.state.in_main_view && <Badge>Main view</Badge>}&nbsp;
                         {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;
-                    </tr>
-                    <tr>
                         <div>Analysis ID: {this.state.job_simplified_ID}</div> 
                         {this.state.job_label}
-                    </tr>
                 </td>
             </tr>
         );

@@ -610,7 +610,7 @@ class App extends Component {
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title>
-                                    <Panel.Toggle>Counter-factual settings </Panel.Toggle><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
+                                    <Panel.Toggle>Counterfactual settings </Panel.Toggle><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
@@ -626,10 +626,11 @@ class App extends Component {
                             </Panel.Collapse>
                         </Panel>
                     </Col>
+
                     <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
+                                <Panel.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Clear visualization"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -643,7 +644,7 @@ class App extends Component {
                     <Col sm={4} md={4} lg={4}>
                         <Panel defaultExpanded>
                             <Panel.Heading>
-                                <Panel.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Close"><span>&times;</span></Button> </Panel.Title>
+                                <Panel.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Clear visualization"><span>&times;</span></Button> </Panel.Title>
                             </Panel.Heading>
                             <Panel.Collapse>
                             <Panel.Body>
@@ -661,7 +662,7 @@ class App extends Component {
                             </Panel.Heading>
                             <Panel.Collapse>
                                 <Panel.Body>
-                                    {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M symbol if you are ready to model</Alert>}
+                                    {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M button to generate the counterfactual scenario</Alert>}
                                     <div className="table-responsive">
                                         <Table striped condensed>
                                             <tbody>
@@ -751,6 +752,7 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
+
                         <Panel defaultExpanded>
                             <Panel.Heading>
                                 <Panel.Title>
@@ -764,8 +766,11 @@ class App extends Component {
                                 </Panel.Body>
                             </Panel.Collapse>
                         </Panel>
+
                     </Col>
+
                 </Row>
+
                 <Modal show={this.state.waiting_modal_open} onHide={this.closeModal.bind(this)}>
                     <Modal.Header closeButton>
                         {/*<Modal.Title></Modal.Title>*/}

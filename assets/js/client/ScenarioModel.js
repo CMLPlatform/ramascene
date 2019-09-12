@@ -11,7 +11,7 @@ var {changes_helptext, coefficient_helptext, consumer_helptext, destination_help
 
 function CustomTooltip({id, children, tooltip}) {
     return (
-        <OverlayTrigger trigger="hover" rootClose
+        <OverlayTrigger trigger="click" rootClose
                         overlay={<Popover id={id} placement="right"><div dangerouslySetInnerHTML={{__html: tooltip}}></div></Popover>}
                         delayShow={300}
                         delayHide={150}
@@ -65,7 +65,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Product's origin <CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Production location <CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
                         {/*TODO how should the country list look like ?*/}
                         <RegionFilterableSingleSelectDropdownTree onChange={this.handleOriginChange.bind(this)}
                                                                   value={this.state.selectedOriginOption}
