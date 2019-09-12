@@ -27,7 +27,8 @@ class Command(BaseCommand):
             populate(productData, "Product")
             populate(model_productData, "ModellingProduct")
         except Exception as e:
-            sys.exit("Adding database objects Failed.." + e)
+            sys.exit(f"Adding database objects Failed: {e}")
+        
 
 
 # function that adds to DB
@@ -88,7 +89,7 @@ def populate(data_obj, model_type):
                 counter += 1
                 print("number of records: " + str(counter), end='\r')
             except Exception as e:
-                sys.exit("Adding database objects Failed.." + e)
+                sys.exit(f"Adding database objects Failed: {e}")
         print("\n")
     else:
         print("Adding values to table: ", model_type)
@@ -120,7 +121,7 @@ def populate(data_obj, model_type):
                     sys.exit("Model_type not recognized.")
                 print("number of records: " + str(counter), end='\r')
             except Exception as e:
-                sys.exit("Adding database objects Failed.." + e)
+                sys.exit(f"Adding database objects Failed: {e}")
         print("\n")
 
 
