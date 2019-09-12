@@ -31,7 +31,6 @@ kombu==4.1.0
 MarkupSafe==1.0
 msgpack==0.5.4
 msgpack-python==0.5.4
-numpy==1.14.1
 packaging==17.1
 pockets==0.6.2
 Pygments==2.2.0
