@@ -16,6 +16,10 @@ dev-env.sh
 #ignore production environment variables
 prod-env.sh
 
+#ignore logs
+logs/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
