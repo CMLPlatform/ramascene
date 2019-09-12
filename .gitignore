@@ -18,6 +18,7 @@ prod-env.sh
 
 #ignore logs
 logs/
+!logs/debug.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
