@@ -1,6 +1,6 @@
 export const selection_menu_helptext = "<h4>Baseline settings</h4>Through this menu you can request results for baseline data. Once your settings are completed click on analyse. The results can be found on the analysis queue on the top-right of the page."
 
-export const perspective_helptext = "<h4>Analysis</h4><h5>Hotspot Analysis</h5>Analyse impacts of regional and sectoral production<br><h5>Contribution analysis</h5>Analyse impacts generated regionally or sectorally due to the final consumption of products<br><a href='https://rama-scene.readthedocs.io/en/latest/calculations.html'>Read more</a> ";
+export const perspective_helptext = "<h4>Analysis</h4><h5>Hotspot Analysis</h5>Analyse impacts of regional and sectoral production<br><h5>Contribution analysis</h5>Analyse consumption driven impacts along the supply chain of products and services. This analysis is also known as footprint analysis<br><a href='https://rama-scene.readthedocs.io/en/latest/calculations.html'>Read more</a>";
 
 export const product_helptext = "<h4>Select products</h4>Select product categories or aggregates of products belonging to the same classification.";
 
@@ -12,7 +12,7 @@ export const product_model_helptext = "<h4>Product</h4>Product category whose co
 
 export const origin_helptext = "<h4>Production location</h4>From which country or region the product originated.";
 
-export const consumer_helptext = "<h4>Consumption activity</h4> Final Consumption or manufacturing activity in which the product is being consumed. In the IO tables it is represented by a column item.";
+export const consumer_helptext = "<h4>Consumption activity</h4>Final Consumption or manufacturing activity in which the product is being consumed. In the IO tables it is represented by a column item.";
 
 export const destination_helptext = "<h4>Consumption location</h4>In which country or region the consumption of the product (or the manufacturing activity takes place).";
 
@@ -20,4 +20,4 @@ export const coefficient_helptext = "<h4>Relative change to coefficients</h4>The
 
 export const changes_helptext = "<h4>Added changes</h4>List of changes (coordinates and coefficients) to be used in the counter-factual scenario.";
 
-export const analysis_queue_helptext = "<h4>Analysis queue</h4>Here the list of your analyses is displayed. <br><br><h5>Eye button:</h5> visualises results in the Main View panel<br><h5>C button:</h5> visualises results in the Comparison view panel<br><h5>Down-arrow button:</h5> download results in CSV format<br><h5>M button:</h5> Apply counter-factual settings<br><br><h5>Queue item colours:</h5><i>Gray</i>: loading analysis results <br> <i>Green</i>: analysis results<br><i>Blue</i>: results from modelling<br><br>N.b. depending on the complexity of your analysis or number of users, results may require some time to be displayed. Do not refresh the page."
+export const analysis_queue_helptext = "<h4>Analysis queue</h4>Here the list of your analyses is displayed. A maximum of 15 analyses is permitted.<br><br><h5>Eye button:</h5> visualises results in the Main View panel<br><h5>C button:</h5> visualises results in the Comparison view panel<br><h5>Down-arrow button:</h5> download results in CSV format<br><h5>M button:</h5> Apply counter-factual settings<br><br><h5>Queue item colours:</h5><i>Gray</i>: loading analysis results <br> <i>Green</i>: analysis results<br><i>Blue</i>: results from modelling<br><br>N.b. depending on the complexity of your analysis or number of users, results may require some time to be displayed. Do not refresh the page."

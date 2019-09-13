@@ -711,6 +711,12 @@ class App extends Component {
                                     <ul>
                                         <li><a href="../static/RaMaScene_platform_manual.pdf">Download PDF</a></li>
                                     </ul>
+                                    <h5>Software</h5>
+                                    <ul>
+                                        <li><a href="https://bitbucket.org/CML-IE/rama-scene/src/master/">Bitbucket</a></li>
+                                        <li><a href="https://github.com/CMLPlatform/ramascene">GitHub</a></li>
+                                        <li><a href="https://rama-scene.readthedocs.io/en/latest/">Read the Docs</a></li>
+                                    </ul>                                    
                                     <h5>Lessons on Circular Economy assessment</h5>
                                     <ul>
                                         <li><a href="https://youtu.be/ySLqCFfy3n0">Intro to Circular Economy</a></li>
