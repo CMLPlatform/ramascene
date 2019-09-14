@@ -14,7 +14,7 @@
    viewBox="0 0 131.57651 31.209427"
    id="svg5122"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="rama-logo.svg">
   <defs
      id="defs5124" />
@@ -26,15 +26,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="-197.65475"
+     inkscape:cx="-291.22618"
      inkscape:cy="-123.45775"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1855"
-     inkscape:window-height="1056"
-     inkscape:window-x="1745"
-     inkscape:window-y="24"
+     inkscape:window-width="1920"
+     inkscape:window-height="1032"
+     inkscape:window-x="0"
+     inkscape:window-y="20"
      inkscape:window-maximized="1"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -70,24 +70,20 @@
        id="path4326-7"
        inkscape:connector-curvature="0" />
     <text
-       sodipodi:linespacing="100%"
        id="text4165-2"
-       y="823.91779"
+       y="826.57916"
        x="116.67039"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:24.06044388px;line-height:100%;font-family:Vestula;-inkscape-font-specification:Vestula;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#666666;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:Vestula;-inkscape-font-specification:Vestula;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;display:inline;fill:#666666;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="150"
        inkscape:export-ydpi="150"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.12096024px;font-family:Vestula;-inkscape-font-specification:'Vestula Bold';text-align:start;letter-spacing:-0.27731371px;text-anchor:start;fill:#333333;fill-opacity:1"
-         y="823.91779"
-         x="116.67039"
-         id="tspan4167-6"
-         sodipodi:role="line"
-         dx="0">RaMa-Scene</tspan><tspan
          style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.18467236px;line-height:100%;font-family:Vestula;-inkscape-font-specification:'Vestula Italic';text-align:start;text-anchor:start;fill:#ff0000"
-         y="834.6579"
+         y="826.57916"
          x="116.67039"
          sodipodi:role="line"
-         id="tspan5156">Beta</tspan></text>
+         id="tspan5156"><tspan
+           dx="0"
+           id="tspan12"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.12096024px;line-height:1;font-family:Vestula;-inkscape-font-specification:'Vestula Bold';text-align:start;letter-spacing:-0.27731371px;text-anchor:start;fill:#333333;fill-opacity:1">RaMa-Scene</tspan></tspan></text>
   </g>
 </svg>
