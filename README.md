@@ -15,7 +15,7 @@ http://rama-scene.readthedocs.io/en/latest/
 ### Retrieve the raw datasets
 
  
-* EXIOBASE-Rama-Scene (modified version including secondary materials): 
+EXIOBASE-Rama-Scene (modified version including secondary materials): 
 
 http://doi.org/10.5281/zenodo.3533196
 
