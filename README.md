@@ -15,13 +15,9 @@ http://rama-scene.readthedocs.io/en/latest/
 ### Retrieve the raw datasets
 
  
-* EXIOBASE-Rama-Scene (v3 - unmodified version of EXIOBASE): 
+* EXIOBASE-Rama-Scene (modified version including secondary materials): 
 
-To be updated
-
-* EXIOBASE-Rama-Scene (v4 - modified version including secondary materials): 
-
-https://fdonaticml.stackstorage.com/s/uIzzoDRkX9xH4Nj
+http://doi.org/10.5281/zenodo.3533196
 
 ### Clone the project 
 ``` 
