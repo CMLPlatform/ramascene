@@ -9,7 +9,7 @@
     "d3plus-react": "^0.3.1",
     "dotenv": "^6.2.0",
     "extract-text-webpack-plugin": "^3.0.2",
-    "jquery": "^3.3.1",
+    "jquery": "^3.5.0",
     "npm": "^6.4.0",
     "papaparse": "^4.3.7",
     "rc-tree-select": "^1.12.9",
