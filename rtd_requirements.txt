@@ -33,7 +33,7 @@ msgpack==0.5.4
 msgpack-python==0.5.4
 packaging==17.1
 pockets==0.6.2
-Pygments==2.2.0
+Pygments==2.7.4
 pyparsing==2.2.0
 pytz==2018.3
 redis==2.10.6
