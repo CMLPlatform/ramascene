@@ -40,7 +40,7 @@ packaging==17.1
 pathlib2==2.3.3
 pluggy==0.8.0
 pockets==0.6.2
-py==1.7.0
+py==1.10.0
 Pygments==2.2.0
 PyHamcrest==1.9.0
 pyparsing==2.2.0
