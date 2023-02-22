@@ -1,0 +1,171 @@
+version: '3'
+services:
+  reverse_proxy:
+    build:
+      context: ./
+      target: nginx
+      args:
+        DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+        PUBLIC_DIR: public
+        HOST: www.ramascene.eu
+        WS_HOST: www.ramascene.eu
+        PROTOCOL: http
+        WS_PROTOCOL: ws
+        BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+        REDIS_HOST: cache
+        SECRET_KEY: $SECRET_KEY
+        DATABASE_NAME: $DATABASE_NAME
+        DATASETS_VERSION: $DATASETS_VERSION
+    container_name: rama-scene-nginx
+    depends_on:
+      - webapp
+    environment:
+      NGINX_BACKEND_HOST: webapp
+      NGINX_BACKEND_PORT: 8000
+      NGINX_CONF_INCLUDE: conf.d/ramascene_vhost.conf
+      NGINX_VHOST_PRESET: django
+    ports:
+      - 80:80
+    restart: unless-stopped
+  webapp:
+    build:
+      context: ./
+      target: python
+      args:
+        DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+        PUBLIC_DIR: public
+        HOST: www.ramascene.eu
+        WS_HOST: www.ramascene.eu
+        PROTOCOL: http
+        WS_PROTOCOL: ws
+        BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+        REDIS_HOST: cache
+        SECRET_KEY: $SECRET_KEY
+        DATABASE_NAME: $DATABASE_NAME
+        DATASETS_VERSION: $DATASETS_VERSION
+    container_name: rama-scene-daphne
+    depends_on:
+      - cache
+      - message_broker
+    environment:
+      DEBUG: $DEBUG
+      DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+      PUBLIC_DIR: public
+      HOST: www.ramascene.eu
+      WS_HOST: www.ramascene.eu
+      PROTOCOL: http
+      WS_PROTOCOL: ws
+      BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+      REDIS_HOST: cache
+      SECRET_KEY: $SECRET_KEY
+      DATABASE_NAME: $DATABASE_NAME
+      DATASETS_VERSION: $DATASETS_VERSION
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    volumes:
+      - .:/mnt/data
+      - ../datasets:/mnt/datasets:ro
+  analyser:
+    build:
+      context: ./
+      target: python
+      args:
+        DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+        PUBLIC_DIR: public
+        HOST: www.ramascene.eu
+        WS_HOST: www.ramascene.eu
+        PROTOCOL: http
+        WS_PROTOCOL: ws
+        BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+        REDIS_HOST: cache
+        SECRET_KEY: $SECRET_KEY
+        DATABASE_NAME: $DATABASE_NAME
+        DATASETS_VERSION: $DATASETS_VERSION
+        OPENBLAS_NUM_THREADS: 1
+    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queue", "calc_default", "-n", "worker1.%h"]
+    container_name: rama-scene-analyser
+    depends_on:
+      - cache
+      - message_broker
+    environment:
+      DEBUG: $DEBUG
+      DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+      PUBLIC_DIR: public
+      HOST: www.ramascene.eu
+      WS_HOST: www.ramascene.eu
+      PROTOCOL: http
+      WS_PROTOCOL: ws
+      BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+      REDIS_HOST: cache
+      SECRET_KEY: $SECRET_KEY
+      DATABASE_NAME: $DATABASE_NAME
+      DATASETS_VERSION: $DATASETS_VERSION
+      OPENBLAS_NUM_THREADS: 2
+    restart: unless-stopped
+    volumes:
+      - .:/mnt/data
+      - ../datasets:/mnt/datasets:ro
+  modeller:
+    build:
+      context: ./
+      target: python
+      args:
+        DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+        PUBLIC_DIR: public
+        HOST: www.ramascene.eu
+        WS_HOST: www.ramascene.eu
+        PROTOCOL: http
+        WS_PROTOCOL: ws
+        BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+        REDIS_HOST: cache
+        SECRET_KEY: $SECRET_KEY
+        DATABASE_NAME: $DATABASE_NAME
+        DATASETS_VERSION: $DATASETS_VERSION
+        OPENBLAS_NUM_THREADS: 1
+    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queue", "modelling", "-n", "worker2.%h"]
+    container_name: rama-scene-modeller
+    depends_on:
+      - cache
+      - message_broker
+    environment:
+      DEBUG: $DEBUG
+      DJANGO_SETTINGS_MODULE: $DJANGO_SETTINGS_MODULE
+      PUBLIC_DIR: public
+      HOST: www.ramascene.eu
+      WS_HOST: www.ramascene.eu
+      PROTOCOL: http
+      WS_PROTOCOL: ws
+      BROKER_URL: amqp://$RABBITMQ_USERNAME:$RABBITMQ_PASSWORD@message_broker:5672/$RABBITMQ_VHOST
+      REDIS_HOST: cache
+      SECRET_KEY: $SECRET_KEY
+      DATABASE_NAME: $DATABASE_NAME
+      DATASETS_VERSION: $DATASETS_VERSION
+      OPENBLAS_NUM_THREADS: 1
+    restart: unless-stopped
+    volumes:
+      - .:/mnt/data
+      - ../datasets:/mnt/datasets:ro
+  message_broker:
+    image: rabbitmq:3.9.11-management-alpine
+    container_name: rama-scene-rabbitmq
+    environment:
+      HOSTNAME: 'rabbitmq'
+      RABBITMQ_DEFAULT_PASS: $RABBITMQ_PASSWORD
+      RABBITMQ_DEFAULT_USER: $RABBITMQ_USERNAME
+      RABBITMQ_DEFAULT_VHOST: $RABBITMQ_VHOST
+    hostname: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: unless-stopped
+    volumes:
+      - ramascene_rabbitmq:/var/lib/rabbitmq/mnesia/
+  cache:
+    image: redis:7.0-alpine
+    container_name: rama-scene-redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+volumes:
+  ramascene_rabbitmq:
