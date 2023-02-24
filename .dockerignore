@@ -1,0 +1,13 @@
+assets/bundles
+config
+docs
+logs
+node_modules
+ramascene/__pycache__
+ramascene/management/__pycache__
+ramascene/management/commands/__pycache__
+ramascene/migrations/__pycache__
+.gitignore
+Capfile
+Gemfile
+Gemfile.lock
