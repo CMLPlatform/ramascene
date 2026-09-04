@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Treemap, Geomap} from 'd3plus-react';
 import {format} from 'd3-format';
-import {Button, Label, Table} from 'react-bootstrap';
+import {Button, Badge, Table} from 'react-bootstrap';
 
 class Visualization extends Component {
 
@@ -213,10 +213,10 @@ class Visualization extends Component {
         }
         return (<div>
             <div className="visualization-panel">{visualization}</div>
-            <Label bsStyle={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Counterfactual results' : 'Baseline results'}</Label>
-            <Label>{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Label>
+            <Badge variant={this.state.is_modelling_result ? 'info' : 'success'}>{this.state.is_modelling_result ? 'Counterfactual results' : 'Baseline results'}</Badge>
+            <Badge variant="light">{'Sum = ' + format('e')(this.state.sum) + ' (' + this.state.unit + ')'}</Badge>
             <div className="table-responsive">
-                <Table bordered condensed>
+                <Table className="table-bordered table-sm">
                     <thead>
                     <tr>
                         <th colSpan='5'>Query Parameters</th>

@@ -1,6 +1,6 @@
 //@flow
 import React, {Component} from 'react';
-import {Button, Col, FormControl, Glyphicon, OverlayTrigger, Popover, Row, Well} from 'react-bootstrap';
+import {Button, Card, Col, FormControl, OverlayTrigger, Popover, Row } from 'react-bootstrap';
 import ProductFilterableSingleSelectDropdownTree from './productFilterableSingleSelectDropdownTree';
 import ConsumerFilterableSingleSelectDropdownTree from './consumerFilterableSingleSelectDropdownTree';
 import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
@@ -56,7 +56,7 @@ class ScenarioModel extends Component {
             <React.Fragment>
                 <Row>
                     <Col>
-                        <div>Product <CustomTooltip tooltip={product_model_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Product <CustomTooltip tooltip={product_model_helptext} id="product-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                         <ProductFilterableSingleSelectDropdownTree onChange={this.handleProductChange.bind(this)}
                                                                    value={this.state.selectedProductOption}
                                                                    ref={this.setProductRef}
@@ -65,7 +65,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Production location <CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Production location <CustomTooltip tooltip={origin_helptext} id="origin-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                         {/*TODO how should the country list look like ?*/}
                         <RegionFilterableSingleSelectDropdownTree onChange={this.handleOriginChange.bind(this)}
                                                                   value={this.state.selectedOriginOption}
@@ -75,7 +75,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Consumption activity <CustomTooltip tooltip={consumer_helptext} id="consumer-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Consumption activity <CustomTooltip tooltip={consumer_helptext} id="consumer-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                         <ConsumerFilterableSingleSelectDropdownTree onChange={this.handleConsumerChange.bind(this)}
                                                                     value={this.state.selectedConsumerOption}
                                                                     ref={this.setConsumerRef}
@@ -84,7 +84,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Consumption location <CustomTooltip tooltip={destination_helptext} id="destination-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Consumption location <CustomTooltip tooltip={destination_helptext} id="destination-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                         {/*TODO how should the country list look like ?*/}
                         <RegionFilterableSingleSelectDropdownTree onChange={this.handleDestinationChange.bind(this)}
                                                                   value={this.state.selectedDestinationOption}
@@ -94,7 +94,7 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div>Relative change to coefficients <CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                        <div>Relative change to coefficients <CustomTooltip tooltip={coefficient_helptext} id="coefficient-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                         <div className="input-group">
                             <FormControl type="number" placeholder="0" value={this.state.coefficient} onChange={this.handleCoefficientChange.bind(this)}/>
                             <span className="input-group-addon">%</span>
@@ -103,27 +103,29 @@ class ScenarioModel extends Component {
                 </Row>
                 <Row>
                     <Col lg={6}>
-                        <Button onClick={this.handleAddClick.bind(this)} bsStyle="success" disabled={this.state.selectedProductOption === undefined || this.state.selectedConsumerOption === undefined || this.state.selectedOriginOption === undefined || this.state.selectedDestinationOption === undefined || this.state.coefficient === undefined}>Add change</Button>
+                        <Button onClick={this.handleAddClick.bind(this)} variant="success" disabled={this.state.selectedProductOption === undefined || this.state.selectedConsumerOption === undefined || this.state.selectedOriginOption === undefined || this.state.selectedDestinationOption === undefined || this.state.coefficient === undefined}>Add change</Button>
                     </Col>
                     <Col lg={6}>
-                        <Button onClick={this.handleRemoveClick.bind(this)} bsStyle="success" disabled={this.state.model_details.length == 0}>Remove last</Button>
+                        <Button onClick={this.handleRemoveClick.bind(this)} variant="success" disabled={this.state.model_details.length == 0}>Remove last</Button>
                     </Col>
                 </Row>
                 <Row>
                     <Col>
-                        <div>Added changes <CustomTooltip tooltip={changes_helptext} id="changes-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
-                        <Well>{
-                            this.state.model_details.map(function(model, index) {
-                                return (<div key={shortid.generate()}>
-                                    {index + 1})&nbsp;
-                                    {this.productCompRef.getLabel(model.product)}&raquo;
-                                    {this.consumerCompRef.getLabel(model.consumedBy)}&raquo;
-                                    {this.originCompRef.getLabel(model.originReg)}&raquo;
-                                    {this.destCompRef.getLabel(model.consumedReg)}&raquo;
-                                    {model.techChange}%
-                                </div>)
-                            }.bind(this))
-                        }</Well>
+                        <div>Added changes <CustomTooltip tooltip={changes_helptext} id="changes-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
+                        <Card>
+                            <Card.Body className="bg-light">
+                                {this.state.model_details.map(function(model, index) {
+                                    return (<div key={shortid.generate()}>
+                                        {index + 1})&nbsp;
+                                        {this.productCompRef.getLabel(model.product)}&raquo;
+                                        {this.consumerCompRef.getLabel(model.consumedBy)}&raquo;
+                                        {this.originCompRef.getLabel(model.originReg)}&raquo;
+                                        {this.destCompRef.getLabel(model.consumedReg)}&raquo;
+                                        {model.techChange}%
+                                    </div>)
+                                }.bind(this))}
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
                 <Row>
@@ -131,10 +133,10 @@ class ScenarioModel extends Component {
                         {/*{({saveSettingsCallback, clearSettingsCallback}) => (*/}
                             {/*<React.Fragment>*/}
                             <Col lg={6}>
-                                <Button onClick={this.handleSaveClick.bind(this, this.context.saveSettingsCallback)} bsStyle="success" disabled={this.state.model_details.length == 0}>Save settings</Button>
+                                <Button onClick={this.handleSaveClick.bind(this, this.context.saveSettingsCallback)} variant="success" disabled={this.state.model_details.length == 0}>Save settings</Button>
                             </Col>
                             <Col lg={6}>
-                                <Button onClick={this.handleClearClick.bind(this, this.context.clearSettingsCallback)} bsStyle="success">Clear settings</Button>
+                                <Button onClick={this.handleClearClick.bind(this, this.context.clearSettingsCallback)} variant="success">Clear settings</Button>
                             </Col>
                             {/*</React.Fragment>*/}
                         {/*)}*/}

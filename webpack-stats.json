@@ -1,1 +1,73 @@
-{"status":"done","chunks":{"main":[{"name":"main-a977375aec9cf0846990.js","path":"/home/fdonati/Documents/0_scripts/rama-scene/assets/bundles/main-a977375aec9cf0846990.js"},{"name":"style.css","path":"/home/fdonati/Documents/0_scripts/rama-scene/assets/bundles/style.css"}]}}
+{
+  "status": "done",
+  "assets": {
+    "899-c73c000bdbfd6a8f5cf0.js": {
+      "name": "899-c73c000bdbfd6a8f5cf0.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js",
+      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js"
+    },
+    "899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt": {
+      "name": "899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt",
+      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt"
+    },
+    "899-c73c000bdbfd6a8f5cf0.js.map": {
+      "name": "899-c73c000bdbfd6a8f5cf0.js.map",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js.map",
+      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js.map"
+    },
+    "fonts/glyphicons-halflings-regular.eot": {
+      "name": "fonts/glyphicons-halflings-regular.eot",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.eot",
+      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.eot"
+    },
+    "fonts/glyphicons-halflings-regular.svg": {
+      "name": "fonts/glyphicons-halflings-regular.svg",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.svg",
+      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.svg"
+    },
+    "fonts/glyphicons-halflings-regular.ttf": {
+      "name": "fonts/glyphicons-halflings-regular.ttf",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.ttf",
+      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.ttf"
+    },
+    "fonts/glyphicons-halflings-regular.woff": {
+      "name": "fonts/glyphicons-halflings-regular.woff",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.woff",
+      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.woff"
+    },
+    "fonts/glyphicons-halflings-regular.woff2": {
+      "name": "fonts/glyphicons-halflings-regular.woff2",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.woff2",
+      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.woff2"
+    },
+    "main-03cd569910a14a072078.js": {
+      "name": "main-03cd569910a14a072078.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-03cd569910a14a072078.js",
+      "publicPath": "/static/bundles/main-03cd569910a14a072078.js"
+    },
+    "main-03cd569910a14a072078.js.map": {
+      "name": "main-03cd569910a14a072078.js.map",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-03cd569910a14a072078.js.map",
+      "publicPath": "/static/bundles/main-03cd569910a14a072078.js.map"
+    },
+    "main-51155edc0393d2cc7f42.css": {
+      "name": "main-51155edc0393d2cc7f42.css",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-51155edc0393d2cc7f42.css",
+      "publicPath": "/static/bundles/main-51155edc0393d2cc7f42.css"
+    },
+    "main-51155edc0393d2cc7f42.css.map": {
+      "name": "main-51155edc0393d2cc7f42.css.map",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-51155edc0393d2cc7f42.css.map",
+      "publicPath": "/static/bundles/main-51155edc0393d2cc7f42.css.map"
+    }
+  },
+  "chunks": {
+    "main": [
+      "899-c73c000bdbfd6a8f5cf0.js",
+      "main-51155edc0393d2cc7f42.css",
+      "main-03cd569910a14a072078.js"
+    ]
+  },
+  "publicPath": "/static/bundles/"
+}

@@ -1,7 +1,19 @@
 // @flow
 import React, {Component} from 'react';
-import {render, unmountComponentAtNode} from 'react-dom';
-import { Alert, Button, ButtonGroup, Col, Glyphicon, Grid, Image, Modal, Nav, Navbar, NavItem, OverlayTrigger, Panel, Popover, Row, Table } from 'react-bootstrap';
+import {createRoot} from 'react-dom/client';
+import {unmountComponentAtNode} from 'react-dom';
+
+// Helper function to render with React 18 createRoot
+function renderToContainer(element, containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        const root = createRoot(container);
+        root.render(element);
+        // Store root for potential unmounting later
+        container._reactRoot = root;
+    }
+}
+import { Alert, Button, ButtonGroup, Card, Col, Image, Modal, Nav, Navbar, NavItem, OverlayTrigger, Popover, Row, Spinner, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -311,7 +323,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, document.getElementById('visualization'));
+                renderToContainer(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, 'visualization');
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -319,7 +331,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, document.getElementById('visualization'));
+                renderToContainer(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideMainView.bind(this)}/>, 'visualization');
                 break;
             default:
                 break;
@@ -373,7 +385,7 @@ class App extends Component {
                     const value = data[key];
                     tree_data.push({id: key, value: value});
                 });
-                render(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, document.getElementById('comparison-visualization'));
+                renderToContainer(<Visualization type='tree' data={tree_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, 'comparison-visualization');
                 break;
             case this.VIZ_GEOMAP:
                 var geo_data = [];
@@ -381,7 +393,7 @@ class App extends Component {
                     const value = data[key];
                     geo_data.push({id: key, value: value});
                 });
-                render(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, document.getElementById('comparison-visualization'));
+                renderToContainer(<Visualization type='geo' detailLevel={job.detailLevel} data={geo_data} unit={unit} model_details={new_model_details} query={job_name} is_modelling_result={is_modelling_result} hide_callback={this.hideComparisonView.bind(this)}/>, 'comparison-visualization');
                 break;
             default:
                 break;
@@ -491,17 +503,15 @@ class App extends Component {
                 </Alert>}
                 <Row>
                     <Col sm={2} md={2} lg={2}>
-                        <Panel defaultExpanded>
-                            
-                            <Panel.Heading>
-                                <Panel.Title><Panel.Toggle>Baseline settings </Panel.Toggle><CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip> </Panel.Title>
-                            </Panel.Heading>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Baseline settings <CustomTooltip tooltip={selection_menu_helptext} id="selection-menu-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></Card.Title>
+                            </Card.Header>
 
-                            <Panel.Collapse>
-                            <Panel.Body>
+                            <Card.Body>
                                     <Row>
                                         <Col>
-                                            <div>Analysis <CustomTooltip tooltip={perspective_helptext} id="perspective-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Analysis <CustomTooltip tooltip={perspective_helptext} id="perspective-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                                             <ButtonGroup>
                                                 <Button onClick={this.handleProductionClicked.bind(this)}
                                                         active={selectedPerspectiveOption == this.PERSPECTIVE_PRODUCTION}
@@ -566,7 +576,7 @@ class App extends Component {
                                         {/*<div>Products and Regions</div>*/}
                                         {/*<Col sm={6} md={6} lg={6}>*/}
                                         <Col>
-                                            <div>{this.state.selectMultiProduct ? 'Select multiple products ' : 'Select a single product '}<CustomTooltip tooltip={product_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>{this.state.selectMultiProduct ? 'Select multiple products ' : 'Select a single product '}<CustomTooltip tooltip={product_helptext} id="product-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                                             {this.state.selectMultiProduct &&
                                             <ProductFilterableMultiSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                       onChange={this.handleProductChange.bind(this)}
@@ -592,7 +602,7 @@ class App extends Component {
                                         </Row>
                                     <Row>
                                         <Col>
-                                            <div>Indicator <CustomTooltip tooltip={indicator_helptext} id="indicator-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></div>
+                                            <div>Indicator <CustomTooltip tooltip={indicator_helptext} id="indicator-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></div>
                                             <IndicatorFilterableSingleSelectDropdownTree disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT}
                                                                                         onChange={this.handleIndicatorChange.bind(this)}
                                                                                         value={this.state.selectedIndicatorOptions}
@@ -601,19 +611,18 @@ class App extends Component {
                                     </Row>
                                     <Row>
                                         <Col>
-                                            <Button bsStyle="success" onClick={this.handleAnalyse.bind(this)} disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT || this.state.selectedYearOption === undefined || this.state.selectedYearOption <= 0 || this.state.selectedProductOptions === undefined || this.state.selectedProductOptions.length <= 0 || this.state.selectedRegionOptions === undefined || this.state.selectedRegionOptions.length <= 0 || this.state.selectedIndicatorOptions === undefined || this.state.selectedIndicatorOptions.length <= 0}><Glyphicon glyph={this.state.busy ? 'hourglass' : 'play'}/>&nbsp;Analyse</Button>
+                                            <Button variant="success" onClick={this.handleAnalyse.bind(this)} disabled={this.state.busy || this.state.jobs.length == this.MAX_JOB_COUNT || this.state.selectedYearOption === undefined || this.state.selectedYearOption <= 0 || this.state.selectedProductOptions === undefined || this.state.selectedProductOptions.length <= 0 || this.state.selectedRegionOptions === undefined || this.state.selectedRegionOptions.length <= 0 || this.state.selectedIndicatorOptions === undefined || this.state.selectedIndicatorOptions.length <= 0}>
+                                                {this.state.busy ? <Spinner animation="border" size="sm" /> : <i className="fas fa-play"></i>}&nbsp;Analyse
+                                            </Button>
                                         </Col>
                                     </Row>
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title>
-                                    <Panel.Toggle>Counterfactual settings </Panel.Toggle><CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                                <Panel.Body>
+                                </Card.Body>
+                        </Card>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Counterfactual settings <CustomTooltip tooltip={modelling_menu_helptext} id="product-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></Card.Title>
+                            </Card.Header>
+                            <Card.Body>
                                     {/*<ModellingContext.Provider value={{*/}
                                         {/*saveSettingsCallback: this.saveModellingSettings.bind(this),*/}
                                         {/*clearSettingsCallback: this.clearModellingSettings.bind(this)*/}
@@ -622,49 +631,42 @@ class App extends Component {
                                                        ref={this.setScenarioRef}
                                         />
                                     {/*</ModellingContext.Provider>*/}
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
+                                </Card.Body>
+                        </Card>
                     </Col>
 
                     <Col sm={4} md={4} lg={4}>
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Clear visualization"><span>&times;</span></Button> </Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                            <Panel.Body>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
+                            </Card.Header>
+                            <Card.Body>
                                 <div id="visualization"></div>
-                            </Panel.Body>
-                          </Panel.Collapse>
-                        </Panel>
+                            </Card.Body>
+                        </Card>
 
                     </Col>
 
                     <Col sm={4} md={4} lg={4}>
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Clear visualization"><span>&times;</span></Button> </Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                            <Panel.Body>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
+                            </Card.Header>
+                            <Card.Body>
                                 <div id="comparison-visualization"></div>
-                            </Panel.Body>
-                          </Panel.Collapse>
-                        </Panel>
+                            </Card.Body>
+                        </Card>
                     </Col>
 
-                    <Col sm={2,2} md={2,2} lg={2,2}>
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title>
-                                    Analysis queue <CustomTooltip tooltip={analysis_queue_helptext}  id="selection-menu-tooltip"><Glyphicon glyph="question-sign"/></CustomTooltip></Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                                <Panel.Body>
-                                    {this.state.model_details.length > 0 && <Alert bsStyle={"info"}>Click on the M button to generate the counterfactual scenario</Alert>}
+                    <Col sm={2} md={2} lg={2}>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Analysis queue <CustomTooltip tooltip={analysis_queue_helptext} id="selection-menu-tooltip"><i className="fas fa-question-circle"></i></CustomTooltip></Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                    {this.state.model_details.length > 0 && <Alert variant="info">Click on the M button to generate the counterfactual scenario</Alert>}
                                     <div className="table-responsive">
-                                        <Table striped condensed>
+                                        <Table className="table-striped table-sm">
                                             <tbody>
                                             {
                                                 this.state.jobs.map(function(job) {
@@ -689,19 +691,15 @@ class App extends Component {
                                         </Table>
                                     </div>
                                     <Button disabled={this.state.jobs.length == 0} onClick={this.handleDeleteAllClicked.bind(this)}>Delete all</Button>
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
+                                </Card.Body>
+                        </Card>
 
 
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title >
-                                    Additional Resources
-                                </Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                                <Panel.Body>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Additional Resources</Card.Title>
+                            </Card.Header>
+                            <Card.Body>
                                     <h5>Tutorials</h5>
                                     <a href="https://www.youtube.com/watch?v=hrrLnxjRv6g" target="_blank">User guide</a><br></br>
                                     <a href="https://www.youtube.com/watch?v=3-LxNo5giBw" target="_blank">Exercise</a><br></br>
@@ -750,23 +748,18 @@ class App extends Component {
                                     <a href="https://resourcetrade.earth/" target="_blank">Resource Trade</a><br></br>
                                     <a href="https://resourcewatch.org/data/explore" target="_blank">Resource Watch</a><br></br>
                                     <a href="http://data.footprintnetwork.org/" target="_blank">Data Footprint Network</a><br></br>
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
+                                </Card.Body>
+                        </Card>
 
-                        <Panel defaultExpanded>
-                            <Panel.Heading>
-                                <Panel.Title>
-                                    Partners
-                                </Panel.Title>
-                            </Panel.Heading>
-                            <Panel.Collapse>
-                                <Panel.Body>
-                                    <Image src="../static/partners.png" responsive />
-                                    <Image src="../static/EIT_EU_logos/RM-Academy-Logo-White_300px_plus_EU_flag_vertical.png" responsive />
-                                </Panel.Body>
-                            </Panel.Collapse>
-                        </Panel>
+                        <Card>
+                            <Card.Header>
+                                <Card.Title>Partners</Card.Title>
+                            </Card.Header>
+                            <Card.Body>
+                                    <Image src="../static/partners.png" fluid />
+                                    <Image src="../static/EIT_EU_logos/RM-Academy-Logo-White_300px_plus_EU_flag_vertical.png" fluid />
+                            </Card.Body>
+                        </Card>
 
                     </Col>
 
@@ -809,4 +802,7 @@ App.childContextTypes = {
     scenarioCompRef: PropTypes.object
 };
 
-render(<App />, document.getElementById('container'));
+// Create React root for React 18 compatibility
+const container = document.getElementById('container');
+const root = createRoot(container);
+root.render(<App />);

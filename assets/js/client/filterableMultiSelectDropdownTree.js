@@ -1,8 +1,10 @@
 // @flow
 import React, {Component} from 'react';
 import TreeSelect from 'rc-tree-select';
-import 'rc-tree-select/assets/index.css';
-import {getPropValue, labelCompatible} from "rc-tree-select/es/util";
+
+// Local implementations for deprecated rc-tree-select utility functions
+const labelCompatible = (label) => label || 'label';
+const getPropValue = (obj, prop) => obj ? obj[prop] : null;
 
 class FilterableMultiSelectDropdownTree extends Component {
 

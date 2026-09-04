@@ -1,22 +1,24 @@
 # --- TARGET node ---
-ARG NODE_VERSION=12.22-dev
-ARG PYTHON_VER=3.6
-ARG NGINX_VERSION=1.21
+ARG NODE_VERSION=18-alpine
+ARG PYTHON_VER=3.11-slim
+ARG NGINX_VERSION=1.25-alpine
 
-FROM wodby/node:${NODE_VERSION} AS node
+FROM node:${NODE_VERSION} AS node
 
 # copy sources
-COPY package.json yarn.lock webpack.config.js ./
+COPY package.json package-lock.json webpack.config.js ./
 COPY --chown=node:node assets ./assets
 
 # install all node packages
-RUN npm install
+RUN npm ci
 
 # build reactjs bundle
 ARG HOST
 ARG WS_HOST
 ARG PROTOCOL
 ARG WS_PROTOCOL
+
+RUN npm install --save-dev dotenv-webpack mini-css-extract-plugin @babel/core @babel/preset-env @babel/preset-react @babel/plugin-transform-class-properties babel-loader css-loader sass-loader sass file-loader style-loader webpack-cli webpack-dev-server path-browserify
 
 RUN ./node_modules/.bin/webpack --config webpack.config.js
 
@@ -27,18 +29,18 @@ RUN ./node_modules/.bin/webpack --config webpack.config.js
 ARG PYTHON_VER
 ARG NGINX_VERSION
 
-FROM wodby/python:${PYTHON_VER}-dev AS build
+FROM python:${PYTHON_VER} AS build
 
 # copy all webpack files
-COPY --from=node --chown=wodby:wodby /usr/src/app/assets/bundles ./assets/bundles
-COPY --from=node --chown=wodby:wodby /usr/src/app/webpack-stats.json ./
+COPY --from=node --chown=1000:1000 /usr/src/app/assets/bundles ./assets/bundles
+COPY --from=node --chown=1000:1000 /usr/src/app/webpack-stats.json ./
 
 # copy sources
-COPY --chown=wodby:wodby ramascene ./ramascene
-COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject
-COPY --chown=wodby:wodby static_assets ./static_assets
-COPY --chown=wodby:wodby templates ./templates
-COPY --chown=wodby:wodby .env manage.py requirements.txt rtd_requirements.txt  ./
+COPY --chown=1000:1000 ramascene ./ramascene
+COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
+COPY --chown=1000:1000 static_assets ./static_assets
+COPY --chown=1000:1000 templates ./templates
+COPY --chown=1000:1000 .env manage.py requirements.txt rtd_requirements.txt  ./
 
 # Install all python packages & clean up
 RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
@@ -74,7 +76,7 @@ RUN python manage.py collectstatic
 ARG PYTHON_VER
 ARG NGINX_VERSION
 
-FROM wodby/python:${PYTHON_VER} AS python
+FROM python:${PYTHON_VER} AS python
 
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
@@ -92,20 +94,19 @@ ENV PYTHONUNBUFFERED=1
 
 # create directories
 USER root
-RUN install -o wodby -g wodby -d ./logs
-RUN install -o wodby -g wodby -d /mnt/data
-RUN install -o wodby -g wodby -d /mnt/datasets
-USER wodby
+RUN mkdir -p ./logs /mnt/data /mnt/datasets
+RUN chown 1000:1000 ./logs /mnt/data /mnt/datasets
+USER 1000
 
 # Copy all packages
-COPY --from=build --chown=wodby:wodby /home/wodby/.local /home/wodby/.local
-COPY --from=build --chown=wodby:wodby /usr/src/app/webpack-stats.json ./
+COPY --from=build --chown=1000:1000 /root/.local /root/.local
+COPY --from=build --chown=1000:1000 /usr/src/app/webpack-stats.json ./
 
 # Copy all source files
-COPY --chown=wodby:wodby python_ini ./python_ini
-COPY --chown=wodby:wodby ramascene ./ramascene
-COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject
-COPY --chown=wodby:wodby templates ./templates
+COPY --chown=1000:1000 python_ini ./python_ini
+COPY --chown=1000:1000 ramascene ./ramascene
+COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
+COPY --chown=1000:1000 templates ./templates
 COPY manage.py .env LICENSE README.md ./
 
 ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
@@ -124,19 +125,17 @@ CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p",
 # --- TARGET reverse proxy ---
 ARG NGINX_VERSION
 
-FROM wodby/nginx:${NGINX_VERSION} as nginx
+FROM nginx:${NGINX_VERSION} as nginx
 
 RUN { \
         echo "map \$http_upgrade \$connection_upgrade {" ; \
         echo "    default upgrade;" ; \
         echo "    '' close;" ; \
         echo "}" ; \
-        echo "include upstream.conf;" ; \
         echo "server {" ; \
         echo "    listen 80 default_server;" ; \
         echo "    server_name default;" ; \
         echo "    root /var/www/html;" ; \
-        echo "    include preset.conf;" ; \
 
         echo "    location /ws/ {" ; \
         echo "        proxy_pass http://app_server/;" ; \
@@ -147,11 +146,13 @@ RUN { \
         echo "        proxy_redirect off;" ; \
         echo "    }" ; \
 
-        echo "    include defaults.conf;" ; \
+        echo "    location / {" ; \
+        echo "        try_files \$uri \$uri/ /index.html;" ; \
+        echo "    }" ; \
         echo "}" ; \
     } > /etc/nginx/conf.d/ramascene_vhost.conf;
 
 # Copy all static files
-COPY --from=build --chown=wodby:wodby /usr/src/app/public/ /var/www/html/
+COPY --from=build --chown=1000:1000 /usr/src/app/static_assets/ /var/www/html/
 
 # --- END TARGET nginx ---

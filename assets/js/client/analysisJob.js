@@ -1,6 +1,6 @@
 // @flow
 import React, {Component} from 'react';
-import { Badge, Button, Glyphicon} from 'react-bootstrap';
+import { Badge, Button, Spinner } from 'react-bootstrap';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css'
 import {csrftoken} from './csrfToken';
@@ -294,12 +294,12 @@ class AnalysisJob extends Component {
             <tr className={this.state.job_status == this.STATUS_COMPLETED ? (this.state.job_type == this.ANALYSIS_JOB ? 'success' : (this.state.job_type == this.MODELLING_JOB ? 'info' : 'danger')) : 'default'} key={this.state.key}>
 
                 <td style={this.canVisualize() ? {cursor: 'pointer'} : {cursor: 'default'}}>
-                        {this.state.job_status == this.STATUS_STARTED && <Glyphicon glyph='hourglass'/>}&nbsp;
+                        {this.state.job_status == this.STATUS_STARTED && <Spinner animation="border" size="sm" role="status"><span className="visually-hidden">Loading...</span></Spinner>}&nbsp;
                         {this.canModel() && <Button onClick={this.startModelling.bind(this)} title={"Model"} disabled={this.state.busy}>M</Button>}
-                        {this.canVisualize() && <Button onClick={this.retrieveRawResult.bind(this, false)} title={"View"}><Glyphicon glyph="eye-open"/></Button>}
+                        {this.canVisualize() && <Button onClick={this.retrieveRawResult.bind(this, false)} title={"View"}><i className="fas fa-eye"></i></Button>}
                         {this.canCompare() && <Button onClick={this.retrieveRawResult.bind(this, true)} title={"Compare"}>C</Button>}
-                        {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default" style={{color: 'inherit'}}><Glyphicon glyph="download" style={{cursor: 'pointer'}} title={"Download RAW result data"}/></CSVLink>}
-                        {this.canDestroy() && <Button onClick={this.destroy.bind(this)} title={"Delete"}><Glyphicon glyph="trash"/></Button>}
+                        {this.canDownload() && <CSVLink headers={headers} data={this.state.csv_data} separator={";"} filename={"rama-scene.csv"} className="btn btn-default" style={{color: 'inherit'}}><i className="fas fa-download" style={{cursor: 'pointer'}} title={"Download RAW result data"}></i></CSVLink>}
+                        {this.canDestroy() && <Button onClick={this.destroy.bind(this)} title={"Delete"}><i className="fas fa-trash"></i></Button>}
                         <br />
                         {this.state.in_main_view && <Badge>Main view</Badge>}&nbsp;
                         {this.state.in_comparison_view && <Badge>Comparison view</Badge>}&nbsp;

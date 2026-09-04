@@ -9,10 +9,10 @@ ALLOWED_HOSTS = ['127.0.0.1']
 CELERY_BROKER_URL = 'amqp://localhost'
 
 # path to datasets directory
-DATASET_DIR = os.environ['DATASETS_DIR']
+DATASET_DIR = os.environ.get('DATASETS_DIR', os.path.join(BASE_DIR, 'datasets'))
 
 # name of numpy objects for timeseries
-DATASET_VERSION = os.environ['DATASETS_VERSION']
+DATASET_VERSION = os.environ.get('DATASETS_VERSION', 'v3')
 
 # allow cors
 MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware', ]
