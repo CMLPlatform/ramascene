@@ -13,7 +13,7 @@ function renderToContainer(element, containerId) {
         container._reactRoot = root;
     }
 }
-import { Alert, Button, ButtonGroup, Card, Col, Image, Modal, Nav, Navbar, NavItem, OverlayTrigger, Popover, Row, Spinner, Table } from 'react-bootstrap';
+import { Alert, Button, ButtonGroup, Card, Col, Container, Image, Modal, Nav, Navbar, OverlayTrigger, Popover, Row, Spinner, Table } from 'react-bootstrap';
 import './stylesheets/ramascene.scss';
 import Visualization from './visualization';
 import ProductFilterableMultiSelectDropdownTree from './productFilterableMultiSelectDropdownTree';
@@ -465,40 +465,25 @@ class App extends Component {
         const selectedVisualizationDetailOption = this.state.selectedVisualizationDetailOption;
 
         return (
-            <Grid fluid={true}>
-              <Navbar fluid>
-                  <Navbar.Header>
-                      <Navbar.Brand>
-                          {/*<Image src="../static/rama-logo-big.svgg"/>*/}
-                          <a href="../"> {<Image src="../static/rama-logo-big.svg"/>}</a>
-                      </Navbar.Brand>
-                       <Navbar.Toggle />
-                  </Navbar.Header>
-                  <Navbar.Collapse>
+            <Container fluid>
+              <Navbar expand="lg">
+                  <Navbar.Brand href="../">
+                      <Image src="../static/rama-logo-big.svg" />
+                  </Navbar.Brand>
+                  <Navbar.Toggle />
+                  <Navbar.Collapse className="justify-content-end">
 
-                  <Nav pullRight>
-                    <NavItem eventKey={1} href="../">
-                    Home
-                  </NavItem>
-                    <NavItem eventKey={1} href="../#about">
-                    About
-                  </NavItem>
-                  <NavItem eventKey={2} href="../#methods">
-                    Methods
-                  </NavItem>
-                  <NavItem eventKey={3} href="../#deliverables">
-                    Resources
-                  </NavItem>
-                  <NavItem eventKey={4} href="../#contact">
-                    Contact
-                  </NavItem>
-                  <NavItem eventKey={5} href="https://www.jotform3.leidenuniv.nl/CMLformJweb/rama-scene-feedback" target="_blank">
-                    Feedback
-                  </NavItem>
+                  <Nav>
+                    <Nav.Link href="../">Home</Nav.Link>
+                    <Nav.Link href="../#about">About</Nav.Link>
+                  <Nav.Link href="../#methods">Methods</Nav.Link>
+                  <Nav.Link href="../#deliverables">Resources</Nav.Link>
+                  <Nav.Link href="../#contact">Contact</Nav.Link>
+                  <Nav.Link href="https://www.jotform3.leidenuniv.nl/CMLformJweb/rama-scene-feedback" target="_blank">Feedback</Nav.Link>
                   </Nav>
                   </Navbar.Collapse>
               </Navbar>
-                {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert bsStyle={"warning"}>
+                {this.state.jobs.length == this.MAX_JOB_COUNT && <Alert variant="warning">
                     You reached the maximum number of jobs on your job queue. You first have to delete a job from the queue before being able to do additional analyses.
                 </Alert>}
                 <Row>
@@ -638,7 +623,7 @@ class App extends Component {
                     <Col sm={4} md={4} lg={4}>
                         <Card>
                             <Card.Header>
-                                <Card.Title>Main View <Button className="close pull-right" onClick={this.hideMainView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
+                                <Card.Title>Main View <Button className="close ms-auto" onClick={this.hideMainView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
                             </Card.Header>
                             <Card.Body>
                                 <div id="visualization"></div>
@@ -650,7 +635,7 @@ class App extends Component {
                     <Col sm={4} md={4} lg={4}>
                         <Card>
                             <Card.Header>
-                                <Card.Title>Comparison View <Button className="close pull-right" onClick={this.hideComparisonView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
+                                <Card.Title>Comparison View <Button className="close ms-auto" onClick={this.hideComparisonView.bind(this)} title="Clear visualization"><span>&times;</span></Button></Card.Title>
                             </Card.Header>
                             <Card.Body>
                                 <div id="comparison-visualization"></div>
@@ -773,7 +758,7 @@ class App extends Component {
                     <p>This may take a while - expected min. wait time 2 seconds for analytical calculations, max. wait time 10 minutes or longer at heavy traffic and doing modelling</p>
                     </Modal.Body>
                 </Modal>
-            </Grid>
+            </Container>
         );
     }
 

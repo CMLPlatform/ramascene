@@ -279,7 +279,7 @@ class Visualization extends Component {
                 </Table>
             </div>
             <Button onClick={this.state.callback}>Clear visualization</Button>
-            <sub className="pull-right">EXIOBASE v3.3.sm data</sub>
+            <sub className="ms-auto">EXIOBASE v3.3.sm data</sub>
         </div>);
     }
 }

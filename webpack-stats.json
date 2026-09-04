@@ -1,20 +1,20 @@
 {
   "status": "done",
   "assets": {
-    "899-c73c000bdbfd6a8f5cf0.js": {
-      "name": "899-c73c000bdbfd6a8f5cf0.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js",
-      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js"
+    "672-ee8f3db52ccf84789137.js": {
+      "name": "672-ee8f3db52ccf84789137.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js",
+      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js"
     },
-    "899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt": {
-      "name": "899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt",
-      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js.LICENSE.txt"
+    "672-ee8f3db52ccf84789137.js.LICENSE.txt": {
+      "name": "672-ee8f3db52ccf84789137.js.LICENSE.txt",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js.LICENSE.txt",
+      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js.LICENSE.txt"
     },
-    "899-c73c000bdbfd6a8f5cf0.js.map": {
-      "name": "899-c73c000bdbfd6a8f5cf0.js.map",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/899-c73c000bdbfd6a8f5cf0.js.map",
-      "publicPath": "/static/bundles/899-c73c000bdbfd6a8f5cf0.js.map"
+    "672-ee8f3db52ccf84789137.js.map": {
+      "name": "672-ee8f3db52ccf84789137.js.map",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js.map",
+      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js.map"
     },
     "fonts/glyphicons-halflings-regular.eot": {
       "name": "fonts/glyphicons-halflings-regular.eot",
@@ -51,22 +51,22 @@
       "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-51155edc0393d2cc7f42.css.map",
       "publicPath": "/static/bundles/main-51155edc0393d2cc7f42.css.map"
     },
-    "main-9f44271f7ccb2bbc4492.js": {
-      "name": "main-9f44271f7ccb2bbc4492.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-9f44271f7ccb2bbc4492.js",
-      "publicPath": "/static/bundles/main-9f44271f7ccb2bbc4492.js"
+    "main-605a78d10991402c46c4.js": {
+      "name": "main-605a78d10991402c46c4.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-605a78d10991402c46c4.js",
+      "publicPath": "/static/bundles/main-605a78d10991402c46c4.js"
     },
-    "main-9f44271f7ccb2bbc4492.js.map": {
-      "name": "main-9f44271f7ccb2bbc4492.js.map",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-9f44271f7ccb2bbc4492.js.map",
-      "publicPath": "/static/bundles/main-9f44271f7ccb2bbc4492.js.map"
+    "main-605a78d10991402c46c4.js.map": {
+      "name": "main-605a78d10991402c46c4.js.map",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-605a78d10991402c46c4.js.map",
+      "publicPath": "/static/bundles/main-605a78d10991402c46c4.js.map"
     }
   },
   "chunks": {
     "main": [
-      "899-c73c000bdbfd6a8f5cf0.js",
+      "672-ee8f3db52ccf84789137.js",
       "main-51155edc0393d2cc7f42.css",
-      "main-9f44271f7ccb2bbc4492.js"
+      "main-605a78d10991402c46c4.js"
     ]
   },
   "publicPath": "/static/bundles/"
