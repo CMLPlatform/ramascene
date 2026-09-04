@@ -15,7 +15,7 @@ class IndicatorFilterableMultiSelectDropdownTree extends FilterableMultiSelectDr
         this.state.callback(value);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/doc#config
         Papa.parse('../static/mod_indicators.csv', {
             delimiter: '\t',

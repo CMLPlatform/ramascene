@@ -11,7 +11,7 @@ class IndicatorFilterableSingleSelectDropdownTree extends FilterableSingleSelect
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/doc#config
         Papa.parse('../static/mod_indicators.csv', {
             delimiter: '\t',

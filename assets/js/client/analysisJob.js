@@ -44,8 +44,12 @@ class AnalysisJob extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({busy: nextProps.busy, in_main_view: nextProps.in_main_view, in_comparison_view: nextProps.in_comparison_view});
+    componentDidUpdate(prevProps) {
+        if (this.props.busy !== prevProps.busy || 
+            this.props.in_main_view !== prevProps.in_main_view || 
+            this.props.in_comparison_view !== prevProps.in_comparison_view) {
+            this.setState({busy: this.props.busy, in_main_view: this.props.in_main_view, in_comparison_view: this.props.in_comparison_view});
+        }
     }
 
     componentDidMount() {

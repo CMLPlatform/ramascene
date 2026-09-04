@@ -14,11 +14,13 @@ class FilterableSingleSelectDropdownTree extends Component {
         this.state = {disabled: props.disabled, data: props.data, value: props.value, placeholder: props.placeholder, callback: props.onChange};
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            disabled: nextProps.disabled,
-            value: nextProps.value
-        });
+    componentDidUpdate(prevProps) {
+        if (this.props.disabled !== prevProps.disabled || this.props.value !== prevProps.value) {
+            this.setState({
+                disabled: this.props.disabled,
+                value: this.props.value
+            });
+        }
     }
 
     render() {

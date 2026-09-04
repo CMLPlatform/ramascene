@@ -14,12 +14,16 @@ class FilterableMultiSelectDropdownTree extends Component {
         this.state = {disabled: props.disabled, data: props.data, value: props.value, placeholder: props.placeholder, callback: props.onChange, selectablelevel: props.selectablelevel};
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            disabled: nextProps.disabled,
-            value: nextProps.value,
-            selectablelevel: nextProps.selectablelevel
-        });
+    componentDidUpdate(prevProps) {
+        if (this.props.disabled !== prevProps.disabled || 
+            this.props.value !== prevProps.value || 
+            this.props.selectablelevel !== prevProps.selectablelevel) {
+            this.setState({
+                disabled: this.props.disabled,
+                value: this.props.value,
+                selectablelevel: this.props.selectablelevel
+            });
+        }
     }
 
     render() {

@@ -10,7 +10,7 @@ class RegionFilterableSingleSelectDropdownTree extends FilterableSingleSelectDro
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/docs#config
         Papa.parse('../static/final_countryTree_exiovisuals.csv', {
             delimiter: '\t',

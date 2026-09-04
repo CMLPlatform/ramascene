@@ -44,7 +44,7 @@ class ProductFilterableMultiSelectDropdownTree extends FilterableMultiSelectDrop
         return new_value;
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/docs#config
         Papa.parse('../static/final_productTree_exiovisuals.csv', {
             delimiter: '\t',

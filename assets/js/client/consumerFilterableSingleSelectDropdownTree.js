@@ -10,7 +10,7 @@ class ConsumerFilterableSingleSelectDropdownTree extends FilterableSingleSelectD
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/docs#config
         Papa.parse('../static/modelling_final_productTree_exiovisuals.csv', {
             delimiter: '\t',

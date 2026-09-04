@@ -47,8 +47,10 @@ class ScenarioModel extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({busy: nextProps.busy});
+    componentDidUpdate(prevProps) {
+        if (this.props.busy !== prevProps.busy) {
+            this.setState({busy: this.props.busy});
+        }
     }
 
     render() {

@@ -109,9 +109,15 @@ class Visualization extends Component {
 
     }
 
-    componentWillReceiveProps(nextProps) {
-        var topoJson = null;
-        switch (nextProps.detailLevel) {
+    componentDidUpdate(prevProps) {
+        // Only update if relevant props have changed
+        if (this.props.detailLevel !== prevProps.detailLevel ||
+            this.props.type !== prevProps.type ||
+            this.props.data !== prevProps.data ||
+            this.props.unit !== prevProps.unit) {
+
+            var topoJson = null;
+            switch (this.props.detailLevel) {
             case this.DETAIL_TOTAL:
                 topoJson = this.TOPOJSON_TOTAL;
                 break;
@@ -123,30 +129,30 @@ class Visualization extends Component {
                 break;
         }
 
-        var sum = 0;
-        nextProps.data.forEach(d => {
-            sum += d.value;
+            var sum = 0;
+            this.props.data.forEach(d => {
+                sum += d.value;
 
-        });
+            });
 
-        const key = Object.keys(nextProps.unit)[0];
-        var unit = key + ' ' + nextProps.unit[key];
+            const key = Object.keys(this.props.unit)[0];
+            var unit = key + ' ' + this.props.unit[key];
 
-        switch (nextProps.type) {
+            switch (this.props.type) {
             case 'geo':
                 this.setState({
-                    type: nextProps.type,
+                    type: this.props.type,
                     sum: sum,
                     unit: unit,
-                    query: nextProps.query,
-                    model_details: nextProps.model_details,
-                    is_modelling_result: nextProps.is_modelling_result,
-                    callback: nextProps.hide_callback,
+                    query: this.props.query,
+                    model_details: this.props.model_details,
+                    is_modelling_result: this.props.is_modelling_result,
+                    callback: this.props.hide_callback,
                     geoconfig: {
                         colorScaleConfig: {
                             color: ["#a8acac", "#E0DD30", "#B4D26E"  , "#5FBDE5"]
                         },
-                        data: nextProps.data,
+                        data: this.props.data,
                         downloadButton: {type: "png"},
                         //set ocean to transparent
                         ocean: 'transparent',
@@ -155,7 +161,7 @@ class Visualization extends Component {
                         topojson: topoJson,
                         tooltipConfig: {
                             body: function(d) {
-                                var found_item = nextProps.data.find(function(p) {
+                                var found_item = this.props.data.find(function(p) {
                                     return p.id === d.id;
                                 });
                                 return format('e')(found_item.value);
@@ -170,13 +176,13 @@ class Visualization extends Component {
                 break;
             case 'tree':
                 this.setState({
-                    type: nextProps.type,
+                    type: this.props.type,
                     sum: sum,
                     unit: unit,
-                    query: nextProps.query,
-                    model_details: nextProps.model_details,
-                    is_modelling_result: nextProps.is_modelling_result,
-                    callback: nextProps.hide_callback,
+                    query: this.props.query,
+                    model_details: this.props.model_details,
+                    is_modelling_result: this.props.is_modelling_result,
+                    callback: this.props.hide_callback,
                     treeconfig: {
                         tooltipConfig: {
                             body: function(d) {
@@ -186,7 +192,7 @@ class Visualization extends Component {
                                 return unit;
                             }
                         },
-                        data: nextProps.data,
+                        data: this.props.data,
                         downloadButton: {type: "png"},
                         groupBy: 'id',
                         size: d => d.value
@@ -196,6 +202,7 @@ class Visualization extends Component {
             default:
                 this.setState({type: 'unknown'});
                 break;
+        }
         }
     }
 

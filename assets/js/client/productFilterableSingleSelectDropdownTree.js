@@ -10,7 +10,7 @@ class ProductFilterableSingleSelectDropdownTree extends FilterableSingleSelectDr
         this.updateTreeData = this.updateTreeData.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         //https://www.papaparse.com/docs#config
         Papa.parse('../static/final_productTree_exiovisuals.csv', {
             delimiter: '\t',

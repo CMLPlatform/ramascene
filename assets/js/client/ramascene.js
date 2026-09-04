@@ -253,7 +253,7 @@ class App extends Component {
         });
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const query = {
             'dimType': this.PERSPECTIVE_PRODUCTION,
             'vizType': this.VIZ_TREEMAP,
