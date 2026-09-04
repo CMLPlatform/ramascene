@@ -1,72 +1,21 @@
 {
   "status": "done",
   "assets": {
-    "672-ee8f3db52ccf84789137.js": {
-      "name": "672-ee8f3db52ccf84789137.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js",
-      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js"
+    "main-61a4532dc51806e09f15.css": {
+      "name": "main-61a4532dc51806e09f15.css",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-61a4532dc51806e09f15.css",
+      "publicPath": "/static/bundles/main-61a4532dc51806e09f15.css"
     },
-    "672-ee8f3db52ccf84789137.js.LICENSE.txt": {
-      "name": "672-ee8f3db52ccf84789137.js.LICENSE.txt",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js.LICENSE.txt",
-      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js.LICENSE.txt"
-    },
-    "672-ee8f3db52ccf84789137.js.map": {
-      "name": "672-ee8f3db52ccf84789137.js.map",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/672-ee8f3db52ccf84789137.js.map",
-      "publicPath": "/static/bundles/672-ee8f3db52ccf84789137.js.map"
-    },
-    "fonts/glyphicons-halflings-regular.eot": {
-      "name": "fonts/glyphicons-halflings-regular.eot",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.eot",
-      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.eot"
-    },
-    "fonts/glyphicons-halflings-regular.svg": {
-      "name": "fonts/glyphicons-halflings-regular.svg",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.svg",
-      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.svg"
-    },
-    "fonts/glyphicons-halflings-regular.ttf": {
-      "name": "fonts/glyphicons-halflings-regular.ttf",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.ttf",
-      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.ttf"
-    },
-    "fonts/glyphicons-halflings-regular.woff": {
-      "name": "fonts/glyphicons-halflings-regular.woff",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.woff",
-      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.woff"
-    },
-    "fonts/glyphicons-halflings-regular.woff2": {
-      "name": "fonts/glyphicons-halflings-regular.woff2",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/fonts/glyphicons-halflings-regular.woff2",
-      "publicPath": "/static/bundles/fonts/glyphicons-halflings-regular.woff2"
-    },
-    "main-51155edc0393d2cc7f42.css": {
-      "name": "main-51155edc0393d2cc7f42.css",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-51155edc0393d2cc7f42.css",
-      "publicPath": "/static/bundles/main-51155edc0393d2cc7f42.css"
-    },
-    "main-51155edc0393d2cc7f42.css.map": {
-      "name": "main-51155edc0393d2cc7f42.css.map",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-51155edc0393d2cc7f42.css.map",
-      "publicPath": "/static/bundles/main-51155edc0393d2cc7f42.css.map"
-    },
-    "main-605a78d10991402c46c4.js": {
-      "name": "main-605a78d10991402c46c4.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-605a78d10991402c46c4.js",
-      "publicPath": "/static/bundles/main-605a78d10991402c46c4.js"
-    },
-    "main-605a78d10991402c46c4.js.map": {
-      "name": "main-605a78d10991402c46c4.js.map",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-605a78d10991402c46c4.js.map",
-      "publicPath": "/static/bundles/main-605a78d10991402c46c4.js.map"
+    "main-61a4532dc51806e09f15.js": {
+      "name": "main-61a4532dc51806e09f15.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-61a4532dc51806e09f15.js",
+      "publicPath": "/static/bundles/main-61a4532dc51806e09f15.js"
     }
   },
   "chunks": {
     "main": [
-      "672-ee8f3db52ccf84789137.js",
-      "main-51155edc0393d2cc7f42.css",
-      "main-605a78d10991402c46c4.js"
+      "main-61a4532dc51806e09f15.css",
+      "main-61a4532dc51806e09f15.js"
     ]
   },
   "publicPath": "/static/bundles/"

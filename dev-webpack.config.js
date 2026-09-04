@@ -13,7 +13,7 @@ module.exports = (env, argv) => {
     return {
         //the base directory (abs. path) for resolving the entry option
         context: __dirname,
-        entry: [APP_DIR + '/ramascene.js'],
+        entry: [APP_DIR + '/entry.js'],
 
         output: {
             //where to store compiled bundle
