@@ -4,7 +4,7 @@ SECRET_KEY = '__SECRET__'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 CELERY_BROKER_URL = 'amqp://localhost'
 

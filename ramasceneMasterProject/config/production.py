@@ -5,7 +5,7 @@ STATIC_ROOT = os.path.join(BASE_DIR,
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['ramascene-staging.local', '127.0.0.1',
+ALLOWED_HOSTS = ['ramascene-staging.local', '127.0.0.1', 'localhost',
                  'www.ramascene.eu', 'ramascene.eu', os.environ["HOST"]]
 
 DATASET_DIR = os.environ.get('DATASETS_DIR',

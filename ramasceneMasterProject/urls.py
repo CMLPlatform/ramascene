@@ -19,6 +19,6 @@ from django.urls import path, include, re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.homePage, name='homePage'),
-    re_path(r'^(?P<path>.*)', include('ramascene.urls')),
+    path('', views.homePage, name='homePage'),  # ✅ Use homePage, not home
+    re_path(r'^.*', include('ramascene.urls')),
 ]

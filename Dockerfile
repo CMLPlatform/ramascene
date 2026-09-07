@@ -76,7 +76,9 @@ ARG WS_PROTOCOL
 ARG REDIS_HOST
 ARG DATABASE_NAME
 
-RUN python manage.py collectstatic
+# Ensure static directory exists and run collectstatic
+RUN mkdir -p /usr/src/app/static && \
+    python manage.py collectstatic --noinput
 
 # --- END TARGET build ---
 
@@ -163,7 +165,13 @@ RUN { \
         echo "}" ; \
     } > /etc/nginx/conf.d/ramascene_vhost.conf;
 
-# Copy all static files
-COPY --from=build --chown=1000:1000 /usr/src/app/static_assets/ /var/www/html/
+# Copy Django-collected static files (admin, etc.)
+COPY --from=build --chown=1000:1000 /usr/src/app/static/ /var/www/html/static/
+
+# Copy Webpack bundles
+COPY --from=build --chown=1000:1000 /usr/src/app/assets/bundles/ /var/www/html/static/bundles/
+
+# Copy original static_assets
+COPY --from=build --chown=1000:1000 /usr/src/app/static_assets/ /var/www/html/static/
 
 # --- END TARGET nginx ---
