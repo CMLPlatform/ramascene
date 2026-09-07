@@ -3,6 +3,6 @@ import ramascene.views as views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
-    path('', views.home, name='home'),  # ✅ Changed from 'ramascene/' to ''
+    path('', views.home, name='home'),
     path('ajaxhandling/', views.ajaxHandling, name='ajaxhandling'),
 ]

@@ -1,0 +1,65 @@
+
+$body-bg: #333;
+
+@import '_bootstrap';
+
+h5 {
+  font-weight: bold;
+}
+
+td {
+  .btn {
+    padding: 1px 6px;
+  }
+}
+
+ul {
+  list-style-type: none;
+}
+
+.glyphicon-question-sign {
+  color: $brand-info;
+}
+
+.label {
+  margin: 0 2px;
+}
+
+.panel {
+  color: #333;
+}
+
+.popover-content {
+  max-height: 400px;
+  overflow: auto;
+  padding: 9px 14px;
+}
+
+.rc-tree-select-not-found {
+  color: #000;
+}
+
+.rc-tree-select-search__field {
+  color: #000;
+}
+
+.rc-tree-select-tree-title {
+  color: #000;
+}
+
+.row {
+  border-bottom: #fff solid 1px;
+  padding: 10px;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.visualization-panel {
+  height: 600px;
+}
+
+.visualization-inner-panel {
+  height: 575px;
+}

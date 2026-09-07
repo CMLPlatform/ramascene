@@ -43,7 +43,7 @@ module.exports = (env, argv) => {
                 }
             }),
             new webpack.DefinePlugin({
-                'WEBSOCKET_URL': '"ws://127.0.0.1:8000/ramascene/"',
+                'WEBSOCKET_URL': '"ws://127.0.0.1:8001/ramascene/"',
                 'AJAX_URL': '"http://127.0.0.1:8000/ajaxhandling/"'
             })
         ],

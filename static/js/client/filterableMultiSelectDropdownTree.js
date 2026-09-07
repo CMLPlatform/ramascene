@@ -1,0 +1,64 @@
+// @flow
+import React, {Component} from 'react';
+import TreeSelect from 'rc-tree-select';
+
+// Local implementations for deprecated rc-tree-select utility functions
+const labelCompatible = (label) => label || 'label';
+const getPropValue = (obj, prop) => obj ? obj[prop] : null;
+
+class FilterableMultiSelectDropdownTree extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {disabled: props.disabled, data: props.data, value: props.value, placeholder: props.placeholder, callback: props.onChange, selectablelevel: props.selectablelevel};
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.disabled !== prevProps.disabled || 
+            this.props.value !== prevProps.value || 
+            this.props.selectablelevel !== prevProps.selectablelevel) {
+            this.setState({
+                disabled: this.props.disabled,
+                value: this.props.value,
+                selectablelevel: this.props.selectablelevel
+            });
+        }
+    }
+
+    render() {
+        //https://github.com/react-component/tree-select
+        return (
+            <TreeSelect
+                allowClear={true}
+                disabled={this.state.disabled}
+                dropdownStyle={{ maxHeight: 300, overflow: 'auto' }}
+                filterTreeNode={this.filterCaseInsensitive}
+                maxTagTextLength={15}
+                multiple={true}
+                notFoundContent={<i>Not found</i>}
+                onChange={this.handleOnChange.bind(this)}
+                placeholder={<i>{this.state.placeholder}</i>}
+                showCheckedStrategy={TreeSelect.SHOW_PARENT}
+                showSearch={true}
+                style={{ width: '100%'}}
+                // treeCheckable must be true if you want to be able to select all childs by selecting the parent
+                treeCheckable={false}
+                treeCheckStrictly={true}
+                treeData={this.state.data}
+                treeDataSimpleMode={{id: 'id', pId: 'pId', rootPId: 0}}
+                treeDefaultExpandAll={false}
+                treeIcon={false}
+                treeLine={true}
+                treeNodeFilterProp={'label'}
+                value={this.state.value}
+            />
+        );
+    }
+
+    filterCaseInsensitive(inputValue, treeNode) {
+        return String(getPropValue(treeNode, labelCompatible('label'))).toLowerCase().indexOf(inputValue.toLowerCase()) > -1;
+    }
+}
+
+export default FilterableMultiSelectDropdownTree;

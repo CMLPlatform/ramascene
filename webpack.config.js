@@ -46,7 +46,7 @@ module.exports = (env, argv) => {
                 }
             }),
             new webpack.DefinePlugin({
-                'WEBSOCKET_URL': JSON.stringify((process.env.WS_PROTOCOL || 'ws') + '://' + (process.env.WS_HOST || 'localhost') + '/ws/ramascene/'),
+                'WEBSOCKET_URL': JSON.stringify((process.env.WS_PROTOCOL || 'ws') + '://' + (process.env.WS_HOST || 'localhost') + (process.env.WS_PORT ? ':' + process.env.WS_PORT : ':8001') + '/ramascene/'),
                 'AJAX_URL': JSON.stringify((process.env.PROTOCOL || 'http') + '://' + (process.env.HOST || 'localhost') + '/ajaxhandling/')
             })
         ],
