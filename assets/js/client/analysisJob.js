@@ -8,11 +8,12 @@ import $ from 'jquery';
 import {CSVLink} from "react-csv";
 import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
+import { AppContext } from './context';
 
 let ws = null;
 
 class AnalysisJob extends Component {
-
+    static contextType = AppContext;
     constructor(props) {
         super(props);
 
@@ -314,10 +315,5 @@ class AnalysisJob extends Component {
         );
     }
 }
-
-AnalysisJob.contextTypes = {
-    model_details: PropTypes.array,
-    scenarioCompRef: PropTypes.object
-};
 
 export default AnalysisJob;

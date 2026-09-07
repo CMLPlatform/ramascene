@@ -5,6 +5,7 @@ import ProductFilterableSingleSelectDropdownTree from './productFilterableSingle
 import ConsumerFilterableSingleSelectDropdownTree from './consumerFilterableSingleSelectDropdownTree';
 import RegionFilterableSingleSelectDropdownTree from './regionFilterableSingleSelectDropdownTree';
 import PropTypes from 'prop-types';
+import { AppContext } from './context';
 
 var shortid = require('shortid');
 var {changes_helptext, coefficient_helptext, consumer_helptext, destination_helptext, origin_helptext, product_model_helptext} = require('./helptexts');
@@ -21,6 +22,7 @@ function CustomTooltip({id, children, tooltip}) {
 };
 
 class ScenarioModel extends Component {
+    static contextType = AppContext;
 
     constructor(props) {
         super(props);
@@ -251,10 +253,5 @@ class ScenarioModel extends Component {
         return this.destCompRef.getLabel(value);
     }
 }
-
-ScenarioModel.contextTypes = {
-    saveSettingsCallback: PropTypes.func,
-    clearSettingsCallback: PropTypes.func
-};
 
 export default ScenarioModel;

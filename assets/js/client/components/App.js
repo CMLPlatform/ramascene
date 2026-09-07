@@ -1,7 +1,8 @@
 // @flow
-import React, {Component} from 'react';
 import { Container, Row } from 'react-bootstrap';
+import React, {Component} from 'react';
 import {unmountComponentAtNode} from 'react-dom';
+import { AppContext } from '../context';
 
 // Import sub-components
 import LayoutHeader from './Layout/LayoutHeader';
@@ -49,6 +50,13 @@ class App extends Component {
 
         this.timer = null;
     }
+    getContextValue = () => ({
+    saveSettingsCallback: this.saveModellingSettings,
+    clearSettingsCallback: this.clearModellingSettings,
+    scenarioCompRef: this.scenarioCompRef,
+    model_details: this.state.model_details || []
+});
+
 
     // ==================== Event Handlers ====================
 
@@ -388,14 +396,6 @@ class App extends Component {
 
     // ==================== Context Management ====================
 
-    getChildContext() {
-        return {
-            saveSettingsCallback: this.saveModellingSettings,
-            clearSettingsCallback: this.clearModellingSettings,
-            scenarioCompRef: this.scenarioCompRef
-        };
-    }
-
     saveModellingSettings = (model_details) => {
         this.setState({model_details: model_details});
     };
@@ -417,6 +417,7 @@ class App extends Component {
         } = this.state;
 
         return (
+        <AppContext.Provider value={this.getContextValue()}>
             <Container fluid>
                 <LayoutHeader jobCount={jobs.length} />
                 
@@ -500,15 +501,9 @@ class App extends Component {
                     onHide={this.closeModal}
                 />
             </Container>
+                    </AppContext.Provider>
         );
     }
 }
-
-// Type checking for children
-App.childContextTypes = {
-    saveSettingsCallback: PropTypes.func,
-    clearSettingsCallback: PropTypes.func,
-    scenarioCompRef: PropTypes.object
-};
 
 export default App;

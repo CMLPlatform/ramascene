@@ -1,21 +1,27 @@
 {
   "status": "done",
   "assets": {
-    "main-2bb5bdd09916fa07d1ba.css": {
-      "name": "main-2bb5bdd09916fa07d1ba.css",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-2bb5bdd09916fa07d1ba.css",
-      "publicPath": "/static/bundles/main-2bb5bdd09916fa07d1ba.css"
+    "main-4110b65157b711917565.css": {
+      "name": "main-4110b65157b711917565.css",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-4110b65157b711917565.css",
+      "publicPath": "/static/bundles/main-4110b65157b711917565.css"
     },
-    "main-2bb5bdd09916fa07d1ba.js": {
-      "name": "main-2bb5bdd09916fa07d1ba.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-2bb5bdd09916fa07d1ba.js",
-      "publicPath": "/static/bundles/main-2bb5bdd09916fa07d1ba.js"
+    "main-4110b65157b711917565.js": {
+      "name": "main-4110b65157b711917565.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-4110b65157b711917565.js",
+      "publicPath": "/static/bundles/main-4110b65157b711917565.js"
+    },
+    "vendors-node_modules_d3plus-react_es_index_js-node_modules_jquery_dist_jquery_js-node_modules-bac920-4110b65157b711917565.js": {
+      "name": "vendors-node_modules_d3plus-react_es_index_js-node_modules_jquery_dist_jquery_js-node_modules-bac920-4110b65157b711917565.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/vendors-node_modules_d3plus-react_es_index_js-node_modules_jquery_dist_jquery_js-node_modules-bac920-4110b65157b711917565.js",
+      "publicPath": "/static/bundles/vendors-node_modules_d3plus-react_es_index_js-node_modules_jquery_dist_jquery_js-node_modules-bac920-4110b65157b711917565.js"
     }
   },
   "chunks": {
     "main": [
-      "main-2bb5bdd09916fa07d1ba.css",
-      "main-2bb5bdd09916fa07d1ba.js"
+      "vendors-node_modules_d3plus-react_es_index_js-node_modules_jquery_dist_jquery_js-node_modules-bac920-4110b65157b711917565.js",
+      "main-4110b65157b711917565.css",
+      "main-4110b65157b711917565.js"
     ]
   },
   "publicPath": "/static/bundles/"
