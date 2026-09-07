@@ -11,6 +11,7 @@ module.exports = (env, argv) => {
     const isProduction = argv.mode === 'production';
     
     return {
+        mode: isProduction ? 'production' : 'development',
         //the base directory (abs. path) for resolving the entry option
         context: __dirname,
         entry: [APP_DIR + '/entry.js'],
@@ -19,7 +20,7 @@ module.exports = (env, argv) => {
             //where to store compiled bundle
             path: path.resolve(__dirname, 'assets/bundles/'),
             //webpack naming convention where files are stored
-            filename: '[name]-[hash].js',
+            filename: '[name]-[fullhash].js',
             publicPath: '/static/bundles/'
         },
 
@@ -27,7 +28,7 @@ module.exports = (env, argv) => {
             //where to store meta-data about the bundle
             new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
             new MiniCssExtractPlugin({
-                filename: '[name]-[hash].css'
+                filename: '[name]-[fullhash].css'
             }),
 
             new webpack.ProvidePlugin({

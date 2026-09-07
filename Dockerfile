@@ -5,11 +5,13 @@ ARG NGINX_VERSION=1.25-alpine
 
 FROM node:${NODE_VERSION} AS node
 
+WORKDIR /usr/src/app
+
 # copy sources
-COPY package.json package-lock.json webpack.config.js ./
+COPY package.json package-lock.json webpack.config.js ./ 
 COPY --chown=node:node assets ./assets
 
-# install all node packages
+# install all node packages (including devDependencies)
 RUN npm ci
 
 # build reactjs bundle
@@ -18,7 +20,12 @@ ARG WS_HOST
 ARG PROTOCOL
 ARG WS_PROTOCOL
 
-RUN npm install --save-dev dotenv-webpack mini-css-extract-plugin @babel/core @babel/preset-env @babel/preset-react @babel/plugin-transform-class-properties babel-loader css-loader sass-loader sass file-loader style-loader webpack-cli webpack-dev-server path-browserify
+# Set environment variables for webpack build
+ENV HOST=${HOST}
+ENV WS_HOST=${WS_HOST}
+ENV PROTOCOL=${PROTOCOL}
+ENV WS_PROTOCOL=${WS_PROTOCOL}
+ENV NODE_ENV=production
 
 RUN ./node_modules/.bin/webpack --config webpack.config.js
 
@@ -31,6 +38,8 @@ ARG NGINX_VERSION
 
 FROM python:${PYTHON_VER} AS build
 
+WORKDIR /usr/src/app
+
 # copy all webpack files
 COPY --from=node --chown=1000:1000 /usr/src/app/assets/bundles ./assets/bundles
 COPY --from=node --chown=1000:1000 /usr/src/app/webpack-stats.json ./
@@ -42,7 +51,7 @@ COPY --chown=1000:1000 static_assets ./static_assets
 COPY --chown=1000:1000 templates ./templates
 COPY --chown=1000:1000 .env manage.py requirements.txt rtd_requirements.txt  ./
 
-# Install all python packages & clean up
+# Install all python packages to /usr/local & clean up
 RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
 
 # Install gettext
@@ -78,6 +87,8 @@ ARG NGINX_VERSION
 
 FROM python:${PYTHON_VER} AS python
 
+WORKDIR /usr/src/app
+
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
 ARG DATASETS_VERSION
@@ -99,7 +110,7 @@ RUN chown 1000:1000 ./logs /mnt/data /mnt/datasets
 USER 1000
 
 # Copy all packages
-COPY --from=build --chown=1000:1000 /root/.local /root/.local
+COPY --from=build --chown=1000:1000 /usr/local /usr/local
 COPY --from=build --chown=1000:1000 /usr/src/app/webpack-stats.json ./
 
 # Copy all source files

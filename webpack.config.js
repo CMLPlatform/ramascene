@@ -11,6 +11,7 @@ module.exports = (env, argv) => {
     const isProduction = argv.mode === 'production';
     
     return {
+        mode: isProduction ? 'production' : 'development',
         //the base directory (abs. path) for resolving the entry option
         context: __dirname,
         entry: [APP_DIR + '/entry.js'],
@@ -19,7 +20,7 @@ module.exports = (env, argv) => {
             //where to store compiled bundle
             path: path.resolve(__dirname, 'assets/bundles/'),
             //webpack naming convention where files are stored
-            filename: isProduction ? '[name]-[contenthash].js' : '[name]-[hash].js',
+            filename: isProduction ? '[name]-[contenthash].js' : '[name]-[fullhash].js',
             publicPath: '/static/bundles/'
         },
 
@@ -27,7 +28,7 @@ module.exports = (env, argv) => {
             //where to store meta-data about the bundle
             new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
             new MiniCssExtractPlugin({
-                filename: isProduction ? '[name]-[contenthash].css' : '[name]-[hash].css'
+                filename: isProduction ? '[name]-[contenthash].css' : '[name]-[fullhash].css'
             }),
 
             new webpack.ProvidePlugin({
@@ -45,12 +46,8 @@ module.exports = (env, argv) => {
                 }
             }),
             new webpack.DefinePlugin({
-                'WEBSOCKET_URL': JSON.stringify(process.env.WS_PROTOCOL + '://' + process.env.WS_HOST + '/ws/ramascene/'),
-                'AJAX_URL': JSON.stringify(process.env.PROTOCOL + '://' + process.env.HOST + '/ajaxhandling/')
-                // 'WEBSOCKET_URL': '"ws://ramascene.local/ws/ramascene/"',
-                // 'AJAX_URL': '"http://ramascene.local/ajaxhandling/"'
-                // 'WEBSOCKET_URL': '"ws://cml.liacs.nl:8080/ws/ramascene/"',
-                // 'AJAX_URL': '"http://cml.liacs.nl:8080/ajaxhandling/"'
+                'WEBSOCKET_URL': JSON.stringify((process.env.WS_PROTOCOL || 'ws') + '://' + (process.env.WS_HOST || 'localhost') + '/ws/ramascene/'),
+                'AJAX_URL': JSON.stringify((process.env.PROTOCOL || 'http') + '://' + (process.env.HOST || 'localhost') + '/ajaxhandling/')
             })
         ],
 

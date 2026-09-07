@@ -1,21 +1,21 @@
 {
   "status": "done",
   "assets": {
-    "main-61a4532dc51806e09f15.css": {
-      "name": "main-61a4532dc51806e09f15.css",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-61a4532dc51806e09f15.css",
-      "publicPath": "/static/bundles/main-61a4532dc51806e09f15.css"
+    "main-2bb5bdd09916fa07d1ba.css": {
+      "name": "main-2bb5bdd09916fa07d1ba.css",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-2bb5bdd09916fa07d1ba.css",
+      "publicPath": "/static/bundles/main-2bb5bdd09916fa07d1ba.css"
     },
-    "main-61a4532dc51806e09f15.js": {
-      "name": "main-61a4532dc51806e09f15.js",
-      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-61a4532dc51806e09f15.js",
-      "publicPath": "/static/bundles/main-61a4532dc51806e09f15.js"
+    "main-2bb5bdd09916fa07d1ba.js": {
+      "name": "main-2bb5bdd09916fa07d1ba.js",
+      "path": "/Users/francodonati/Documents/ramascene/assets/bundles/main-2bb5bdd09916fa07d1ba.js",
+      "publicPath": "/static/bundles/main-2bb5bdd09916fa07d1ba.js"
     }
   },
   "chunks": {
     "main": [
-      "main-61a4532dc51806e09f15.css",
-      "main-61a4532dc51806e09f15.js"
+      "main-2bb5bdd09916fa07d1ba.css",
+      "main-2bb5bdd09916fa07d1ba.js"
     ]
   },
   "publicPath": "/static/bundles/"

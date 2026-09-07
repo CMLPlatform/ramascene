@@ -1,29 +1,26 @@
 // @flow
-import React from 'react';
-import {createRoot} from 'react-dom/client';
-import App from './App';
-import ReactGA from 'react-ga';
+// Export all components and utilities
+export {default as App} from './App';
+export {renderToContainer} from './utils';
 
-// Initialize Google Analytics
-ReactGA.initialize('UA-130048269-1', {
-    gaOptions: {
-        siteSpeedSampleRate: 50
-    }
-});
+// Layout components
+export {LayoutHeader, FooterPanel, WaitingModal} from './Layout';
 
-ReactGA.pageview('/ramascene/');
+// Settings components  
+export {SettingsPanel} from './Settings';
 
-// Helper function to render with React 18 createRoot
-function renderToContainer(element, containerId) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        const root = createRoot(container);
-        root.render(element);
-        // Store root for potential unmounting later
-        container._reactRoot = root;
-    }
-}
+// Filter components
+export {FilterPanel} from './Filter';
 
-// Export the App component and utilities
-export {renderToContainer};
-export default App;
+// Action components
+export {ActionPanel} from './Action';
+
+// Visualization components
+export {VisualizationView} from './Visualization';
+
+// Modelling components
+export {ModellingPanel} from './Modelling';
+
+// Constants and utilities
+export * from './constants';
+export {CustomTooltip} from './utils';

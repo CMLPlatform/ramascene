@@ -29,4 +29,6 @@ __pycache__/
 
 /virtualenv
 
+/venv
+
 data.zi*

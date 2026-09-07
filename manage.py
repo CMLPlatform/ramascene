@@ -8,6 +8,11 @@ if __name__ == "__main__":
     if project_dir not in sys.path:
         sys.path.insert(0, project_dir)
     
+    # Also add the current working directory for good measure
+    cwd = os.getcwd()
+    if cwd not in sys.path:
+        sys.path.insert(0, cwd)
+    
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ramasceneMasterProject.settings")
     try:
         from django.core.management import execute_from_command_line
