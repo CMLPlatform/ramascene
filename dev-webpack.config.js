@@ -26,7 +26,7 @@ module.exports = (env, argv) => {
 
         plugins: [
             //where to store meta-data about the bundle
-            new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
+            new BundleTracker({path: __dirname, filename: 'webpack-stats.json'}),
             new MiniCssExtractPlugin({
                 filename: '[name]-[fullhash].css'
             }),

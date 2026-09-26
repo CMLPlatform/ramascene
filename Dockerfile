@@ -1,5 +1,5 @@
 # --- TARGET node ---
-ARG NODE_VERSION=18-alpine
+ARG NODE_VERSION=24-alpine
 ARG PYTHON_VER=3.12-slim
 ARG NGINX_VERSION=1.25-alpine
 
