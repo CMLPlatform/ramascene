@@ -15,6 +15,7 @@ dev-env.sh
 
 #ignore production environment variables
 prod-env.sh
+.env
 
 #ignore logs
 logs/

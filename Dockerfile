@@ -49,7 +49,7 @@ COPY --chown=1000:1000 ramascene ./ramascene
 COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
 COPY --chown=1000:1000 static_assets ./static_assets
 COPY --chown=1000:1000 templates ./templates
-COPY --chown=1000:1000 .env manage.py requirements.txt rtd_requirements.txt  ./
+COPY --chown=1000:1000 manage.py requirements.txt ./
 
 # Install all python packages to /usr/local & clean up
 RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
@@ -67,7 +67,6 @@ RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-pyth
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
 ARG DATASETS_VERSION
-ARG SECRET_KEY
 ARG BROKER_URL
 ARG PUBLIC_DIR
 ARG WS_HOST
@@ -77,8 +76,9 @@ ARG REDIS_HOST
 ARG DATABASE_NAME
 
 # Ensure static directory exists and run collectstatic
+# collectstatic only needs some SECRET_KEY to load the settings; the real one is read at runtime
 RUN mkdir -p /usr/src/app/static && \
-    python manage.py collectstatic --noinput
+    SECRET_KEY=collectstatic-only python manage.py collectstatic --noinput
 
 # --- END TARGET build ---
 
@@ -94,7 +94,6 @@ WORKDIR /usr/src/app
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
 ARG DATASETS_VERSION
-ARG SECRET_KEY
 ARG BROKER_URL
 ARG PUBLIC_DIR
 ARG WS_HOST
@@ -120,17 +119,16 @@ COPY --chown=1000:1000 python_ini ./python_ini
 COPY --chown=1000:1000 ramascene ./ramascene
 COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
 COPY --chown=1000:1000 templates ./templates
-COPY manage.py .env LICENSE README.md ./
+COPY manage.py LICENSE README.md ./
 
 ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
 ENV DATASETS_DIR=/mnt/datasets
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-RUN python manage.py populateHierarchies
 
 EXPOSE 8000
-CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p", "8000"]
+# migrate and populate at start: the database lives on the /mnt/data volume, which
+# hides anything written there at build time; populateHierarchies is idempotent
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py populateHierarchies && exec daphne ramasceneMasterProject.asgi:application -b 0.0.0.0 -p 8000"]
 
 # --- END TARGET python ---
 
