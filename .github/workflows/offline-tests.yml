@@ -1,0 +1,23 @@
+name: offline tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # requirements.txt pins the 2018 stack and does not install; the offline
+      # engine tests need nothing beyond these three.
+      - run: pip install 'numpy>=1.24,<3' 'django>=4.2,<4.3' 'pytest>=8,<10'
+      - run: pytest -v -rs

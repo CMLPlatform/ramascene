@@ -1,3 +1,9 @@
+import pytest
+
+# needs infrastructure the offline harness does not start, see docs/regression-harness.md
+pytestmark = pytest.mark.integration
+pytest.importorskip("celery", reason="celery is not installed in the offline environment")
+
 from ramascene.tasks import execute_calc
 from ramascene.models import Job
 from celery.contrib.testing.worker import start_worker

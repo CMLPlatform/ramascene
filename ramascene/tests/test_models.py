@@ -1,3 +1,8 @@
+import pytest
+
+# needs infrastructure the offline harness does not start, see docs/regression-harness.md
+pytestmark = pytest.mark.integration
+
 from django.test import TestCase
 
 from ramascene.models import ModellingProduct, Country, Product, Indicator
