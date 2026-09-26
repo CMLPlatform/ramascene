@@ -14,10 +14,14 @@ pytest -v -rs
 ```
 
 That is the whole default suite. Without the dataset it reports
-`5 passed, 6 skipped, 18 deselected`:
+`8 passed, 6 skipped, 18 deselected`:
 
 - 5 passed: all four routes on synthetic matrices, plus `route_four` with two
   indicators, each compared with committed golden output (below);
+- 3 passed: scenario modelling rejects a non-finite change before it inverts
+  `A`, one test each for nan and inf (`"1e400"`) technical change and nan final
+  demand (`test_non_finite_technical_change_raises`,
+  `test_infinite_technical_change_raises`, `test_non_finite_final_demand_raises`);
 - 6 skipped: the 4 Octave-reference tests, which need the dataset, and the 2
   modules that need Celery or Channels (`-rs` prints each reason);
 - 18 deselected: the `integration` tests described next.
@@ -72,16 +76,14 @@ settings read (see `sample-dev-env.sh`); the harness also accepts
 (`A` and `L` 9800 x 9800, `Y` 9800 x 49, `B` 60 x 9800).
 
 With the 2011 files from that record, the four Octave-reference tests pass on
-`master`'s engine code: all 122 reference values (50 + 50 + 3 + 19) reproduce
-within the default tolerance of `pytest.approx` (relative 1e-6). They cover
-`route_two` and `route_four`, for value added and GHG emissions (see the table
-below).
+both `master`'s engine code and the engine as changed here: all 122 reference
+values (50 + 50 + 3 + 19) reproduce within the default tolerance of
+`pytest.approx` (relative 1e-6). They cover `route_two` and `route_four`, for
+value added and GHG emissions (see the table below).
 
-With float32 input, every route would fail in `json.dumps`: the LEAF branch of
-`get_aggregations_countries` (routes two and three) and of
-`get_aggregations_products` (routes one and four) passes a numpy scalar
-through unconverted, and `json.dumps` accepts a float64 scalar but not a
-float32 one. The published matrices are float64, so they are not affected.
+Float32 input also works now: the LEAF branches of `get_aggregations_countries`
+and `get_aggregations_products` convert the numpy scalar to a Python float, so
+`json.dumps` no longer fails on it.
 
 `python_ini/devScripts/script/create_numpy_objects_v3.py` is **not** the source
 of the validation data: it loops over 1995-1999 and never produces 2011.

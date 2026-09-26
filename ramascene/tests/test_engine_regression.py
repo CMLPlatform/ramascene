@@ -110,7 +110,7 @@ def run_route(query_selection, matrices, job_name="regression", job_id=0):
     result = json.loads(getattr(analyze, route)())
     values = result["rawResultData"]
     assert values, "engine returned no results for {}".format(route)
-    # modelling.py:88 has a dead NaN guard, so NaNs can propagate silently
+    # nothing downstream of the engine rejects nan or inf, so assert it here
     assert np.isfinite(list(values.values())).all(), "non-finite engine output from {}: {}".format(route, values)
     return values, result["unit"]
 
