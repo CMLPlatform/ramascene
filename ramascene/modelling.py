@@ -82,16 +82,14 @@ class Modelling:
                 A_modified = True
 
         if A_modified is True:
-            with np.errstate(divide="ignore", invalid="ignore"):
-                # (I - A) without materialising a dense identity of the same size.
-                # NOTE: float64 to keep the promotion the np.identity() term forced.
-                M = np.negative(self.A, dtype=np.float64)
-                M[np.diag_indices_from(M)] += 1
-                self.L = np.linalg.inv(M)
-            # Backstop for a non-finite A that no intervention introduced (the
-            # changes are checked above). Zeroing would report 0.0 everywhere.
-            if not np.isfinite(self.L).all():
-                raise ValueError("non-finite Leontief inverse; check the technical-change inputs")
+            # (I - A) over A's own buffer: A is not read after this point.
+            # NOTE: float64 to keep the promotion the np.identity() term forced;
+            # a float32 A gets one copy here.
+            M = self.A.astype(np.float64, copy=False)
+            np.negative(M, out=M)
+            M[np.diag_indices_from(M)] += 1
+            self.A = None
+            self.L = LeontiefSolve(M)
         # else the original L, as loaded above, is already in self.L
 
         return self.Y, self.L
@@ -118,8 +116,8 @@ class Modelling:
         """
         # Work in progress
         changed = A[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
-        # Check before the inversion, which takes ~11 s on the full A: a nan makes
-        # all of L nan, and an inf on the diagonal yields a finite but wrong L.
+        # Check before the solve, which takes ~1.5 s on the full A: a nan makes
+        # the solution nan, and an inf on the diagonal yields a finite but wrong one.
         if not np.isfinite(changed).all():
             raise ValueError("non-finite technical coefficients; check the technical-change inputs")
         A[np.ix_(rows, columns)] = changed
@@ -136,3 +134,28 @@ class Modelling:
         # remove outer list
         [array_obj] = array_obj
         return array_obj
+
+
+class LeontiefSolve:
+    """L = (I - A)^-1 without forming it. Supports the two ways the routes use
+    L, L.dot(y) and L.T.dot(y), by solving (I - A) x = y on each call.
+
+    Each call factorizes M again (np.linalg.solve). That costs about a third of
+    an inversion, so it pays as long as a route makes at most two calls; each
+    route makes one.
+    """
+
+    def __init__(self, M):
+        self.M = M
+
+    @property
+    def T(self):
+        return LeontiefSolve(self.M.T)
+
+    def dot(self, y):
+        x = np.linalg.solve(self.M, y)
+        # Backstop for a non-finite A that no intervention introduced (the
+        # changes are checked in model_intermediates).
+        if not np.isfinite(x).all():
+            raise ValueError("non-finite Leontief solution; check the technical-change inputs")
+        return x

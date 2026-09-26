@@ -19,7 +19,7 @@ from django.conf import settings
 
 from ramascene import querymanagement
 from ramascene.analyze import Analyze
-from ramascene.modelling import Modelling
+from ramascene.modelling import LeontiefSolve, Modelling
 from ramascene.tests.validation_data import FILES_TO_TEST_AGAINST, VALIDATION_DIR, open_validation_file
 
 COUNTRY_CNT = 49
@@ -61,6 +61,24 @@ def real_matrices():
             )
         )
     return tuple(querymanagement.get_numpy_objects(VALIDATION_YEAR, name) for name in ("Y", "B", "L"))
+
+
+@pytest.fixture(scope="session")
+def real_scenario_matrices(real_matrices):
+    """(Y, B, L) with L from the scenario path: A loaded, a 0% intermediate
+    change applied, then (I - A) x = y solved instead of reading the published L."""
+    missing = [path for path in dataset_paths(names=("A",)) if not os.path.exists(path)]
+    if missing:
+        pytest.skip("EXIOBASE dataset missing: {}. See docs/regression-harness.md".format(missing[0]))
+    Y, B, _ = real_matrices
+    one = [[0]]
+    model = Modelling(
+        {"product": one, "consumedBy": one, "originReg": one, "consumedReg": one,
+         "techChange": [["0"]], "identifiers": ["INTERMEDIATE"]},
+        Y, [True], VALIDATION_YEAR, None,
+    )
+    _, L = model.apply_model()
+    return Y, B, L
 
 
 @pytest.fixture(scope="session")
@@ -123,6 +141,16 @@ def test_matches_octave_reference(filename, real_matrices):
     assert values == pytest.approx(expected)
 
 
+@pytest.mark.parametrize("filename", FILES_TO_TEST_AGAINST)
+def test_scenario_solve_matches_octave_reference(filename, real_scenario_matrices):
+    """The scenario path never forms L, so check its solve against the same
+    references the published L reproduces."""
+    query_selection, expected, expected_unit = read_query(filename)
+    values, unit = run_route(query_selection, real_scenario_matrices)
+    assert unit == expected_unit
+    assert values == pytest.approx(expected)
+
+
 # The fixtures only cover route_two (files 1-3) and route_four (file 4), so the
 # other two routes borrow a selection and flip the dispatch keys. The last case
 # selects two indicators: with one, a (k, 1) and a (1, k) intermediate reshape
@@ -164,6 +192,21 @@ def test_routes_match_golden_on_synthetic_matrices(case, synthetic_matrices):
     assert values == pytest.approx(golden["values"], rel=1e-12)
 
 
+@pytest.mark.parametrize("case", sorted(SYNTHETIC_CASES))
+def test_scenario_solve_matches_published_L(case, real_matrices, real_scenario_matrices):
+    """All four routes on the real data, solve against the published L,
+    including route_one and route_three, which have no Octave reference."""
+    filename, dim_type, viz_type, extn = SYNTHETIC_CASES[case]
+    query_selection, _, _ = read_query(filename)
+    query_selection["dimType"] = dim_type
+    query_selection["vizType"] = viz_type
+    if extn:
+        query_selection["extn"] = extn
+    published, _ = run_route(query_selection, real_matrices)
+    solved, _ = run_route(query_selection, real_scenario_matrices)
+    assert solved == pytest.approx(published)
+
+
 
 def model_with(monkeypatch, identifier, tech_change):
     """A one-intervention Modelling on small matrices. Product 0 of country 0
@@ -180,19 +223,55 @@ def model_with(monkeypatch, identifier, tech_change):
 
 
 def test_non_finite_technical_change_raises(monkeypatch):
-    """A nan in A makes all of L nan; the job must fail, not report zeros."""
+    """A nan in A makes the Leontief solution nan; the job must fail, not report zeros."""
     with pytest.raises(ValueError, match="non-finite technical coefficients"):
         model_with(monkeypatch, "INTERMEDIATE", "nan").apply_model()
 
 
 def test_infinite_technical_change_raises(monkeypatch):
     """float("1e400") is inf. On the diagonal of A it gives a finite but wrong
-    L, so only a check on A, before the inversion, catches it."""
+    L, so only a check on A, before the solve, catches it."""
     with pytest.raises(ValueError, match="non-finite technical coefficients"):
         model_with(monkeypatch, "INTERMEDIATE", "1e400").apply_model()
 
 
 def test_non_finite_final_demand_raises(monkeypatch):
-    """A final-demand change never touches L, so the L check cannot see it."""
+    """A final-demand change never touches L, so the solution check cannot see it."""
     with pytest.raises(ValueError, match="non-finite final demand"):
         model_with(monkeypatch, "FINALCONSUMPTION", "nan").apply_model()
+
+
+def test_leontief_solve_matches_inverse():
+    """L.dot(y) and L.T.dot(y), the two ways the routes use L."""
+    rng = np.random.default_rng(1)
+    n = 50
+    M = -rng.random((n, n)) * 1e-2
+    M[np.diag_indices(n)] += 1
+    y = rng.random((n, 3))
+    L = LeontiefSolve(M)
+    np.testing.assert_allclose(L.dot(y), np.linalg.inv(M) @ y, rtol=1e-12)
+    np.testing.assert_allclose(L.T.dot(y), np.linalg.inv(M).T @ y, rtol=1e-12)
+
+
+def test_intermediate_change_solves_over_A_in_place(monkeypatch):
+    """(I - A) reuses A's buffer, the model drops its reference to A, and the
+    result is the Leontief inverse of the changed A."""
+    model = model_with(monkeypatch, "INTERMEDIATE", "-20")
+    A = querymanagement.get_numpy_objects(VALIDATION_YEAR, "A")
+    changed = A.copy()
+    changed[0, 0] *= 0.8
+    expected = np.linalg.inv(np.eye(len(A)) - changed)
+    y = np.random.default_rng(2).random((len(A), 2))
+    _, L = model.apply_model()
+    assert model.A is None
+    assert np.shares_memory(L.M, A)
+    np.testing.assert_allclose(L.dot(y), expected @ y, rtol=1e-12)
+    np.testing.assert_allclose(L.T.dot(y), expected.T @ y, rtol=1e-12)
+
+
+def test_non_finite_leontief_solution_raises():
+    """Backstop for a non-finite A that no intervention introduced."""
+    M = np.eye(4)
+    M[1, 2] = np.nan
+    with pytest.raises(ValueError, match="non-finite Leontief"):
+        LeontiefSolve(M).dot(np.ones((4, 1)))

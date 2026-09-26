@@ -14,16 +14,19 @@ pytest -v -rs
 ```
 
 That is the whole default suite. Without the dataset it reports
-`8 passed, 6 skipped, 18 deselected`:
+`11 passed, 15 skipped, 18 deselected`:
 
 - 5 passed: all four routes on synthetic matrices, plus `route_four` with two
   indicators, each compared with committed golden output (below);
-- 3 passed: scenario modelling rejects a non-finite change before it inverts
-  `A`, one test each for nan and inf (`"1e400"`) technical change and nan final
+- 3 passed: scenario modelling rejects a non-finite change before it solves
+  with `I - A`, one test each for nan and inf (`"1e400"`) technical change and nan final
   demand (`test_non_finite_technical_change_raises`,
   `test_infinite_technical_change_raises`, `test_non_finite_final_demand_raises`);
-- 6 skipped: the 4 Octave-reference tests, which need the dataset, and the 2
-  modules that need Celery or Channels (`-rs` prints each reason);
+- 3 passed: the scenario path's `LeontiefSolve` on small matrices: it matches
+  `inv(I - A)` for `L.dot` and `L.T.dot`, is built over `A`'s buffer, and
+  rejects a non-finite solution;
+- 15 skipped: the 13 tests that need the dataset (below), and the 2 modules
+  that need Celery or Channels (`-rs` prints each reason);
 - 18 deselected: the `integration` tests described next.
 
 No environment variables are needed.
@@ -63,7 +66,7 @@ It then looks for exactly:
 $DATASETS_DIR/2011/Y_v4.npy
 $DATASETS_DIR/2011/B_v4.npy
 $DATASETS_DIR/2011/L_v4.npy
-$DATASETS_DIR/2011/A_v4.npy   # scenario modelling only, not used by these tests
+$DATASETS_DIR/2011/A_v4.npy   # the scenario-path tests only
 ```
 
 `DATASETS_DIR` and `DATASETS_VERSION` are the variables the deployment
@@ -76,7 +79,15 @@ With the 2011 files from that record, the four Octave-reference tests pass on
 both `master`'s engine code and the engine as changed here: all 122 reference
 values (50 + 50 + 3 + 19) reproduce within the default tolerance of
 `pytest.approx` (relative 1e-6). They cover `route_two` and `route_four`, for
-value added and GHG emissions (see the table below).
+value added and GHG emissions (see the table below). With the dataset the
+suite reports `24 passed, 2 skipped, 18 deselected`.
+
+Scenario modelling never forms `L`: it solves `(I - A) x = y` for each route
+(`LeontiefSolve` in `modelling.py`). With `A_v4.npy` present, 9 more tests run
+that path on the real `A` with a 0% intermediate change: the same 4 Octave
+references, and all five synthetic cases compared with the published-`L`
+path (default `pytest.approx`, relative 1e-6), which also covers `route_one`
+and `route_three`. A missing `A_v4.npy` skips those 9 alone.
 
 Float32 input also works now: the LEAF branches of `get_aggregations_countries`
 and `get_aggregations_products` convert the numpy scalar to a Python float, so

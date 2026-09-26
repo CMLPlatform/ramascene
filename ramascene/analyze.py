@@ -120,7 +120,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        X = np.dot(L, Y)
+        X = L.dot(Y)
 
         # Select those sectors, regions from B and X
         # that are of interest of the user - single selection
@@ -188,7 +188,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L.dot(y)
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
@@ -259,7 +259,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L.dot(y)
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
