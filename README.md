@@ -1,6 +1,6 @@
 # RaMa-Scene
 ---
-RaMa-Scene is a **Django 4.2** web application for analyzing Environmentally Extended Input-Output (EEIO) tables using **EXIOBASE v3.3**. The platform provides interactive visualization and scenario modeling for circular economy analysis.
+RaMa-Scene is a **Django 5.2** web application for analyzing Environmentally Extended Input-Output (EEIO) tables using **EXIOBASE v3.3**. The platform provides interactive visualization and scenario modeling for circular economy analysis.
 
 Demo version: http://cml.liacs.nl:8080/ramascene/
 
@@ -16,8 +16,8 @@ Full documentation: http://rama-scene.readthedocs.io/en/latest/
 
 | Component | Version | Notes |
 |-----------|---------|-------|
-| **Python** | 3.11+ | Upgraded from 3.6 |
-| **Django** | 4.2 LTS | Upgraded from 2.1 |
+| **Python** | 3.12+ | Upgraded from 3.6 |
+| **Django** | 5.2 LTS | Upgraded from 2.1 |
 | **Django Channels** | 4.0.x | Upgraded from 2.1.5 |
 | **Node.js** | 18 LTS | Upgraded from 12 |
 | **React** | 18.2.x | Upgraded from 16.2.0 |
@@ -42,10 +42,10 @@ Rabbitmq installation
 ## Option A: Running Without Docker (Development)
 
 ### Step 1: Setup Python Environment
-**Python 3.11+ required**
+**Python 3.12+ required**
 
 ```bash
-python3.11 -m venv venv
+python3.12 -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
@@ -216,7 +216,7 @@ Serves static    ASGI server
 
 ## Core Dependencies
 ---
-- **Backend**: Django 4.2, Django Channels 4.0, Celery 5.3
+- **Backend**: Django 5.2, Django Channels 4.0, Celery 5.3
 - **Frontend**: React 18, Webpack 5, Bootstrap 5
 - **Infrastructure**: Redis, RabbitMQ, Nginx
 
@@ -228,7 +228,7 @@ Serves static    ASGI server
 ```bash
 git clone https://bitbucket.org/CML-IE/rama-scene.git
 cd rama-scene
-python3.11 -m venv venv && source venv/bin/activate
+python3.12 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 npm install
 ./node_modules/.bin/webpack --config dev-webpack.config.js
@@ -252,4 +252,4 @@ docker-compose up -d
 ---
 
 *Last updated: September 2026*
-*Python: 3.11 | Django: 4.2 | Node.js: 18 | React: 18*
+*Python: 3.12 | Django: 5.2 | Node.js: 18 | React: 18*

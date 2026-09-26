@@ -9,7 +9,7 @@ checked-in `db.sqlite3` and runs no migrations.
 ## Run it
 
 ```text
-pip install 'numpy>=1.24,<3' 'django>=4.2,<4.3' 'pytest>=8,<10'   # requirements.txt pins the 2018 stack and will not install
+pip install 'numpy>=1.24,<3' 'django>=5.2,<5.3' 'pytest>=8,<10'   # requirements.txt pins the 2018 stack and will not install
 pytest -v -rs
 ```
 

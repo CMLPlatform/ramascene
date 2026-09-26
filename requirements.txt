@@ -1,4 +1,4 @@
-# Django 4.2 LTS + Python 3.11 compatible requirements
+# Django 5.2 LTS + Python 3.12 compatible requirements
 # Updated from Django 2.1 / Python 3.6
 
 # ASGI & Async support
@@ -8,7 +8,7 @@ channels-redis>=4.0.0
 daphne>=4.0.0
 
 # Django & Web Framework
-Django>=4.2,<4.3
+Django>=5.2,<5.3
 django-celery-results>=2.5.1
 django-cors-headers>=4.0.0
 django-webpack-loader>=1.0.0
@@ -30,7 +30,6 @@ docutils>=0.19
 msgpack>=1.0.5
 msgpack-python>=0.5.6
 numpy>=1.24.0
-pytz>=2023.3
 
 # HTTP & Networking
 requests>=2.31.0
