@@ -14,7 +14,7 @@ channel_routing = ProtocolTypeRouter({
     # WebSocket routing - handle WebSocket connections
     "websocket": AuthMiddlewareStack(
         URLRouter([
-            path('ramascene/', RamasceneConsumer),
+            path('ramascene/', RamasceneConsumer.as_asgi()),
         ]),
     ),
 })

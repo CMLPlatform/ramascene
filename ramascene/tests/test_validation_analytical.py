@@ -49,7 +49,7 @@ class TestLifeCycle:
             query, origin_results, origin_unit = open_validation_file(
                 os.path.join(VALIDATION_DIR, file))
 
-            communicator = WebsocketCommunicator(RamasceneConsumer,
+            communicator = WebsocketCommunicator(RamasceneConsumer.as_asgi(),
                                                  "/ramascene/")
             # test connection
             connected, subprotocol = await communicator.connect()
