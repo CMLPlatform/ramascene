@@ -249,7 +249,9 @@ def get_aggregations_countries(querySelection, result_data):
             # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
             # assign the the global id instead of local id the value
-            result_container[global_country_id] = value
+            # NOTE: float() because a numpy scalar is not JSON-serialisable; the
+            # aggregate branch below gets the same coercion from math.fsum.
+            result_container[global_country_id] = value if value is None else float(value)
             # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
         elif identify_country(global_country_id) == "AGG" or identify_country(global_country_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table
@@ -298,7 +300,9 @@ def get_aggregations_products(querySelection, result_data):
             # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
             # assign the the global id instead of local id the value
-            result_container[global_product_id] = value
+            # NOTE: float() because a numpy scalar is not JSON-serialisable; the
+            # aggregate branch below gets the same coercion from math.fsum.
+            result_container[global_product_id] = value if value is None else float(value)
             # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
         elif identify_product(global_product_id) == "AGG" or identify_product(global_product_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table

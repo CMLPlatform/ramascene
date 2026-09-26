@@ -84,11 +84,11 @@ class Modelling:
         if A_modified is True:
             with np.errstate(divide="ignore", invalid="ignore"):
                 self.L = np.linalg.inv(np.identity(len(self.A)) - self.A)
-                self.L[self.L == np.inf] = 0
-                self.L[self.L == np.nan] = 0
-        # else load the original L
-        else:
-            self.L = self.L
+            # Backstop for a non-finite A that no intervention introduced (the
+            # changes are checked above). Zeroing would report 0.0 everywhere.
+            if not np.isfinite(self.L).all():
+                raise ValueError("non-finite Leontief inverse; check the technical-change inputs")
+        # else the original L, as loaded above, is already in self.L
 
         return self.Y, self.L
 
@@ -98,7 +98,11 @@ class Modelling:
         It allows for modification of values within final demand
         for scenario building
         """
-        Y[np.ix_(rows, columns)] = Y[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
+        changed = Y[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
+        # float() accepts "nan" and "1e400" (inf), and L never sees Y, so check here
+        if not np.isfinite(changed).all():
+            raise ValueError("non-finite final demand; check the final-demand inputs")
+        Y[np.ix_(rows, columns)] = changed
         return Y
 
     # noinspection PyMethodMayBeStatic
@@ -109,7 +113,12 @@ class Modelling:
 
         """
         # Work in progress
-        A[np.ix_(rows, columns)] = A[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
+        changed = A[np.ix_(rows, columns)] * (1 - -float(tech_change[0]) * 1e-2)
+        # Check before the inversion, which takes ~11 s on the full A: a nan makes
+        # all of L nan, and an inf on the diagonal yields a finite but wrong L.
+        if not np.isfinite(changed).all():
+            raise ValueError("non-finite technical coefficients; check the technical-change inputs")
+        A[np.ix_(rows, columns)] = changed
 
         return A
 

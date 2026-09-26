@@ -19,6 +19,7 @@ from django.conf import settings
 
 from ramascene import querymanagement
 from ramascene.analyze import Analyze
+from ramascene.modelling import Modelling
 from ramascene.tests.validation_data import FILES_TO_TEST_AGAINST, VALIDATION_DIR, open_validation_file
 
 COUNTRY_CNT = 49
@@ -161,3 +162,37 @@ def test_routes_match_golden_on_synthetic_matrices(case, synthetic_matrices):
     # rel=1e-12 rather than ==: BLAS may sum np.dot in a different order on
     # another machine. Any indexing slip moves results by far more than that.
     assert values == pytest.approx(golden["values"], rel=1e-12)
+
+
+
+def model_with(monkeypatch, identifier, tech_change):
+    """A one-intervention Modelling on small matrices. Product 0 of country 0
+    selected everywhere, so an intermediate change hits the diagonal A[0, 0]."""
+    n = 50
+    A = np.random.default_rng(0).random((n, n)) * 1e-3
+    monkeypatch.setattr(querymanagement, "get_numpy_objects", lambda year, name: A)
+    one = [[0]]
+    return Modelling(
+        {"product": one, "consumedBy": one, "originReg": one, "consumedReg": one,
+         "techChange": [[tech_change]], "identifiers": [identifier]},
+        np.ones((n, 1)), [identifier == "INTERMEDIATE"], VALIDATION_YEAR, None,
+    )
+
+
+def test_non_finite_technical_change_raises(monkeypatch):
+    """A nan in A makes all of L nan; the job must fail, not report zeros."""
+    with pytest.raises(ValueError, match="non-finite technical coefficients"):
+        model_with(monkeypatch, "INTERMEDIATE", "nan").apply_model()
+
+
+def test_infinite_technical_change_raises(monkeypatch):
+    """float("1e400") is inf. On the diagonal of A it gives a finite but wrong
+    L, so only a check on A, before the inversion, catches it."""
+    with pytest.raises(ValueError, match="non-finite technical coefficients"):
+        model_with(monkeypatch, "INTERMEDIATE", "1e400").apply_model()
+
+
+def test_non_finite_final_demand_raises(monkeypatch):
+    """A final-demand change never touches L, so the L check cannot see it."""
+    with pytest.raises(ValueError, match="non-finite final demand"):
+        model_with(monkeypatch, "FINALCONSUMPTION", "nan").apply_model()
