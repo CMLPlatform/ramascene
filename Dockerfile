@@ -145,6 +145,9 @@ RUN { \
         echo "    default upgrade;" ; \
         echo "    '' close;" ; \
         echo "}" ; \
+        echo "upstream app_server {" ; \
+        echo "    server webapp:8000;" ; \
+        echo "}" ; \
         echo "server {" ; \
         echo "    listen 80 default_server;" ; \
         echo "    server_name default;" ; \
@@ -159,8 +162,13 @@ RUN { \
         echo "        proxy_redirect off;" ; \
         echo "    }" ; \
 
+        echo "    location /static/ {" ; \
+        echo "        try_files \$uri =404;" ; \
+        echo "    }" ; \
         echo "    location / {" ; \
-        echo "        try_files \$uri \$uri/ /index.html;" ; \
+        echo "        proxy_pass http://app_server;" ; \
+        echo "        proxy_set_header Host \$http_host;" ; \
+        echo "        proxy_redirect off;" ; \
         echo "    }" ; \
         echo "}" ; \
     } > /etc/nginx/conf.d/ramascene_vhost.conf;
