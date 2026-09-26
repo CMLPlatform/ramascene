@@ -83,7 +83,11 @@ class Modelling:
 
         if A_modified is True:
             with np.errstate(divide="ignore", invalid="ignore"):
-                self.L = np.linalg.inv(np.identity(len(self.A)) - self.A)
+                # (I - A) without materialising a dense identity of the same size.
+                # NOTE: float64 to keep the promotion the np.identity() term forced.
+                M = np.negative(self.A, dtype=np.float64)
+                M[np.diag_indices_from(M)] += 1
+                self.L = np.linalg.inv(M)
             # Backstop for a non-finite A that no intervention introduced (the
             # changes are checked above). Zeroing would report 0.0 everywhere.
             if not np.isfinite(self.L).all():
