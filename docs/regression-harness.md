@@ -24,6 +24,11 @@ That is the whole default suite. Without the dataset it reports
 
 No environment variables are needed.
 
+`pytest.ini` turns pytest-django off (`-p no:django`) for this suite: the
+harness reads the checked-in database directly, and pytest-django would block
+that access. With the full `requirements.txt` installed, the Celery module
+skips because the minimal settings do not install `django_celery_results`.
+
 Tests that need Celery, a broker or a freshly populated test database are
 marked `integration` and deselected by `pytest.ini`. To see them:
 

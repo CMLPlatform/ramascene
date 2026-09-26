@@ -3,6 +3,11 @@ import pytest
 # needs infrastructure the offline harness does not start, see docs/regression-harness.md
 pytestmark = pytest.mark.integration
 pytest.importorskip("celery", reason="celery is not installed in the offline environment")
+from django.apps import apps
+if not apps.is_installed("django_celery_results"):
+    # the offline conftest configures a minimal INSTALLED_APPS
+    pytest.skip("django_celery_results is not an installed app in the offline settings",
+                allow_module_level=True)
 
 from ramascene.tasks import execute_calc
 from ramascene.models import Job
