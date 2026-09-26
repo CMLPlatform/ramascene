@@ -1,0 +1,14 @@
+# Direct runtime dependencies. requirements.txt is compiled from this file:
+#   uv pip compile requirements.in -o requirements.txt --python-version 3.12
+Django>=5.2,<5.3
+channels>=4.2,<5
+channels-redis>=4.2
+daphne>=4.1
+celery>=5.5,<6
+django-celery-results>=2.6
+django-cors-headers>=4.7
+# keep in step with webpack-bundle-tracker in package.json
+django-webpack-loader>=3.2,<3.3
+numpy>=2,<3
+# used by the webapp healthcheck in docker-compose.yml
+requests>=2.32
