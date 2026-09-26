@@ -89,7 +89,7 @@ services:
         DATABASE_NAME: ${DATABASE_NAME:-ramascene.db}
         DATASETS_VERSION: ${DATASETS_VERSION}
         OPENBLAS_NUM_THREADS: 1
-    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queue", "calc_default", "-n", "worker1.%h"]
+    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queues", "calc_default", "-n", "worker1.%h"]
     container_name: rama-scene-analyser
     depends_on:
       - cache
@@ -134,7 +134,7 @@ services:
         DATABASE_NAME: ${DATABASE_NAME:-ramascene.db}
         DATASETS_VERSION: ${DATASETS_VERSION}
         OPENBLAS_NUM_THREADS: 1
-    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queue", "modelling", "-n", "worker2.%h"]
+    command: ["celery", "-A", "ramasceneMasterProject", "worker", "-l", "info", "--concurrency", "1", "--max-tasks-per-child", "1", "--queues", "modelling", "-n", "worker2.%h"]
     container_name: rama-scene-modeller
     depends_on:
       - cache
