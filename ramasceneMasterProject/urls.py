@@ -15,10 +15,10 @@ Including another URLconf
 """
 import ramasceneMasterProject.views as views
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homePage, name='homePage'),  # ✅ Use homePage, not home
-    re_path(r'^.*', include('ramascene.urls')),
+    path('', include('ramascene.urls')),
 ]
