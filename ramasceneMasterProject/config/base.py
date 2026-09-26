@@ -57,7 +57,10 @@ CHANNEL_LAYERS = {
         # The Redis channel layer implementation channels_redis
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, 6379)],
+            # redis-py 8 times out socket reads after 5 s by default, the same
+            # 5 s channels_redis blocks for on each receive, so a websocket
+            # waiting on a job longer than that dropped before the result came.
+            "hosts": [{"host": redis_host, "port": 6379, "socket_timeout": 30}],
         },
     },
 }
