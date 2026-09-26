@@ -11,7 +11,7 @@ class YearFilterableSingleSelectDropdownTree extends FilterableSingleSelectDropd
         for (var year of years) {
             data.push({id: year, pId: 0, value: year.toString(), label: year.toString()});
         }
-        this.state = {data: data, placeholder: "Select year"};
+        this.state = {...this.state, data: data, placeholder: "Select year"};
     }
 }
 

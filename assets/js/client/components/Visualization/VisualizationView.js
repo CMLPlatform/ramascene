@@ -29,7 +29,10 @@ function VisualizationView({
                                 {jobs.map((job) => (
                                     <AnalysisJob 
                                         key={job.key}
-                                        job={job}
+                                        id={job.key}
+                                        query={job.query}
+                                        auto_render={job.auto_render}
+                                        detailLevel={job.detailLevel}
                                         busy={busy}
                                         in_main_view={job.in_main_view}
                                         in_comparison_view={job.in_comparison_view}
