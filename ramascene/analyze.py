@@ -52,21 +52,13 @@ class Analyze:
         # Select and aggregate countries/regions
         y = np.sum(Y[:, self.country_calc_indices], axis=1, keepdims=True)
 
-        # Calculated total output from every sector associated
-        # with the final consumption of every selected product
-        # Consumed products not selected are skipped.
-        X = L[:, full_c_product_idx] * y[full_c_product_idx, 0]
-
-        # Select those sectors and regions from B and X
-        # that are of interest to the user - single selection only
-        X = X[full_p_product_idx, :]
-        b = B[self.indicator_calc_indices, :]
-        b = b[:, full_p_product_idx]
-
-        # Calculate emissions associated with
-        # every selected consumed product supplied
-        # by each country
-        m = np.dot(b, X)
+        # Emissions associated with every selected consumed product c supplied
+        # by each country, over the sectors and regions of interest p (single
+        # selection only): b[p] L[p, c] y[c]. Computed as (L^T b^T)[c] y[c],
+        # one product with L whatever the number of selected columns.
+        b = np.zeros((len(self.indicator_calc_indices), len(y)))
+        b[:, full_p_product_idx] = B[self.indicator_calc_indices][:, full_p_product_idx]
+        m = L.T.dot(b.T)[full_c_product_idx].T * y[full_c_product_idx, 0]
 
         # Aggregate the emissions based on the
         # country selling final product selection
