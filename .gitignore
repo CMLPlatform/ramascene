@@ -7,8 +7,9 @@
 #ignore bundle created by django (use commands to built)
 /assets/bundles
 
-#(ignore sqlite)
-sqlite3*
+#(ignore the sqlite WAL sidecars; db.sqlite3 itself is tracked on purpose)
+*.sqlite3-shm
+*.sqlite3-wal
 
 #ignore development environment variables
 dev-env.sh

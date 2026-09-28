@@ -41,12 +41,9 @@ pytest -m integration        # expect failures: they need the infrastructure in 
 ```
 
 Running it touches the checked-in database: `ramascene/__init__.py` puts SQLite
-into WAL mode, so the first connection checkpoints and removes the tracked
-`db.sqlite3-wal` and `db.sqlite3-shm` files and rewrites `db.sqlite3`. The
-tracked WAL holds one committed transaction (a September 2019 job and its task
-result), which the checkpoint folds into `db.sqlite3`; the lookup tables the
-harness reads are the same either way. `git checkout -- db.sqlite3*` restores
-the tracked state after a run.
+into WAL mode, so connections create `db.sqlite3-wal` and `db.sqlite3-shm` next
+to it. Both are ignored by git, and a test run leaves the tracked `db.sqlite3`
+unchanged.
 
 ## The dataset
 
