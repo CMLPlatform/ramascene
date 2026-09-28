@@ -9,12 +9,15 @@ checked-in `db.sqlite3` and runs no migrations.
 ## Run it
 
 ```text
-pip install 'numpy>=1.24,<3' 'django>=5.2,<5.3' 'pytest>=8,<10'   # requirements.txt pins the 2018 stack and will not install
+pip install 'numpy>=1.24,<3' 'django>=5.2,<5.3' 'pytest>=8,<10'   # enough; requirements.txt adds the web stack
 pytest -v -rs
 ```
 
-That is the whole default suite. Without the dataset it reports
-`11 passed, 15 skipped, 18 deselected`:
+That is the whole default suite. With only those three packages and no
+dataset it reports `11 passed, 15 skipped, 18 deselected` (with
+`requirements.txt` and `requirements-dev.txt` installed, Channels imports, so
+the websocket module is deselected rather than skipped: 14 skipped, 19
+deselected):
 
 - 5 passed: all four routes on synthetic matrices, plus `route_four` with two
   indicators, each compared with committed golden output (below);
