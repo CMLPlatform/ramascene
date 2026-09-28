@@ -39,7 +39,6 @@ class Analyze:
         # Expand selected ids ranges
         ids = pim.ProductIndexManager(self.product_calc_indices, self.s_country_idx, p_product_idx, p_country_idx)
         full_c_product_idx = ids.get_consumed_product_ids()
-        full_p_product_idx = ids.get_produced_product_ids()
         selected_s_cntr_cnt = ids.get_selected_s_country_count()
         selected_c_prd_cnt = ids.get_selected_c_product_count()
 
@@ -53,11 +52,10 @@ class Analyze:
         y = np.sum(Y[:, self.country_calc_indices], axis=1, keepdims=True)
 
         # Emissions associated with every selected consumed product c supplied
-        # by each country, over the sectors and regions of interest p (single
-        # selection only): b[p] L[p, c] y[c]. Computed as (L^T b^T)[c] y[c],
-        # one product with L whatever the number of selected columns.
-        b = np.zeros((len(self.indicator_calc_indices), len(y)))
-        b[:, full_p_product_idx] = B[self.indicator_calc_indices][:, full_p_product_idx]
+        # by each country, over all producing sectors and regions:
+        # b L[:, c] y[c]. Computed as (L^T b^T)[c] y[c], one product with L
+        # whatever the number of selected columns.
+        b = B[self.indicator_calc_indices, :]
         m = L.T.dot(b.T)[full_c_product_idx].T * y[full_c_product_idx, 0]
 
         # Aggregate the emissions based on the
