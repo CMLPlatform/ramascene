@@ -185,12 +185,12 @@ def execute_calc(job_name, job_id, channel_name, ready_query_selection, query_se
             async_send(channel_name, job)
             log.debug("Failed job_name=%s", job.name)
 
-    except Exception as e:
+    except Exception:
+        log.exception("Failed job_id=%s", job_id)
         job = Job.objects.get(pk=job_id)
         job.status = "Failed"
+        job.save()
         async_send(channel_name, job)
-        log.debug("Failed job_name=%s", e)
-        print("failed at:" + str(e))
 
 
 def handle_complete(job_id, channel_name, celery_id):
