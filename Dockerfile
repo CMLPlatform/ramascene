@@ -158,6 +158,7 @@ RUN { \
         echo "        proxy_set_header Connection \$connection_upgrade;" ; \
         echo "        proxy_set_header Host \$http_host;" ; \
         echo "        proxy_redirect off;" ; \
+        echo "        proxy_read_timeout 3600s;" ; \
         echo "    }" ; \
 
         echo "    location /static/ {" ; \
