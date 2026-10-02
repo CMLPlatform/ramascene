@@ -425,6 +425,28 @@ def clean_indicators(idx_lst):
     return return_lst
 
 
+def calc_ready_selection(query_selection):
+    """Expand a front-end querySelection into calculation-ready indices.
+
+        Read-only pre-processing shared by the websocket consumer and the
+        offline regression harness.
+
+        Args:
+            query_selection (dict): querySelection as sent by the front-end, with
+                global ids in nodesSec, nodesReg and extn
+
+        Returns:
+            dict: nodesSec/nodesReg/extn as calculation indices, plus idx_units
+
+    """
+    return {
+        'nodesSec': get_leafs_product(query_selection["nodesSec"]),
+        'nodesReg': get_leafs_country(query_selection["nodesReg"]),
+        'extn': clean_indicators(query_selection["extn"]),
+        'idx_units': get_indicator_units(query_selection["extn"]),
+    }
+
+
 def get_indicator_units(idx_lst):
     """Get units of passed-in indicators.
 

@@ -98,6 +98,15 @@ celery -A ramasceneMasterProject worker -l info --concurrency 1 --queues calc_de
 celery -A ramasceneMasterProject worker -l info --concurrency 1 --queues modelling -n worker2.%h
 ```
 
+### Run the offline engine tests
+These need only `numpy`, `django` and `pytest`: no broker, no server, no dataset.
+
+```bash
+pytest -v -rs
+```
+The tests that check the engine against the Octave reference values skip until the
+EXIOBASE matrices are in place. See [docs/regression-harness.md](docs/regression-harness.md).
+
 ---
 
 ## Option B: Running With Docker

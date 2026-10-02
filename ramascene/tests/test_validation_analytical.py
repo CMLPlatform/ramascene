@@ -1,18 +1,22 @@
+import pytest
+
+# needs infrastructure the offline harness does not start, see docs/regression-harness.md
+pytestmark = pytest.mark.integration
+pytest.importorskip("channels", reason="channels is not installed in the offline environment")
+
 from channels.testing import WebsocketCommunicator
 from ramascene.consumers import RamasceneConsumer
-import pytest
 from django.core.management import call_command
 import os
 import json
 from django.test.client import Client
 import ast
 
+from ramascene.tests.validation_data import (FILES_TO_TEST_AGAINST, VALIDATION_DIR,
+                                             open_validation_file)
+
 # waiting time for celery results
 TIMEOUT = 100
-FILES_TO_TEST_AGAINST = ["validation_analytical_1_v3.csv",
-                         "validation_analytical_2_v3.csv",
-                         "validation_analytical_3_v3.csv",
-                         "validation_analytical_4_v3.csv"]
 
 
 @pytest.fixture()
@@ -42,9 +46,8 @@ class TestLifeCycle:
         client = Client()
 
         for file in FILES_TO_TEST_AGAINST:
-            query, origin_results, origin_unit = self.open_validation_file(
-                os.path.join('./ramascene/tests/validation_files/',
-                             '') + file)
+            query, origin_results, origin_unit = open_validation_file(
+                os.path.join(VALIDATION_DIR, file))
 
             communicator = WebsocketCommunicator(RamasceneConsumer,
                                                  "/ramascene/")
@@ -84,50 +87,6 @@ class TestLifeCycle:
             for k, v in data.items():
                 t = k, origin_results[k], v
                 assert t[2] == pytest.approx(t[1])
-
-    def open_validation_file(self, fn):
-        with open(fn) as csv_file:
-            F = csv_file.read()
-            U = F.split('\n')
-            data = []
-            for line in U:
-                data.append(line.split('\t'))
-            nodesReg = []
-            nodesSec = []
-            results = {}
-            unit = {}
-            data.pop(0)
-            data.pop(-1)
-            for parts in data:
-                nodesReg.append(int(parts[3]))
-                nodesSec.append(int(parts[4]))
-                extn = [int(parts[5])]
-                dimType = parts[0]
-                vizType = parts[1]
-                year = [parts[2]]
-                results[parts[6]] = float(parts[9])
-                unit[parts[8]] = parts[7]
-
-            # clean (only single element for list depending on vizType)
-            if len(nodesReg) > len(set(nodesReg)):
-                regions = set(nodesReg)
-                nodesReg = list(regions)
-            if len(nodesSec) > len(set(nodesSec)):
-                sectors = set(nodesSec)
-                nodesSec = list(sectors)
-
-        query = {
-            "action": "default",
-            "querySelection": {
-                "dimType": dimType,
-                "vizType": vizType,
-                "nodesSec": nodesSec,
-                "nodesReg": nodesReg,
-                "extn": extn,
-                "year": year
-            }
-        }
-        return query, results, unit
 
     def unpack(self, json_response):
         result = json_response["rawResultData"]
