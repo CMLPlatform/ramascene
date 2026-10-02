@@ -139,21 +139,8 @@ class RamasceneConsumer(JsonWebsocketConsumer):
                 # return websocket response
                 self.ws_response(job)
 
-                # prepare for Celery handler
-                product_calc_indices = \
-                    querymanagement.get_leafs_product(query_selection["nodesSec"])
-                country_calc_indices = \
-                    querymanagement.get_leafs_country(query_selection["nodesReg"])
-
-                # set offset for indicator/extension
-                indicator_calc_indices = \
-                    querymanagement.clean_indicators(query_selection["extn"])
-
-                idx_units = \
-                    querymanagement.get_indicator_units(query_selection["extn"])
-                # querySelection ready for calculations
-                ready_query_selection.update({'nodesSec': product_calc_indices, 'nodesReg': country_calc_indices,
-                                              'extn': indicator_calc_indices, 'idx_units': idx_units})
+                # prepare for Celery handler: querySelection ready for calculations
+                ready_query_selection.update(querymanagement.calc_ready_selection(query_selection))
 
                 # call default handler
                 default_handler(job_name, job.id, self.channel_name, ready_query_selection, query_selection)

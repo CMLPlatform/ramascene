@@ -7,14 +7,16 @@
 #ignore bundle created by django (use commands to built)
 /assets/bundles
 
-#(ignore sqlite)
-sqlite3*
+#(ignore the sqlite WAL sidecars; db.sqlite3 itself is tracked on purpose)
+*.sqlite3-shm
+*.sqlite3-wal
 
 #ignore development environment variables
 dev-env.sh
 
 #ignore production environment variables
 prod-env.sh
+.env
 
 #ignore logs
 logs/
@@ -32,3 +34,6 @@ __pycache__/
 /venv
 
 data.zi*
+# editor lock files and logs
+.~lock.*#
+*.log

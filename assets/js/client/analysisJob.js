@@ -125,15 +125,13 @@ class AnalysisJob extends Component {
                             in_main_view: true,
                             raw_data: data,
                             csv_data: this.generateCSVdata(data)
-                        });
-                        this.retrieveRawResult(false);
+                        }, () => this.retrieveRawResult(false));
                     } else if (this.state.in_comparison_view) {
                         this.setState({
                             in_comparison_view: true,
                             raw_data: data,
                             csv_data: this.generateCSVdata(data)
-                        });
-                        this.retrieveRawResult(true);
+                        }, () => this.retrieveRawResult(true));
                     } else {
                         this.setState({
                             raw_data: data,

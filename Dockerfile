@@ -1,6 +1,6 @@
 # --- TARGET node ---
-ARG NODE_VERSION=18-alpine
-ARG PYTHON_VER=3.11-slim
+ARG NODE_VERSION=24-alpine
+ARG PYTHON_VER=3.12-slim
 ARG NGINX_VERSION=1.25-alpine
 
 FROM node:${NODE_VERSION} AS node
@@ -44,15 +44,17 @@ WORKDIR /usr/src/app
 COPY --from=node --chown=1000:1000 /usr/src/app/assets/bundles ./assets/bundles
 COPY --from=node --chown=1000:1000 /usr/src/app/webpack-stats.json ./
 
+# Install all python packages to /usr/local & clean up. Before the sources,
+# so a code change does not reinstall them.
+COPY --chown=1000:1000 requirements.txt ./
+RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
+
 # copy sources
 COPY --chown=1000:1000 ramascene ./ramascene
 COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
 COPY --chown=1000:1000 static_assets ./static_assets
 COPY --chown=1000:1000 templates ./templates
-COPY --chown=1000:1000 .env manage.py requirements.txt rtd_requirements.txt  ./
-
-# Install all python packages to /usr/local & clean up
-RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
+COPY --chown=1000:1000 manage.py ./
 
 # Install gettext
 # USER root
@@ -67,7 +69,6 @@ RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-pyth
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
 ARG DATASETS_VERSION
-ARG SECRET_KEY
 ARG BROKER_URL
 ARG PUBLIC_DIR
 ARG WS_HOST
@@ -77,8 +78,9 @@ ARG REDIS_HOST
 ARG DATABASE_NAME
 
 # Ensure static directory exists and run collectstatic
+# collectstatic only needs some SECRET_KEY to load the settings; the real one is read at runtime
 RUN mkdir -p /usr/src/app/static && \
-    python manage.py collectstatic --noinput
+    SECRET_KEY=collectstatic-only python manage.py collectstatic --noinput
 
 # --- END TARGET build ---
 
@@ -94,7 +96,6 @@ WORKDIR /usr/src/app
 ARG DJANGO_SETTINGS_MODULE
 ARG HOST
 ARG DATASETS_VERSION
-ARG SECRET_KEY
 ARG BROKER_URL
 ARG PUBLIC_DIR
 ARG WS_HOST
@@ -120,17 +121,16 @@ COPY --chown=1000:1000 python_ini ./python_ini
 COPY --chown=1000:1000 ramascene ./ramascene
 COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
 COPY --chown=1000:1000 templates ./templates
-COPY manage.py .env LICENSE README.md ./
+COPY manage.py LICENSE README.md ./
 
 ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
 ENV DATASETS_DIR=/mnt/datasets
 
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-RUN python manage.py populateHierarchies
 
 EXPOSE 8000
-CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p", "8000"]
+# migrate and populate at start: the database lives on the /mnt/data volume, which
+# hides anything written there at build time; populateHierarchies is idempotent
+CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py populateHierarchies && exec daphne ramasceneMasterProject.asgi:application -b 0.0.0.0 -p 8000"]
 
 # --- END TARGET python ---
 
@@ -145,6 +145,9 @@ RUN { \
         echo "    default upgrade;" ; \
         echo "    '' close;" ; \
         echo "}" ; \
+        echo "upstream app_server {" ; \
+        echo "    server webapp:8000;" ; \
+        echo "}" ; \
         echo "server {" ; \
         echo "    listen 80 default_server;" ; \
         echo "    server_name default;" ; \
@@ -157,10 +160,16 @@ RUN { \
         echo "        proxy_set_header Connection \$connection_upgrade;" ; \
         echo "        proxy_set_header Host \$http_host;" ; \
         echo "        proxy_redirect off;" ; \
+        echo "        proxy_read_timeout 3600s;" ; \
         echo "    }" ; \
 
+        echo "    location /static/ {" ; \
+        echo "        try_files \$uri =404;" ; \
+        echo "    }" ; \
         echo "    location / {" ; \
-        echo "        try_files \$uri \$uri/ /index.html;" ; \
+        echo "        proxy_pass http://app_server;" ; \
+        echo "        proxy_set_header Host \$http_host;" ; \
+        echo "        proxy_redirect off;" ; \
         echo "    }" ; \
         echo "}" ; \
     } > /etc/nginx/conf.d/ramascene_vhost.conf;

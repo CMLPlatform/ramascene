@@ -174,9 +174,9 @@ Make sure Daphne is installed and start daphne (in virtualenv):
 
 Start the Celery workers in virtual env.:
 
-``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h``
+``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queues calc_default -n worker1.%h``
 
-``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue modelling -n worker2.%h``
+``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queues modelling -n worker2.%h``
 Be careful with load if you raise concurrency. For final production setup remove the parameter -l info.
 
 Test the application to see if everything is running correct in a web-browser.

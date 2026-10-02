@@ -207,7 +207,8 @@ class App extends Component {
     handleJobFinished = () => {
         clearTimeout(this.timer);
         this.setState({
-            busy: false
+            busy: false,
+            waiting_modal_open: false
         });
     };
 
@@ -236,13 +237,14 @@ class App extends Component {
         // Import Visualization component dynamically to avoid circular dependency
         const Visualization = require('../visualization').default;
 
-        switch (job_name.query.vizType) {
-            case 'geo':
+        const job = this.state.jobs.find(j => j.key === key);
+        switch (job.query.vizType) {
+            case VIZ_GEOMAP:
                 const geo_data = this.processDataForVisualization(data);
                 renderToContainer(
                     <Visualization 
                         type='geo' 
-                        detailLevel={job_name.detailLevel} 
+                        detailLevel={job.detailLevel} 
                         data={geo_data} 
                         unit={unit} 
                         model_details={new_model_details} 
@@ -253,7 +255,7 @@ class App extends Component {
                     'visualization'
                 );
                 break;
-            case 'tree':
+            case VIZ_TREEMAP:
                 const tree_data = this.processDataForVisualization(data);
                 renderToContainer(
                     <Visualization 
@@ -281,13 +283,14 @@ class App extends Component {
         // Import Visualization component dynamically to avoid circular dependency
         const Visualization = require('../visualization').default;
 
-        switch (job_name.query.vizType) {
-            case 'geo':
+        const job = this.state.jobs.find(j => j.key === key);
+        switch (job.query.vizType) {
+            case VIZ_GEOMAP:
                 const geo_data = this.processDataForVisualization(data);
                 renderToContainer(
                     <Visualization 
                         type='geo' 
-                        detailLevel={job_name.detailLevel} 
+                        detailLevel={job.detailLevel} 
                         data={geo_data} 
                         unit={unit} 
                         model_details={new_model_details} 
@@ -298,7 +301,7 @@ class App extends Component {
                     'comparison-visualization'
                 );
                 break;
-            case 'tree':
+            case VIZ_TREEMAP:
                 const tree_data = this.processDataForVisualization(data);
                 renderToContainer(
                     <Visualization 
@@ -476,7 +479,7 @@ class App extends Component {
                     />
                     
                     <VisualizationView
-                        jobs={jobs}
+                        jobs={[]}
                         busy={busy}
                         onJobFinished={this.handleJobFinished}
                         onRenderResult={this.renderVisualization}
