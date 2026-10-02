@@ -1,6 +1,7 @@
 from ramascene.consumers import RamasceneConsumer
 from channels.routing import URLRouter, ProtocolTypeRouter
 from channels.auth import AuthMiddlewareStack
+from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import path
 from django.core.asgi import get_asgi_application  # Add this
 
@@ -12,9 +13,11 @@ channel_routing = ProtocolTypeRouter({
     "http": django_application,
 
     # WebSocket routing - handle WebSocket connections
-    "websocket": AuthMiddlewareStack(
-        URLRouter([
-            path('ramascene/', RamasceneConsumer.as_asgi()),
-        ]),
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter([
+                path('ramascene/', RamasceneConsumer.as_asgi()),
+            ]),
+        ),
     ),
 })
