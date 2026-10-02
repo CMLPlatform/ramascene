@@ -44,15 +44,17 @@ WORKDIR /usr/src/app
 COPY --from=node --chown=1000:1000 /usr/src/app/assets/bundles ./assets/bundles
 COPY --from=node --chown=1000:1000 /usr/src/app/webpack-stats.json ./
 
+# Install all python packages to /usr/local & clean up. Before the sources,
+# so a code change does not reinstall them.
+COPY --chown=1000:1000 requirements.txt ./
+RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
+
 # copy sources
 COPY --chown=1000:1000 ramascene ./ramascene
 COPY --chown=1000:1000 ramasceneMasterProject ./ramasceneMasterProject
 COPY --chown=1000:1000 static_assets ./static_assets
 COPY --chown=1000:1000 templates ./templates
-COPY --chown=1000:1000 manage.py requirements.txt ./
-
-# Install all python packages to /usr/local & clean up
-RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
+COPY --chown=1000:1000 manage.py ./
 
 # Install gettext
 # USER root
