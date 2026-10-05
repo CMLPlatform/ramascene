@@ -11,3 +11,4 @@ ramascene/migrations/__pycache__
 Capfile
 Gemfile
 Gemfile.lock
+.env

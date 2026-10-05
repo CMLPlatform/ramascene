@@ -37,7 +37,7 @@ class FilterableMultiSelectDropdownTree extends Component {
                 maxTagTextLength={15}
                 multiple={true}
                 notFoundContent={<i>Not found</i>}
-                onChange={this.handleOnChange.bind(this)}
+                onChange={(value) => this.handleOnChange(value && value.map(v => (v && v.value !== undefined) ? v.value : v))}
                 placeholder={<i>{this.state.placeholder}</i>}
                 showCheckedStrategy={TreeSelect.SHOW_PARENT}
                 showSearch={true}

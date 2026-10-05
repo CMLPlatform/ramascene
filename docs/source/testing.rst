@@ -33,7 +33,7 @@ To test over the full life cycle of the back-end you can run the following comma
 
 Make sure to run a celery worker:
 
-``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h``
+``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queues calc_default -n worker1.%h``
 
 If the test has succeeded, you'll need to repopulate the database with the following command:
 

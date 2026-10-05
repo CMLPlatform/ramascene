@@ -39,7 +39,6 @@ class Analyze:
         # Expand selected ids ranges
         ids = pim.ProductIndexManager(self.product_calc_indices, self.s_country_idx, p_product_idx, p_country_idx)
         full_c_product_idx = ids.get_consumed_product_ids()
-        full_p_product_idx = ids.get_produced_product_ids()
         selected_s_cntr_cnt = ids.get_selected_s_country_count()
         selected_c_prd_cnt = ids.get_selected_c_product_count()
 
@@ -52,22 +51,12 @@ class Analyze:
         # Select and aggregate countries/regions
         y = np.sum(Y[:, self.country_calc_indices], axis=1, keepdims=True)
 
-        # Calculated total output from every sector associated
-        # with the final consumption of every selected product
-        # Consumed products not selected are skipped.
-        X = np.array([np.multiply(y[idx], L[:, idx]) for idx in full_c_product_idx])
-        X = np.transpose(X)
-
-        # Select those sectors and regions from B and X
-        # that are of interest to the user - single selection only
-        X = X[full_p_product_idx, :]
+        # Emissions associated with every selected consumed product c supplied
+        # by each country, over all producing sectors and regions:
+        # b L[:, c] y[c]. Computed as (L^T b^T)[c] y[c], one product with L
+        # whatever the number of selected columns.
         b = B[self.indicator_calc_indices, :]
-        b = b[:, full_p_product_idx]
-
-        # Calculate emissions associated with
-        # every selected consumed product supplied
-        # by each country
-        m = np.dot(b, X)
+        m = L.T.dot(b.T)[full_c_product_idx].T * y[full_c_product_idx, 0]
 
         # Aggregate the emissions based on the
         # country selling final product selection
@@ -129,7 +118,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        X = np.dot(L, Y)
+        X = L.dot(Y)
 
         # Select those sectors, regions from B and X
         # that are of interest of the user - single selection
@@ -197,7 +186,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L.dot(y)
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
@@ -205,8 +194,7 @@ class Analyze:
         # emission
         b = B[self.indicator_calc_indices, :]
         (row_cnt, col_cnt) = np.shape(b)
-        M = np.array([np.multiply(x[prd_idx, 0], b[0, prd_idx]) for prd_idx in full_p_product_idx])
-        M = np.transpose(M)
+        M = x[full_p_product_idx, 0] * b[0, full_p_product_idx]
 
         # Aggregate M per selected country/region
         M = M.reshape(row_cnt, selected_p_cntr_cnt, selected_p_prd_cnt)
@@ -216,11 +204,8 @@ class Analyze:
         # for each selected country where emission takes place
         m = m.flatten()
         result = {}
-        test = {}
         for idx, value in np.ndenumerate(self.country_calc_indices):
             result[value] = m[idx[0]]
-            str_value = str(value)
-            test[str_value] = m[idx[0]]
 
         # after calc we expect an dict, we pass that into get_aggregations_xxxx function
         result_as_global_ids = querymanagement.get_aggregations_countries(self.querySelection, result)
@@ -272,7 +257,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L.dot(y)
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
@@ -280,8 +265,7 @@ class Analyze:
         # emission
         b = B[self.indicator_calc_indices, :]
         (row_cnt, col_cnt) = np.shape(b)
-        M = np.array([np.multiply(x[prd_idx, 0], b[:, prd_idx]) for prd_idx in full_p_product_idx])
-        M = np.transpose(M)
+        M = b[:, full_p_product_idx] * x[full_p_product_idx, 0]
 
         # Aggregate M per selected product
         M = M.reshape(row_cnt, selected_p_prd_cnt, selected_p_cntr_cnt, order='F')

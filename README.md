@@ -1,6 +1,6 @@
 # RaMa-Scene
 ---
-RaMa-Scene is a **Django 4.2** web application for analyzing Environmentally Extended Input-Output (EEIO) tables using **EXIOBASE v3.3**. The platform provides interactive visualization and scenario modeling for circular economy analysis.
+RaMa-Scene is a **Django 5.2** web application for analyzing Environmentally Extended Input-Output (EEIO) tables using **EXIOBASE v3.3**. The platform provides interactive visualization and scenario modeling for circular economy analysis.
 
 Demo version: http://cml.liacs.nl:8080/ramascene/
 
@@ -16,10 +16,10 @@ Full documentation: http://rama-scene.readthedocs.io/en/latest/
 
 | Component | Version | Notes |
 |-----------|---------|-------|
-| **Python** | 3.11+ | Upgraded from 3.6 |
-| **Django** | 4.2 LTS | Upgraded from 2.1 |
+| **Python** | 3.12+ | Upgraded from 3.6 |
+| **Django** | 5.2 LTS | Upgraded from 2.1 |
 | **Django Channels** | 4.0.x | Upgraded from 2.1.5 |
-| **Node.js** | 18 LTS | Upgraded from 12 |
+| **Node.js** | 22+ (images use 24) | Upgraded from 12 |
 | **React** | 18.2.x | Upgraded from 16.2.0 |
 | **Webpack** | 5.88.x | Upgraded from 3.11.0 |
 | **Bootstrap** | 5.3.x | Upgraded from 3.3.7 |
@@ -42,16 +42,16 @@ Rabbitmq installation
 ## Option A: Running Without Docker (Development)
 
 ### Step 1: Setup Python Environment
-**Python 3.11+ required**
+**Python 3.12+ required**
 
 ```bash
-python3.11 -m venv venv
+python3.12 -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
 ### Step 2: Setup Node.js Environment
-**Node.js 18+ and npm 8+ required**
+**Node.js 22+ and npm 10+ required**
 
 ```bash
 npm install
@@ -61,7 +61,7 @@ npm install
 ### Step 3: Set Environment Variables
 ```bash
 export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
-export DATASETS_VERSION=v3
+export DATASETS_VERSION=v4   # the Zenodo dataset's files are suffixed _v4
 export DATASETS_DIR=/path/to/your/datasets
 ```
 
@@ -98,12 +98,27 @@ celery -A ramasceneMasterProject worker -l info --concurrency 1 --queues calc_de
 celery -A ramasceneMasterProject worker -l info --concurrency 1 --queues modelling -n worker2.%h
 ```
 
+### Run the offline engine tests
+No broker, no server, no dataset.
+
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+pytest -v -rs
+```
+The tests that check the engine against the Octave reference values skip until the
+EXIOBASE matrices are in place. See [docs/regression-harness.md](docs/regression-harness.md).
+
 ---
 
 ## Option B: Running With Docker
 
+The images mount the datasets from `../datasets`.
+
 ### Production Mode
 ```bash
+# Set SECRET_KEY and DATASETS_VERSION; compose stops if either is missing
+cp .env.example .env
+
 # Build all images with latest changes
 docker-compose build --no-cache
 
@@ -140,7 +155,7 @@ docker-compose up -d
 | Variable | Purpose | Required | Default |
 |----------|---------|----------|---------|
 | `DJANGO_SETTINGS_MODULE` | Django settings module | Yes | `ramasceneMasterProject.config.production` |
-| `DATASETS_VERSION` | Dataset version identifier | Yes | `v3` |
+| `DATASETS_VERSION` | Dataset version identifier (`v4` for the Zenodo dataset) | Yes | - |
 | `DATASETS_DIR` | Path to EXIOBASE datasets | Yes | - |
 | `HOST` | Application host | No | `www.ramascene.eu` |
 | `WS_HOST` | WebSocket host | No | `www.ramascene.eu` |
@@ -187,6 +202,17 @@ docker-compose up -d
 
 ---
 
+## Updating dependencies
+
+Edit `requirements.in` or `requirements-dev.in`, then recompile the locks with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv pip compile requirements.in -o requirements.txt --python-version 3.12
+uv pip compile requirements-dev.in -o requirements-dev.txt --python-version 3.12
+```
+
+---
+
 ## Architecture
 
 ### Without Docker (Development)
@@ -207,7 +233,7 @@ Serves static    ASGI server
 
 ## Core Dependencies
 ---
-- **Backend**: Django 4.2, Django Channels 4.0, Celery 5.3
+- **Backend**: Django 5.2, Django Channels 4.0, Celery 5.3
 - **Frontend**: React 18, Webpack 5, Bootstrap 5
 - **Infrastructure**: Redis, RabbitMQ, Nginx
 
@@ -219,7 +245,7 @@ Serves static    ASGI server
 ```bash
 git clone https://bitbucket.org/CML-IE/rama-scene.git
 cd rama-scene
-python3.11 -m venv venv && source venv/bin/activate
+python3.12 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 npm install
 ./node_modules/.bin/webpack --config dev-webpack.config.js
@@ -235,6 +261,7 @@ python manage.py runserver
 ```bash
 git clone https://bitbucket.org/CML-IE/rama-scene.git
 cd rama-scene
+cp .env.example .env   # then fill in SECRET_KEY
 docker-compose build --no-cache
 docker-compose up -d
 # Open: http://localhost:80/
@@ -243,4 +270,4 @@ docker-compose up -d
 ---
 
 *Last updated: September 2026*
-*Python: 3.11 | Django: 4.2 | Node.js: 18 | React: 18*
+*Python: 3.12 | Django: 5.2 | Node.js: 22+ | React: 18*

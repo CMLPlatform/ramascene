@@ -1,0 +1,9 @@
+# Tests and docs, not installed in the images. requirements-dev.txt is compiled from this file:
+#   uv pip compile requirements-dev.in -o requirements-dev.txt --python-version 3.12
+-c requirements.txt
+pytest>=8
+pytest-django>=4.9
+pytest-asyncio>=0.24
+websockets>=13
+Sphinx>=8
+sphinx-rtd-theme>=3

@@ -249,7 +249,9 @@ def get_aggregations_countries(querySelection, result_data):
             # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
             # assign the the global id instead of local id the value
-            result_container[global_country_id] = value
+            # NOTE: float() because a numpy scalar is not JSON-serialisable; the
+            # aggregate branch below gets the same coercion from math.fsum.
+            result_container[global_country_id] = value if value is None else float(value)
             # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
         elif identify_country(global_country_id) == "AGG" or identify_country(global_country_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table
@@ -298,7 +300,9 @@ def get_aggregations_products(querySelection, result_data):
             # leaf returns a list (artifact of function get_leafs), however its one element so use it
             value = result_data.get(leaf[0])
             # assign the the global id instead of local id the value
-            result_container[global_product_id] = value
+            # NOTE: float() because a numpy scalar is not JSON-serialisable; the
+            # aggregate branch below gets the same coercion from math.fsum.
+            result_container[global_product_id] = value if value is None else float(value)
             # if the global id corresponds to an aggregate we need to sum every respective leaf from the result_data
         elif identify_product(global_product_id) == "AGG" or identify_product(global_product_id) == "TOTAL":
             # get local leafs again as we need it to look up the result_data table
@@ -425,6 +429,28 @@ def clean_indicators(idx_lst):
     return return_lst
 
 
+def calc_ready_selection(query_selection):
+    """Expand a front-end querySelection into calculation-ready indices.
+
+        Read-only pre-processing shared by the websocket consumer and the
+        offline regression harness.
+
+        Args:
+            query_selection (dict): querySelection as sent by the front-end, with
+                global ids in nodesSec, nodesReg and extn
+
+        Returns:
+            dict: nodesSec/nodesReg/extn as calculation indices, plus idx_units
+
+    """
+    return {
+        'nodesSec': get_leafs_product(query_selection["nodesSec"]),
+        'nodesReg': get_leafs_country(query_selection["nodesReg"]),
+        'extn': clean_indicators(query_selection["extn"]),
+        'idx_units': get_indicator_units(query_selection["extn"]),
+    }
+
+
 def get_indicator_units(idx_lst):
     """Get units of passed-in indicators.
 
@@ -466,16 +492,22 @@ def convert_to_numpy(list_obj):
     return numpy_array
 
 
-def get_numpy_objects(year, object_name):
+def get_numpy_objects(year, object_name, mmap_mode=None):
     """
     Retrieve numpy objects per year.
             Args:
             year (int): selected year
             object_name (str): L, A, B, or Y
+            mmap_mode (str): np.load's mmap_mode; L and B default to "r"
 
         Returns:
             numpy object: numpy object of the given object_name
     """
     location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
-    object = np.load(location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy"))
+    # L and B are only read, so map them: no 0.77 GB copy per job, and the
+    # workers share one copy in the page cache. A and Y are modified in place.
+    if mmap_mode is None and object_name in ("L", "B"):
+        mmap_mode = "r"
+    object = np.load(location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy"),
+                     mmap_mode=mmap_mode)
     return object
