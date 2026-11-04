@@ -54,26 +54,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ramascene',
-    'channels',
+    'rest_framework',
     'webpack_loader',
     'django_celery_results',
 ]
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
-# Channels settings
-CHANNEL_LAYERS = {
-    "default": {
-        # The Redis channel layer implementation channels_redis
-        "BACKEND":
-            "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(redis_host, 6379)],
-        },
-    },
+# REST API: no user accounts, public read/write of calculation jobs
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
 }
 
-# ASGI_APPLICATION should be set to your outermost router
-ASGI_APPLICATION = 'ramasceneMasterProject.routing.channel_routing'
+# maximum number of jobs queued or running at the same time (429 above this)
+RAMASCENE_MAX_ACTIVE_JOBS = int(os.environ.get("RAMASCENE_MAX_ACTIVE_JOBS", "50"))
 
 # Celery config
 CELERY_ACCEPT_CONTENT = ['json']

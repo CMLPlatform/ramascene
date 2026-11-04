@@ -3,7 +3,6 @@ from ramascene.models import Job
 from celery.contrib.testing.worker import start_worker
 from django.test import SimpleTestCase
 from ramasceneMasterProject.celery import app
-from django_celery_results import models
 import json
 from django.core.management import call_command
 
@@ -46,9 +45,9 @@ class TestAjaxCelery(SimpleTestCase):
 
     def test_celery_default(self):
         self.task = execute_calc.apply(
-            args=[self.job_id, 1, "channel_name", {
-                'dimType': 'Production',
-                'vizType': 'TreeMap',
+            args=["test job", self.job_id, {
+                'dimType': 'Hotspot',
+                'vizType': 'Sectoral',
                 'nodesSec': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                              11, 12, 13, 14, 15, 16, 17, 18, 19,
                              20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -96,8 +95,8 @@ class TestAjaxCelery(SimpleTestCase):
                     'Product Output: Total': 'M.EUR'
                 }
             }, {
-                      'dimType': 'Production',
-                      'vizType': 'TreeMap',
+                      'dimType': 'Hotspot',
+                      'vizType': 'Sectoral',
                       'nodesSec': [2, 3, 4, 5, 6, 7, 8, 9,
                                    10, 11, 12, 13, 14, 15, 16],
                       'nodesReg': [1],
@@ -110,21 +109,16 @@ class TestAjaxCelery(SimpleTestCase):
         # get the state
         self.assertEqual(self.task.state, 'SUCCESS')
 
-        # store the results manually
-        models.TaskResult.objects.create(
-            task_id=self.task.id, result=self.task.get())
-
-        # retrieve via ajax
-        r = self.client.post('/ajaxhandling/', {'TaskID': self.job_id, },
-                             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        result = json.loads(r.content.decode('UTF-8'))
-        self.assertEqual(json.loads(self.task.get()), result["rawResultData"])
+        # the task stores the result on the job; the API returns it
+        r = self.client.get(f'/api/jobs/{self.job_id}/')
+        self.assertEqual(r.json()["status"], "completed")
+        self.assertEqual(json.loads(self.task.get()), r.json()["result"])
 
     def test_celery_bounds(self):
         self.task = execute_calc.apply(
-            args=[self.job_id, 1, "channel_name", {
-                'dimType': 'Production',
-                'vizType': 'TreeMap',
+            args=["test job", self.job_id, {
+                'dimType': 'Hotspot',
+                'vizType': 'Sectoral',
                 'nodesSec': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                              11, 12, 13, 14, 15, 16, 17, 18, 19,
                              20, 21, 22, 23, 24, 25, 26, 27, 28,
@@ -172,8 +166,8 @@ class TestAjaxCelery(SimpleTestCase):
                     'Product Output: Total': 'M.EUR'
                 }
             }, {
-                      'dimType': 'Production',
-                      'vizType': 'TreeMap',
+                      'dimType': 'Hotspot',
+                      'vizType': 'Sectoral',
                       'nodesSec': [2, 3, 4, 5, 6, 7, 8, 9,
                                    10, 11, 12, 13, 14, 15, 16],
                       'nodesReg': [1],
@@ -185,12 +179,7 @@ class TestAjaxCelery(SimpleTestCase):
         # get the state
         self.assertEqual(self.task.state, 'SUCCESS')
 
-        # store the results manually
-        models.TaskResult.objects.create(task_id=self.task.id,
-                                         result=self.task.get())
-
-        # retrieve via ajax
-        r = self.client.post('/ajaxhandling/', {'TaskID': self.job_id, },
-                             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        result = json.loads(r.content.decode('UTF-8'))
-        self.assertEqual(json.loads(self.task.get()), result["rawResultData"])
+        # the task stores the result on the job; the API returns it
+        r = self.client.get(f'/api/jobs/{self.job_id}/')
+        self.assertEqual(r.json()["status"], "completed")
+        self.assertEqual(json.loads(self.task.get()), r.json()["result"])

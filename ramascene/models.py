@@ -18,6 +18,10 @@ class Job(models.Model):
        The status of the Celery job
     """
     created = models.DateTimeField(default=timezone.now)
+    result = models.JSONField(null=True, blank=True)
+    """
+       The calculation result, set when the job is completed
+    """
     """
            The date the Celery job was created
     """
