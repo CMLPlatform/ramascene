@@ -160,8 +160,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
             fail_job(job_id)
             log.debug("Failed job_id=%s: no route matched", job_id)
 
-    except Exception as e:
+    except Exception:
         fail_job(job_id)
-        log.debug("Failed job_name=%s", e)
-        print("failed at:" + str(e))
+        log.exception("Job %s failed", job_id)
 

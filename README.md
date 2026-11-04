@@ -71,10 +71,12 @@ python manage.py populateHierarchies
 ### Run the backend
 Start the Celery workers, one per queue, then the development server:
 ```
-celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queue calc_default -n worker1.%h
-celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queue modelling -n worker2.%h
+celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queues calc_default -n worker1.%h
+celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queues modelling -n worker2.%h
 python manage.py runserver
 ```
+
+On macOS, set `export FORKED_BY_MULTIPROCESSING=1` in the terminal that runs the Celery workers. Without it every job fails with `not enough values to unpack (expected 3, got 0)`. `scripts/dev-up.sh` sets it for you.
 
 ### Run the frontend
 ```

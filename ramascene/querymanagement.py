@@ -479,3 +479,22 @@ def get_numpy_objects(year, object_name):
     location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
     object = np.load(location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy"))
     return object
+
+
+def get_leaf_product_names():
+    """Names of the leaf products in calculation order.
+
+        Calculation index i (0-based) is the product with local_id i + 1.
+
+        Returns:
+            list: 200 product names, ordered by calculation index
+
+    """
+    OFFSET = -1
+    names = [None] * 200
+    for local_id, name in Product.objects.filter(identifier="LEAF").values_list("local_id", "name"):
+        names[int(local_id) + OFFSET] = name
+    if any(name is None for name in names):
+        raise ValueError("expected 200 leaf products with local ids 1 to 200")
+    return names
+

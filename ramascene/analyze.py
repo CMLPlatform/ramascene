@@ -29,6 +29,10 @@ class Analyze:
     def route_one(self):
         """Perform calculations according to route one.
 
+        Contribution of each supplying product to the consumption of the selected
+        products by the selected consuming countries. The values are summed over the
+        supplying countries, so the result has one value per supplying product. The
+        values add up to the same total as summing over the consumed products.
 
         Returns:
             json: json result data
@@ -40,8 +44,8 @@ class Analyze:
         ids = pim.ProductIndexManager(self.product_calc_indices, self.s_country_idx, p_product_idx, p_country_idx)
         full_c_product_idx = ids.get_consumed_product_ids()
         full_p_product_idx = ids.get_produced_product_ids()
-        selected_s_cntr_cnt = ids.get_selected_s_country_count()
-        selected_c_prd_cnt = ids.get_selected_c_product_count()
+        selected_p_cntr_cnt = ids.get_selected_p_country_count()
+        selected_p_prd_cnt = ids.get_selected_p_product_count()
 
         # Get data
         Y = self.Y_data
@@ -60,34 +64,23 @@ class Analyze:
         X = np.array([np.multiply(y[idx], L_cols[:, j]) for j, idx in enumerate(full_c_product_idx)])
         X = np.transpose(X)
 
-        # Select those sectors and regions from B and X
-        # that are of interest to the user - single selection only
+        # Select the supplying products from X and B; one indicator only
         X = X[full_p_product_idx, :]
         b = B[self.indicator_calc_indices, :]
         b = b[:, full_p_product_idx]
+        if b.shape[0] != 1:
+            raise ValueError("route one takes exactly one indicator")
 
-        # Calculate emissions associated with
-        # every selected consumed product supplied
-        # by each country
-        m = np.dot(b, X)
+        # Contribution of each supplying product (summed over the consumed products)
+        contribution = b[0] * X.sum(axis=1)
 
-        # Aggregate the emissions based on the
-        # country selling final product selection
-        m = m.reshape(selected_s_cntr_cnt, selected_c_prd_cnt)
-        m = np.sum(m, axis=0)
+        # full_p_product_idx lists the origin countries outer and the products inner
+        contribution = contribution.reshape(selected_p_cntr_cnt, selected_p_prd_cnt)
+        by_product = contribution.sum(axis=0)
 
-        # Return dictionary with results. Multiple values, one value
-        # for each product that is consumed
-        m = m.flatten()
-        result = {}
-        for idx, value in np.ndenumerate(self.product_calc_indices):
-            result[value] = m[idx[0]]
-
-        # after calc we expect an dict, we pass that into get_aggregations_xxxx function
-        result_as_global_ids = querymanagement.get_aggregations_products(self.querySelection, result)
-
-        # invoke with returned object get_calc_names_xxxx function
-        result_as_names = querymanagement.get_calc_names_product(result_as_global_ids)
+        # One value per supplying product, keyed by product name
+        names = querymanagement.get_leaf_product_names()
+        result = {names[idx]: float(value) for idx, value in enumerate(by_product)}
 
         # built json object for saving
         data = {}
@@ -95,7 +88,7 @@ class Analyze:
         data['job_id'] = self.job_id
         data['unit'] = self.idx_units
         # save the final dict result in rawResultData
-        data['rawResultData'] = result_as_names
+        data['rawResultData'] = result
         json_data = json.dumps(data)
         return json_data
 
