@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ramascene import services
-from ramascene.models import Country, Indicator, Job, Product
+from ramascene.models import Country, Indicator, Job, ModellingProduct, Product
 from ramascene.serializers import JobRequestSerializer
 
 # default cap on jobs that are queued or running at the same time (one class of 20-50 students)
@@ -69,9 +69,12 @@ class CatalogView(APIView):
         products = Product.objects.filter(identifier="LEAF").order_by("name")
         countries = Country.objects.filter(identifier="LEAF").order_by("name")
         indicators = Indicator.objects.order_by("name")
+        consumers = ModellingProduct.objects.filter(identifier__in=["LEAF", "FINALCONSUMPTION"]).order_by("name")
         return Response({
             "years": DATASET_YEARS,
             "products": [{"global_id": p.global_id, "name": p.name, "code": p.code} for p in products],
             "countries": [{"global_id": c.global_id, "name": c.name, "code": c.code} for c in countries],
             "indicators": [{"global_id": i.global_id, "name": i.name, "unit": i.unit} for i in indicators],
+            "consumers": [{"global_id": m.global_id, "name": m.name, "final": m.identifier == "FINALCONSUMPTION"}
+                          for m in consumers],
         })
