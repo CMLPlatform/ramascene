@@ -1,139 +1,117 @@
 # RaMa-Scene
----
-RaMa-Scene is a django 2.0 based web-application that allows for analyzing Environmentally Extended Input-Output (EEIO) tables. EXIOBASE v3.3 is used in this project. 
-Demo version: http://cml.liacs.nl:8080/ramascene/
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](resources/docs/CONTRIBUTING.md)
+RaMa-Scene analyses Environmentally Extended Input-Output (EEIO) tables. It answers three questions for a
+chosen sector and year: the footprint of a sector in a region, the sectors that contribute to it, and the
+direct impacts of the sector in each region. Scenario modelling (changing technology or final demand) is
+planned. The data is EXIOBASE 3.3, in the RaMa-Scene dataset version v4.
 
-# Developers Guide
----
-http://rama-scene.readthedocs.io/en/latest/
+Licence: GPL-3.0. See [LICENSE](LICENSE).
 
-# Getting started
----
-### Retrieve the raw datasets
+## How it works
 
- 
-EXIOBASE-Rama-Scene (modified version including secondary materials): 
+- **Frontend:** a single-page app in `frontend/` (React, TypeScript, Vite).
+- **API:** Django REST Framework under `/api/`.
+  - `GET /api/catalog/` lists the years, products, countries and indicators with their ids.
+  - `POST /api/jobs/` starts a calculation and returns a job id (HTTP 202).
+  - `GET /api/jobs/<id>/` returns the job status and, when completed, the result.
+  - Too many active jobs return HTTP 429.
+- **Background work:** Celery workers run the calculations. Results are stored on the job.
+- **Numerics:** `ramascene/analyze.py` (the four analysis routes), `ramascene/modelling.py` (scenario
+  changes), and `ramascene/woodbury.py` (Sherman–Morrison–Woodbury updates of the Leontief inverse, so a
+  scenario does not re-invert the full matrix).
 
-http://doi.org/10.5281/zenodo.3533196
+The client polls the job endpoint until the status is `completed` or `failed`. There are no websockets.
 
-### Clone the project 
-``` 
-git clone https://bitbucket.org/CML-IE/rama-scene.git
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| `ramascene/` | Django app: models, API, Celery tasks, numerical core, tests |
+| `ramasceneMasterProject/` | Project settings (`config/`), Celery app, URL routing |
+| `frontend/` | React + TypeScript frontend |
+| `python_ini/data/` | Hierarchies and indicator tables loaded by `populateHierarchies` |
+| `static_assets/` | Static files used by the current pages, including the hierarchy CSVs |
+| `docs/` | Sphinx documentation |
+| `requirements.txt`, `requirements-dev.txt` | Python dependencies (runtime, and tests) |
+| `docker-compose.yml`, `Dockerfile` | Container setup |
+
+The data preparation scripts (turning raw EXIOBASE and geography sources into the CSVs above) live in a
+separate repository, `ramascene-preprocessing`. They are not needed to run the app.
+
+## Getting started
+
+### Prerequisites
+- Python 3.13
+- Node.js 22 or newer
+- RabbitMQ (the Celery broker)
+- The EXIOBASE dataset, version v4, as binary matrices per year. The data is not in this repository.
+
+### Python environment
+```
+python3.13 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
 ```
 
-### Create a virtual environment (python3.5 or higher) and install the app requirements (make sure you have python-dev installed via apt-get)
-``` 
-$ pip3 install -r requirements.txt 
+### Configuration
+Copy `.env.example` to `.env` and fill in the values. Settings are read from the environment:
+- `DJANGO_SETTINGS_MODULE` selects the settings module, for example `ramasceneMasterProject.config.dev`.
+- `DATASETS_DIR` is the folder containing the dataset, and `DATASETS_VERSION` is `v4`.
+- `BROKER_URL` is the Celery broker.
+- `RAMASCENE_MAX_ACTIVE_JOBS` caps the jobs queued or running at once.
+
+Never commit `.env`.
+
+### Database and hierarchies
+```
+python manage.py migrate
+python manage.py populateHierarchies
 ```
 
-### Install node.js (node version: 3.10.10 or higher)
-``` 
-$ sudo apt-get update
-$ sudo apt-get install nodejs
+### Run the backend
+Start the Celery workers, one per queue, then the development server:
 ```
-> Note: On debian apt install nodejs-legacy
-
-### Install redis (for Django Channels)
-```
-$ sudo apt install redis-server
+celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queue calc_default -n worker1.%h
+celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queue modelling -n worker2.%h
+python manage.py runserver
 ```
 
-### Install rabbitMQ (for Celery)
-
-``$ sudo apt-get install -y erlang``
-
-``$ sudo apt-get install rabbitmq-server``
-
-Then enable and start the RabbitMQ service:
-
-``$ systemctl enable rabbitmq-server``
-
-``$ systemctl start rabbitmq-server``
-
-Check the status to make sure everything is running:
-``$ systemctl status rabbitmq-server``
-
-
-> Note: Perform all next steps in the virtualenv and in the rootfolder of the project
-
-### Set the following environment variables (see sample-dev-env.sh):
+### Run the frontend
 ```
-export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
-export DATASETS_VERSION=version downloaded e.g. v3
-export DATASETS_DIR=my/path/to/datasets
-export OPENBLAS_NUM_THREADS=adjust according to how many cores you want to use
+cd frontend
+npm install
+npm run dev
 ```
-If you are on Linux and using the OpenBlas library for Numpy. 
-It is advised to set the number of threads Numpy uses. To find which library is used in python:
+The dev server proxies `/api` to the Django server on port 8000.
+
+## Tests
+
 ```
->>>import numpy as np
->>>np.__config__.show()
+pytest
 ```
 
+- `test_api_jobs.py`, `test_api_catalog.py`, `test_woodbury.py`, `test_modelling.py`: unit tests. They run
+  without the dataset, except where a test needs the database.
+- `test_validation_analytical.py`: runs the job API against the v3 reference values for 2011. It needs the
+  dataset and the populated database, and runs Celery eagerly.
+- `test_celery_integration.py`: starts a real Celery worker, so it needs RabbitMQ.
 
-### Prepare the database
+Frontend:
 ```
-$ python3 manage.py makemigrations
-$ python3 manage.py migrate
-```
-
-### Populate the database 
-```
-$ python3 manage.py populateHierarchies
-```
-
-### Prepare static resources
-```
-$ npm install
+cd frontend
+npm test
+npm run build
 ```
 
-### Built React bundle
-```
-$ ./node_modules/.bin/webpack --config dev-webpack.config.js 
-```
+Afterwards, repopulate the database with `python manage.py populateHierarchies` if a test has changed it.
 
-### Start Celery
-Start the default module to enable handling of analytical calculations:
-```
-$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h
-```
-Start the modelling module to enable handling of modelling calculations:
-```
-$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue modelling -n worker2.%h
-```
+## Deployment
 
-### Start the development server
-```
-$ python3 manage.py runserver
-```
+`docker-compose.yml` defines the reverse proxy, the web app, the calculation and modelling workers, RabbitMQ,
+and Redis. Deployment is planned to change: the web app will run under gunicorn and Redis will be removed,
+since the app no longer uses Channels. Deployments are approved by the project owner before they go live.
 
-Access the app via the webrowser: http://127.0.0.1:8000/ramascene/
+## Licence and contributions
 
-### [Optional] enable debug logging
-
-To enable debug logging, open the ramasceneMasterProject/config/dev.py file.
-Uncomment the "logging for Django" section.
-
-### [Optional] run tests
-In case you want to run tests you can perform unit tests in the root folder:
-```
-$ python3 manage.py test -v2
-```
-
-For integration tests you need to start the celery workers first (explained above). 
-You can perform the integration test with the following command:
-```
-$ pytest -vs
-```
-
-If the test has succeeded, you�ll need to repopulate the database with the following command:
-```
-$ python3 manage.py populateHierarchies
-```
-
-### Core dependencies
----
-The app uses Celery [4.1.0] (http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html), Django channels [2.1.5] (https://channels.readthedocs.io/en/latest/)
+RaMa-Scene is released under the GNU General Public License v3.0. Contributions are welcome through pull
+requests on the repository.
