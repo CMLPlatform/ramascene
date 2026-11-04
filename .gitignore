@@ -32,3 +32,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Local environments, generated static output, macOS metadata
+venv/
+.venv/
+static/
+.DS_Store

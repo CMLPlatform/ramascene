@@ -10,10 +10,11 @@ class Modelling:
     This class contains the methods for modeling
     """
 
-    def __init__(self, ready_model_details, Y_data, load_A, year, model_details):
+    def __init__(self, ready_model_details, Y_data, load_A, year, model_details, A=None, L=None):
         self.Y_data = Y_data
-        self.L = None
-        self.A = None
+        # A and L can be injected (e.g. in tests); otherwise they are loaded per year in apply_model
+        self.L = L
+        self.A = A
         self.ready_model_details = ready_model_details
         self.load_A = load_A
         self.year = year
@@ -23,10 +24,11 @@ class Modelling:
         # copy Y to prevent any race conditions
         self.Y = self.Y_data.copy()
         # A is only needed when an intermediate intervention changes the technology matrix
-        if True in self.load_A:
+        if self.A is None and True in self.load_A:
             self.A = querymanagement.get_numpy_objects(self.year, "A")
         # L is always needed: it is the base for the Woodbury update or the unmodified inverse
-        self.L = querymanagement.get_numpy_objects(self.year, "L")
+        if self.L is None:
+            self.L = querymanagement.get_numpy_objects(self.year, "L")
         # sparse change to A accumulated over the intermediate interventions
         self.D = sp.csr_matrix(self.L.shape)
 
