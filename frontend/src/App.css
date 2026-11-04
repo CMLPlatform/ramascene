@@ -145,3 +145,20 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
   .rail-button { writing-mode: horizontal-tb; }
   .bar-name { flex-basis: 110px; }
 }
+
+.intervention {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border, #dfe4ec);
+  border-radius: 8px;
+}
+.intervention-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.intervention input[type='range'] {
+  width: 100%;
+}

@@ -17,7 +17,7 @@ const selection = {
 describe('startJob', () => {
   it('posts the query as a default action and returns the job id', async () => {
     const fetchImpl = vi.fn(async () => jsonResponse({ job_id: 7, status_url: '/api/jobs/7/' }, 202));
-    const started = await startJob(selection, fetchImpl as unknown as typeof fetch);
+    const started = await startJob({ action: 'default', querySelection: selection }, fetchImpl as unknown as typeof fetch);
     expect(started.job_id).toBe(7);
     const [url, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe('/api/jobs/');
@@ -26,7 +26,22 @@ describe('startJob', () => {
 
   it('reports a busy server as an ApiError with status 429', async () => {
     const fetchImpl = vi.fn(async () => jsonResponse({ detail: 'busy' }, 429));
-    await expect(startJob(selection, fetchImpl as unknown as typeof fetch)).rejects.toMatchObject({ status: 429 });
+    await expect(
+      startJob({ action: 'default', querySelection: selection }, fetchImpl as unknown as typeof fetch),
+    ).rejects.toMatchObject({ status: 429 });
+  });
+});
+
+describe('startJob with a scenario', () => {
+  it('sends the interventions with the model action', async () => {
+    const fetchImpl = vi.fn(async () => jsonResponse({ job_id: 8, status_url: '/api/jobs/8/' }, 202));
+    const intervention = { originReg: [20], consumedReg: [21], product: [10], consumedBy: [276], techChange: [-20] };
+    await startJob(
+      { action: 'model', querySelection: selection, model_details: [intervention] },
+      fetchImpl as unknown as typeof fetch,
+    );
+    const [, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(String(init.body)).model_details).toEqual([intervention]);
   });
 });
 

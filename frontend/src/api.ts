@@ -4,11 +4,14 @@ export interface Product { global_id: number; name: string; code: string }
 export interface Country { global_id: number; name: string; code: string }
 export interface Indicator { global_id: number; name: string; unit: string }
 
+export interface Consumer { global_id: number; name: string; final: boolean }
+
 export interface Catalog {
   years: number[];
   products: Product[];
   countries: Country[];
   indicators: Indicator[];
+  consumers: Consumer[];
 }
 
 export type DimType = 'Contribution' | 'Hotspot';
@@ -21,6 +24,21 @@ export interface Selection {
   nodesReg: number[];
   extn: number[];
   year: string[];
+}
+
+// One scenario change (see InterventionSerializer in ramascene/serializers.py).
+export interface Intervention {
+  originReg: number[];
+  consumedReg: number[];
+  product: number[];
+  consumedBy: number[];
+  techChange: number[];
+}
+
+export interface JobRequest {
+  action: 'default' | 'model';
+  querySelection: Selection;
+  model_details?: Intervention[];
 }
 
 export interface JobResult {
@@ -67,13 +85,13 @@ export async function fetchCatalog(fetchImpl: FetchLike = fetch): Promise<Catalo
 }
 
 export async function startJob(
-  selection: Selection,
+  request: JobRequest,
   fetchImpl: FetchLike = fetch,
 ): Promise<{ job_id: number; status_url: string }> {
   const response = await fetchImpl('/api/jobs/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'default', querySelection: selection }),
+    body: JSON.stringify(request),
   });
   return readJson(response);
 }
@@ -100,7 +118,7 @@ export async function pollJob(statusUrl: string, options: PollOptions = {}): Pro
 }
 
 // Starts a calculation and waits for its result.
-export async function runQuery(selection: Selection, options: PollOptions = {}): Promise<JobStatus> {
-  const started = await startJob(selection, options.fetchImpl);
+export async function runQuery(request: JobRequest, options: PollOptions = {}): Promise<JobStatus> {
+  const started = await startJob(request, options.fetchImpl);
   return pollJob(started.status_url, options);
 }

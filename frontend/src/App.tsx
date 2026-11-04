@@ -1,6 +1,15 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { fetchCatalog, runQuery, type Catalog, type JobResult, type Selection } from './api';
-import { formatValue, percent, sortedEntries } from './format';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { fetchCatalog, runQuery, type Catalog, type Intervention, type JobResult, type Selection } from './api';
+import { formatDelta, formatValue, percent, percentChange, sortedEntries } from './format';
+import {
+  CHANGE_LIMIT,
+  compareRows,
+  finalConsumerId,
+  technologyConsumers,
+  toIntervention,
+  type Draft,
+  type InterventionKind,
+} from './scenario';
 
 const DEFAULT_COUNTRY = 'Netherlands';
 const DEFAULT_YEAR = 2011;
@@ -11,6 +20,11 @@ interface Results {
   footprintAll: JobResult;
   direct: JobResult;
   contributions: JobResult;
+}
+
+interface RunOutcome {
+  baseline: Results;
+  scenario: Results | null;
 }
 
 interface QueueItem {
@@ -29,11 +43,14 @@ export default function App() {
   const [countryId, setCountryId] = useState<number | null>(null);
   const [indicatorId, setIndicatorId] = useState<number | null>(null);
   const [year, setYear] = useState<number>(DEFAULT_YEAR);
-  const [results, setResults] = useState<Results | null>(null);
+  const [drafts, setDrafts] = useState<Draft[]>([]);
+  const [applyScenario, setApplyScenario] = useState(false);
+  const [outcome, setOutcome] = useState<RunOutcome | null>(null);
   const [busy, setBusy] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [open, setOpen] = useState<Record<Panel, boolean>>({ left: true, right: true });
+  const nextId = useRef(1);
 
   useEffect(() => {
     fetchCatalog()
@@ -65,8 +82,38 @@ export default function App() {
   const setQueueItem = (id: number, patch: Partial<QueueItem>) =>
     setQueue((items) => items.map((item) => (item.id === id ? { ...item, ...patch } : item)));
 
-  async function run() {
-    if (!catalog || sectorId === null || countryId === null || indicatorId === null) return;
+  const newId = () => nextId.current++;
+
+  function addDraft() {
+    if (!catalog || sectorId === null || countryId === null) return;
+    const consumer = technologyConsumers(catalog.consumers)[0];
+    setDrafts((existing) => [
+      ...existing,
+      {
+        id: newId(),
+        kind: 'final',
+        productId: sectorId,
+        originId: countryId,
+        consumedId: countryId,
+        consumerId: consumer?.global_id ?? 0,
+        change: -10,
+      },
+    ]);
+  }
+
+  function updateDraft(id: number, patch: Partial<Draft>) {
+    setDrafts((existing) => existing.map((d) => (d.id === id ? { ...d, ...patch } : d)));
+  }
+
+  function removeDraft(id: number) {
+    setDrafts((existing) => existing.filter((d) => d.id !== id));
+  }
+
+  // Runs the four analysis queries; with interventions they use the scenario ("model") action.
+  async function runSet(prefix: string, interventions: Intervention[] | null): Promise<Results> {
+    if (!catalog || sectorId === null || countryId === null || indicatorId === null) {
+      throw new Error('The catalog is not loaded yet');
+    }
     const allCountries = catalog.countries.map((c) => c.global_id);
     const common = { nodesSec: [sectorId], extn: [indicatorId], year: [String(year)] };
     const requests: Record<keyof Results, Selection & { label: string }> = {
@@ -75,41 +122,64 @@ export default function App() {
       direct: { ...common, dimType: 'Hotspot', vizType: 'Geographic', nodesReg: allCountries, label: 'Direct impacts, all regions' },
       contributions: { ...common, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: [countryId], label: 'Contributing sectors' },
     };
-
-    setBusy(true);
-    setRunError(null);
+    const entries = Object.entries(requests) as [keyof Results, Selection & { label: string }][];
     const label = `${selectedSector} · ${selectedCountry} · ${year}`;
-    const items = Object.values(requests).map((request, index) => ({
-      id: Date.now() + index,
-      label: `${request.label} · ${label}`,
-      status: 'running' as const,
+    const items: QueueItem[] = entries.map(([, request]) => ({
+      id: newId(),
+      label: `${prefix}: ${request.label} · ${label}`,
+      status: 'running',
       detail: 'Queued',
     }));
     setQueue((existing) => [...items, ...existing]);
 
-    const entries = Object.entries(requests) as [keyof Results, Selection & { label: string }][];
+    const settled = await Promise.all(
+      entries.map(async ([key, request], index) => {
+        const item = items[index];
+        const { label: _label, ...selection } = request;
+        try {
+          const job = await runQuery({
+            action: interventions ? 'model' : 'default',
+            querySelection: selection,
+            model_details: interventions ?? undefined,
+          });
+          if (job.status === 'failed' || !job.result) throw new Error('Calculation failed');
+          setQueueItem(item.id, { status: 'completed', detail: `Finished ${new Date().toLocaleTimeString()}` });
+          return [key, job.result] as const;
+        } catch (error) {
+          setQueueItem(item.id, { status: 'failed', detail: (error as Error).message });
+          throw error;
+        }
+      }),
+    );
+    const collected: Partial<Results> = {};
+    for (const [key, result] of settled) collected[key] = result;
+    return collected as Results;
+  }
+
+  async function run() {
+    if (!catalog || sectorId === null || countryId === null || indicatorId === null) return;
+    const finalId = finalConsumerId(catalog.consumers);
+    let interventions: Intervention[] | null = null;
+    if (applyScenario) {
+      if (drafts.length === 0) {
+        setRunError('Add at least one change, or switch the scenario off.');
+        return;
+      }
+      if (finalId === null) {
+        setRunError('The catalog has no final consumption entry.');
+        return;
+      }
+      interventions = drafts.map((d) => toIntervention(d, finalId));
+    }
+
+    setBusy(true);
+    setRunError(null);
     try {
-      const settled = await Promise.all(
-        entries.map(async ([key, request], index) => {
-          const { label: _label, ...selection } = request;
-          const item = items[index];
-          try {
-            const job = await runQuery(selection);
-            if (job.status === 'failed' || !job.result) {
-              setQueueItem(item.id, { status: 'failed', detail: 'Calculation failed' });
-              throw new Error(`${request.label} failed`);
-            }
-            setQueueItem(item.id, { status: 'completed', detail: `Finished ${new Date().toLocaleTimeString()}` });
-            return [key, job.result] as const;
-          } catch (error) {
-            setQueueItem(item.id, { status: 'failed', detail: (error as Error).message });
-            throw error;
-          }
-        }),
-      );
-      const collected: Partial<Results> = {};
-      for (const [key, result] of settled) collected[key] = result;
-      setResults(collected as Results);
+      const [baseline, scenario] = await Promise.all([
+        runSet('Baseline', null),
+        interventions ? runSet('Scenario', interventions) : Promise.resolve(null),
+      ]);
+      setOutcome({ baseline, scenario });
     } catch (error) {
       setRunError((error as Error).message);
     } finally {
@@ -124,14 +194,20 @@ export default function App() {
     return <Shell><p className="muted">Loading…</p></Shell>;
   }
 
-  const footprintInCountry = results ? results.footprintCountry.rawResultData[selectedCountry] ?? 0 : 0;
-  const allFootprints = results ? sortedEntries(results.footprintAll.rawResultData) : [];
+  const baseline = outcome?.baseline ?? null;
+  const scenario = outcome?.scenario ?? null;
+  const footprintInCountry = baseline?.footprintCountry.rawResultData[selectedCountry] ?? 0;
+  const scenarioFootprint = scenario?.footprintCountry.rawResultData[selectedCountry] ?? 0;
+  const allFootprints = baseline ? sortedEntries(baseline.footprintAll.rawResultData) : [];
   const globalFootprint = allFootprints.reduce((sum, [, value]) => sum + value, 0);
   const rank = allFootprints.findIndex(([name]) => name === selectedCountry) + 1;
-  const topContributors = results ? sortedEntries(results.contributions.rawResultData).slice(0, TOP_N) : [];
+  const contributionSource = scenario ?? baseline;
+  const topContributors = contributionSource
+    ? sortedEntries(contributionSource.contributions.rawResultData).slice(0, TOP_N)
+    : [];
   const maxContributor = topContributors[0]?.[1] ?? 0;
-  const directRows = results ? sortedEntries(results.direct.rawResultData) : [];
-  const maxDirect = directRows[0]?.[1] ?? 0;
+  const directRows = baseline ? compareRows(baseline.direct.rawResultData, scenario?.direct.rawResultData ?? null) : [];
+  const maxDirect = directRows[0]?.base ?? 0;
 
   return (
     <Shell>
@@ -148,13 +224,25 @@ export default function App() {
               <h2>Scenario modelling</h2>
               <button className="ghost small" onClick={() => setOpen({ ...open, left: false })}>Close ◂</button>
             </div>
-            <p className="muted small">
-              Scenario runs are not wired up yet. They use the same query API with the
-              intervention list, and come in the next step.
-            </p>
             <label className="check">
-              <input type="checkbox" disabled /> Apply scenario to results
+              <input type="checkbox" checked={applyScenario} onChange={(e) => setApplyScenario(e.target.checked)} />
+              {' '}Apply scenario to results
             </label>
+            <p className="muted small">
+              Changes are percentages of the chosen flow. Each run is shown next to the baseline.
+            </p>
+            {drafts.length === 0 && <p className="muted small">No changes yet.</p>}
+            {drafts.map((draft, index) => (
+              <InterventionCard
+                key={draft.id}
+                index={index}
+                draft={draft}
+                catalog={catalog}
+                onChange={(patch) => updateDraft(draft.id, patch)}
+                onRemove={() => removeDraft(draft.id)}
+              />
+            ))}
+            <button className="ghost small" onClick={addDraft} style={{ marginTop: 12 }}>+ Add change</button>
           </aside>
         ) : (
           <aside className="rail">
@@ -196,9 +284,9 @@ export default function App() {
           </section>
 
           {runError && <p className="error">{runError}</p>}
-          {!results && !busy && <p className="muted">Choose a sector and run the analysis.</p>}
+          {!baseline && !busy && <p className="muted">Choose a sector and run the analysis.</p>}
 
-          {results && (
+          {baseline && (
             <>
               <section className="card">
                 <h2>1. What are the footprint impacts of {selectedSector} in {selectedCountry}?</h2>
@@ -207,14 +295,25 @@ export default function App() {
                   <Stat label={`Global footprint of ${selectedSector}`} value={formatValue(globalFootprint)} sub={`${unit}, all regions`} />
                   <Stat label="Share of global footprint" value={percent(footprintInCountry, globalFootprint)} sub={`${selectedCountry} as share of global`} />
                   <Stat label="Rank among regions" value={rank > 0 ? `#${rank}` : '—'} sub={`For ${selectedSector}`} />
+                  {scenario && (
+                    <Stat
+                      label={`Scenario footprint in ${selectedCountry}`}
+                      value={formatValue(scenarioFootprint)}
+                      sub={`${formatDelta(scenarioFootprint - footprintInCountry)} · ${percentChange(footprintInCountry, scenarioFootprint)}`}
+                    />
+                  )}
                 </div>
               </section>
 
               <section className="card">
                 <h2>2. What is the contribution of other sectors to {selectedSector} in {selectedCountry}?</h2>
-                <Bars title="Top contributing sectors" rows={topContributors.map(([name, value]) => ({ name, value, max: maxContributor }))} unit={unit} />
+                <Bars
+                  title={scenario ? 'Top supplying sectors (scenario)' : 'Top supplying sectors'}
+                  rows={topContributors.map(([name, value]) => ({ name, value, max: maxContributor }))}
+                  unit={unit}
+                />
                 <p className="muted small">
-                  Stacks by country of origin are added once the API returns origin-by-sector results.
+                  Values are summed over the supplying countries. Stacks by country of origin come next.
                 </p>
               </section>
 
@@ -222,16 +321,24 @@ export default function App() {
                 <h2>3. What are the direct impacts of {selectedSector} in each region?</h2>
                 <table className="table">
                   <thead>
-                    <tr><th>Region</th><th>Share of direct impact</th><th className="right">Value ({unit})</th></tr>
+                    <tr>
+                      <th>Region</th>
+                      <th>Share of direct impact</th>
+                      <th className="right">{scenario ? 'Baseline' : 'Value'} ({unit})</th>
+                      {scenario && <th className="right">Scenario</th>}
+                      {scenario && <th className="right">Δ</th>}
+                    </tr>
                   </thead>
                   <tbody>
-                    {directRows.map(([name, value]) => (
-                      <tr key={name} className={name === selectedCountry ? 'selected' : undefined}>
-                        <td>{name}{name === selectedCountry ? '  ← selected' : ''}</td>
+                    {directRows.map((row) => (
+                      <tr key={row.name} className={row.name === selectedCountry ? 'selected' : undefined}>
+                        <td>{row.name}{row.name === selectedCountry ? '  ← selected' : ''}</td>
                         <td>
-                          <div className="bar-track"><div className="bar-fill" style={{ width: `${maxDirect ? (value / maxDirect) * 100 : 0}%` }} /></div>
+                          <div className="bar-track"><div className="bar-fill" style={{ width: `${maxDirect ? (row.base / maxDirect) * 100 : 0}%` }} /></div>
                         </td>
-                        <td className="right tabular">{formatValue(value)}</td>
+                        <td className="right tabular">{formatValue(row.base)}</td>
+                        {row.scenario !== null && <td className="right tabular">{formatValue(row.scenario)}</td>}
+                        {row.delta !== null && <td className="right tabular">{formatDelta(row.delta)}</td>}
                       </tr>
                     ))}
                   </tbody>
@@ -269,6 +376,68 @@ export default function App() {
         )}
       </div>
     </Shell>
+  );
+}
+
+function InterventionCard({
+  index,
+  draft,
+  catalog,
+  onChange,
+  onRemove,
+}: {
+  index: number;
+  draft: Draft;
+  catalog: Catalog;
+  onChange: (patch: Partial<Draft>) => void;
+  onRemove: () => void;
+}) {
+  const sign = draft.change > 0 ? '+' : '';
+  return (
+    <div className="intervention">
+      <div className="intervention-head">
+        <span className="field-label">Change {index + 1}</span>
+        <button className="ghost small" onClick={onRemove}>Remove</button>
+      </div>
+      <Field label="Type">
+        <select value={draft.kind} onChange={(e) => onChange({ kind: e.target.value as InterventionKind })}>
+          <option value="final">Final demand</option>
+          <option value="tech">Technology change</option>
+        </select>
+      </Field>
+      <Field label="Sector">
+        <select value={draft.productId} onChange={(e) => onChange({ productId: Number(e.target.value) })}>
+          {catalog.products.map((p) => <option key={p.global_id} value={p.global_id}>{p.name}</option>)}
+        </select>
+      </Field>
+      <Field label="Produced in">
+        <select value={draft.originId} onChange={(e) => onChange({ originId: Number(e.target.value) })}>
+          {catalog.countries.map((c) => <option key={c.global_id} value={c.global_id}>{c.name}</option>)}
+        </select>
+      </Field>
+      <Field label="Consumed in">
+        <select value={draft.consumedId} onChange={(e) => onChange({ consumedId: Number(e.target.value) })}>
+          {catalog.countries.map((c) => <option key={c.global_id} value={c.global_id}>{c.name}</option>)}
+        </select>
+      </Field>
+      {draft.kind === 'tech' && (
+        <Field label="Consuming sector">
+          <select value={draft.consumerId} onChange={(e) => onChange({ consumerId: Number(e.target.value) })}>
+            {technologyConsumers(catalog.consumers).map((c) => <option key={c.global_id} value={c.global_id}>{c.name}</option>)}
+          </select>
+        </Field>
+      )}
+      <Field label={`Change ${sign}${draft.change}%`}>
+        <input
+          type="range"
+          min={-CHANGE_LIMIT}
+          max={CHANGE_LIMIT}
+          step={1}
+          value={draft.change}
+          onChange={(e) => onChange({ change: Number(e.target.value) })}
+        />
+      </Field>
+    </div>
   );
 }
 

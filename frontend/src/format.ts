@@ -16,3 +16,16 @@ export function percent(part: number, total: number): string {
 export function sortedEntries(values: Record<string, number>): [string, number][] {
   return Object.entries(values).sort((a, b) => b[1] - a[1]);
 }
+
+// Signed difference, e.g. "+1.20 k" or "−3.40".
+export function formatDelta(value: number): string {
+  if (value === 0) return formatValue(0);
+  return `${value > 0 ? '+' : '−'}${formatValue(Math.abs(value))}`;
+}
+
+// Relative change from base to scenario, e.g. "+12.5%".
+export function percentChange(base: number, scenario: number): string {
+  if (!base) return '—';
+  const change = ((scenario - base) / Math.abs(base)) * 100;
+  return `${change > 0 ? '+' : ''}${change.toFixed(1)}%`;
+}
