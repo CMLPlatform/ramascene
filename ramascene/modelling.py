@@ -1,6 +1,8 @@
 import numpy as np
+import scipy.sparse as sp
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
+from ramascene.woodbury import WoodburyL, block_scale
 
 
 class Modelling:
@@ -20,12 +22,13 @@ class Modelling:
     def apply_model(self):
         # copy Y to prevent any race conditions
         self.Y = self.Y_data.copy()
-        # if we need to load A
+        # A is only needed when an intermediate intervention changes the technology matrix
         if True in self.load_A:
             self.A = querymanagement.get_numpy_objects(self.year, "A")
-        # else just use L
-        else:
-            self.L = querymanagement.get_numpy_objects(self.year, "L")
+        # L is always needed: it is the base for the Woodbury update or the unmodified inverse
+        self.L = querymanagement.get_numpy_objects(self.year, "L")
+        # sparse change to A accumulated over the intermediate interventions
+        self.D = sp.csr_matrix(self.L.shape)
 
         # loop over the different interventions, such that we can apply changes individually
         A_modified = False
@@ -77,18 +80,18 @@ class Modelling:
                 rows = ids.get_consumed_product_ids()
                 columns = ids.get_produced_product_ids()
 
-                self.A = self.model_intermediates(self.A, rows, columns, tech_change)
+                factor = 1 - (-float(tech_change[0])) * 1e-2
+                self.D = block_scale(self.D, self.A, rows, columns, factor)
 
                 A_modified = True
 
         if A_modified is True:
-            with np.errstate(divide="ignore", invalid="ignore"):
-                self.L = np.linalg.inv(np.identity(len(self.A)) - self.A)
-                self.L[self.L == np.inf] = 0
-                self.L[self.L == np.nan] = 0
-        # else load the original L
-        else:
-            self.L = self.L
+            try:
+                # Woodbury update of the original inverse: only touched rows and columns of L are used
+                self.L = WoodburyL(self.L, self.D)
+            except ValueError:
+                # too many touched rows for the update to be cheaper than a full inversion
+                self.L = np.linalg.inv(np.identity(self.L.shape[0]) - self.A - self.D.toarray())
 
         return self.Y, self.L
 

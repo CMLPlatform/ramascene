@@ -55,7 +55,9 @@ class Analyze:
         # Calculated total output from every sector associated
         # with the final consumption of every selected product
         # Consumed products not selected are skipped.
-        X = np.array([np.multiply(y[idx], L[:, idx]) for idx in full_c_product_idx])
+        # one batched column selection (works for the plain array and for WoodburyL)
+        L_cols = L[:, full_c_product_idx]
+        X = np.array([np.multiply(y[idx], L_cols[:, j]) for j, idx in enumerate(full_c_product_idx)])
         X = np.transpose(X)
 
         # Select those sectors and regions from B and X
@@ -129,7 +131,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        X = np.dot(L, Y)
+        X = L @ Y
 
         # Select those sectors, regions from B and X
         # that are of interest of the user - single selection
@@ -197,7 +199,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy the
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L @ y
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
@@ -272,7 +274,7 @@ class Analyze:
 
         # Calculate total output needed to satisfy
         # selected final demand of countries
-        x = np.dot(L, y)
+        x = L @ y
 
         # Calculate extensions for each selected product
         # Non selected products are simply skipped. M
