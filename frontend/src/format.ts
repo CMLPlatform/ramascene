@@ -29,3 +29,10 @@ export function percentChange(base: number, scenario: number): string {
   const change = ((scenario - base) / Math.abs(base)) * 100;
   return `${change > 0 ? '+' : ''}${change.toFixed(1)}%`;
 }
+
+// Direction of a change, for coloring: "up", "down" or "flat".
+export function tone(base: number, scenario: number): 'up' | 'down' | 'flat' {
+  if (scenario > base) return 'up';
+  if (scenario < base) return 'down';
+  return 'flat';
+}

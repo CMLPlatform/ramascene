@@ -6,6 +6,8 @@ from ramascene import querymanagement
 
 log = logging.getLogger(__name__)
 
+SUPPLY_CELLS = 400
+
 
 class Analyze:
     """
@@ -29,10 +31,16 @@ class Analyze:
     def route_one(self):
         """Perform calculations according to route one.
 
-        Contribution of each supplying product to the consumption of the selected
-        products by the selected consuming countries. The values are summed over the
-        supplying countries, so the result has one value per supplying product. The
-        values add up to the same total as summing over the consumed products.
+        The footprint of the selected products, consumed in the selected countries, split up
+        by where the footprint arises. Three views of the same total are returned:
+
+        rawResultData: one value per supplying product (summed over supplying countries)
+        consumed: one value per selected consumed product (summed over the consuming countries)
+        supply: the largest cells of the supplying product by supplying country matrix (cells),
+            and the total per supplying country (countries)
+
+        The columns of L are processed in chunks so that a selection of all products in all
+        countries stays within a few tens of megabytes.
 
         Returns:
             json: json result data
@@ -53,34 +61,47 @@ class Analyze:
         B = self.B_data
 
         # Set-up final demand based on selected consuming countries
-        # Select and aggregate countries/regions
-        y = np.sum(Y[:, self.country_calc_indices], axis=1, keepdims=True)
+        y = np.sum(Y[:, self.country_calc_indices], axis=1)
+        y_cols = y[full_c_product_idx]
 
-        # Calculated total output from every sector associated
-        # with the final consumption of every selected product
-        # Consumed products not selected are skipped.
-        # one batched column selection (works for the plain array and for WoodburyL)
-        L_cols = L[:, full_c_product_idx]
-        X = np.array([np.multiply(y[idx], L_cols[:, j]) for j, idx in enumerate(full_c_product_idx)])
-        X = np.transpose(X)
-
-        # Select the supplying products from X and B; one indicator only
-        X = X[full_p_product_idx, :]
+        # One indicator only
         b = B[self.indicator_calc_indices, :]
         b = b[:, full_p_product_idx]
         if b.shape[0] != 1:
             raise ValueError("route one takes exactly one indicator")
+        b = b[0]
 
-        # Contribution of each supplying product (summed over the consumed products)
-        contribution = b[0] * X.sum(axis=1)
+        # Total output needed for the selected final consumption, per supplying product, and the
+        # footprint per consumed column. Consumed products not selected are skipped.
+        supply = np.zeros(len(full_p_product_idx))
+        consumed_cols = np.zeros(len(full_c_product_idx))
+        chunk = 500
+        for start in range(0, len(full_c_product_idx), chunk):
+            cols = full_c_product_idx[start:start + chunk]
+            L_part = np.asarray(L[:, cols])[full_p_product_idx, :]
+            weighted = L_part * y_cols[start:start + chunk]
+            supply += weighted.sum(axis=1)
+            consumed_cols[start:start + chunk] = b @ weighted
+        supply = supply * b
 
         # full_p_product_idx lists the origin countries outer and the products inner
-        contribution = contribution.reshape(selected_p_cntr_cnt, selected_p_prd_cnt)
-        by_product = contribution.sum(axis=0)
+        cells = supply.reshape(selected_p_cntr_cnt, selected_p_prd_cnt)
+        by_product = cells.sum(axis=0)
 
-        # One value per supplying product, keyed by product name
-        names = querymanagement.get_leaf_product_names()
-        result = {names[idx]: float(value) for idx, value in enumerate(by_product)}
+        # full_c_product_idx lists the consuming countries outer and the products inner
+        n_selected_c = len(self.product_calc_indices)
+        by_consumed = consumed_cols.reshape(-1, n_selected_c).sum(axis=0)
+
+        product_names = querymanagement.get_leaf_product_names()
+        country_names = querymanagement.get_leaf_country_names()
+        result = {product_names[idx]: float(value) for idx, value in enumerate(by_product)}
+        consumed = {product_names[int(idx)]: float(value) for idx, value in zip(self.product_calc_indices, by_consumed)}
+
+        top = np.argsort(cells, axis=None)[::-1][:SUPPLY_CELLS]
+        top_cells = []
+        for flat in top:
+            c_idx, p_idx = divmod(int(flat), selected_p_prd_cnt)
+            top_cells.append([product_names[p_idx], country_names[c_idx], float(cells[c_idx, p_idx])])
 
         # built json object for saving
         data = {}
@@ -89,6 +110,12 @@ class Analyze:
         data['unit'] = self.idx_units
         # save the final dict result in rawResultData
         data['rawResultData'] = result
+        data['consumed'] = consumed
+        by_country = cells.sum(axis=1)
+        data['supply'] = {
+            'cells': top_cells,
+            'countries': {country_names[idx]: float(value) for idx, value in enumerate(by_country)},
+        }
         json_data = json.dumps(data)
         return json_data
 

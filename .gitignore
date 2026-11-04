@@ -50,3 +50,9 @@ logs/
 *.swp
 .idea/
 .~lock*
+
+# Finder/iCloud duplicates of the database, and other local leftovers
+db *.sqlite3*
+*.pyc
+.pytest_cache/
+*.tsbuildinfo

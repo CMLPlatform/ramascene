@@ -498,3 +498,21 @@ def get_leaf_product_names():
         raise ValueError("expected 200 leaf products with local ids 1 to 200")
     return names
 
+
+
+def get_leaf_country_names():
+    """Names of the leaf countries in calculation order.
+
+        Calculation index i (0-based) is the country with local_id i + 1.
+
+        Returns:
+            list: 49 country names, ordered by calculation index
+
+    """
+    OFFSET = -1
+    names = [None] * 49
+    for local_id, name in Country.objects.filter(identifier="LEAF").values_list("local_id", "name"):
+        names[int(local_id) + OFFSET] = name
+    if any(name is None for name in names):
+        raise ValueError("expected 49 leaf countries with local ids 1 to 49")
+    return names

@@ -41,9 +41,17 @@ export interface JobRequest {
   model_details?: Intervention[];
 }
 
+// Breakdown of a sector query by supplying sector and supplying country (route one only).
+export interface Supply {
+  cells: [string, string, number][]; // [supplying sector, supplying country, value], largest first
+  countries: Record<string, number>; // total per supplying country
+}
+
 export interface JobResult {
   unit: Record<string, string>;
   rawResultData: Record<string, number>;
+  consumed?: Record<string, number>; // route one: footprint per consumed sector
+  supply?: Supply; // route one: where the supply chain sits
 }
 
 export interface JobStatus {
