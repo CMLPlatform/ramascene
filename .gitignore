@@ -38,3 +38,7 @@ venv/
 .venv/
 static/
 .DS_Store
+
+# Frontend build output and dependencies
+frontend/node_modules/
+frontend/dist/
