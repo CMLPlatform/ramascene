@@ -9,6 +9,14 @@ import ast
 
 # waiting time for celery results
 TIMEOUT = 100
+
+# The v3 reference files use the old view names. Map them to the names the app uses now
+# (tasks.execute_calc): Consumption/GeoMap -> Contribution/Geographic (route two),
+# Production/TreeMap -> Hotspot/Sectoral (route four).
+LEGACY_VIEW_NAMES = {
+    ("Consumption", "GeoMap"): ("Contribution", "Geographic"),
+    ("Production", "TreeMap"): ("Hotspot", "Sectoral"),
+}
 FILES_TO_TEST_AGAINST = ["validation_analytical_1_v3.csv",
                          "validation_analytical_2_v3.csv",
                          "validation_analytical_3_v3.csv",
@@ -102,8 +110,7 @@ class TestLifeCycle:
                 nodesReg.append(int(parts[3]))
                 nodesSec.append(int(parts[4]))
                 extn = [int(parts[5])]
-                dimType = parts[0]
-                vizType = parts[1]
+                dimType, vizType = LEGACY_VIEW_NAMES[(parts[0], parts[1])]
                 year = [parts[2]]
                 results[parts[6]] = float(parts[9])
                 unit[parts[8]] = parts[7]
