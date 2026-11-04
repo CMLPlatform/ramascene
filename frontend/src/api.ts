@@ -74,6 +74,7 @@ export interface PollOptions {
   intervalMs?: number;
   timeoutMs?: number;
   fetchImpl?: FetchLike;
+  signal?: AbortSignal; // aborting stops waiting for the result
   sleep?: (ms: number) => Promise<void>;
 }
 
@@ -92,11 +93,22 @@ export async function fetchCatalog(fetchImpl: FetchLike = fetch): Promise<Catalo
   return readJson<Catalog>(await fetchImpl('/api/catalog/'));
 }
 
+export function isAbortError(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && (error as { name?: string }).name === 'AbortError';
+}
+
+function throwIfAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) throw new DOMException('Cancelled', 'AbortError');
+}
+
 export async function startJob(
   request: JobRequest,
   fetchImpl: FetchLike = fetch,
+  signal?: AbortSignal,
 ): Promise<{ job_id: number; status_url: string }> {
+  throwIfAborted(signal);
   const response = await fetchImpl('/api/jobs/', {
+    signal,
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
@@ -110,11 +122,13 @@ export async function pollJob(statusUrl: string, options: PollOptions = {}): Pro
     intervalMs = 1000,
     timeoutMs = 15 * 60 * 1000,
     fetchImpl = fetch,
+    signal,
     sleep = defaultSleep,
   } = options;
   const deadline = Date.now() + timeoutMs;
   for (;;) {
-    const job = await readJson<JobStatus>(await fetchImpl(statusUrl));
+    throwIfAborted(signal);
+    const job = await readJson<JobStatus>(await fetchImpl(statusUrl, { signal }));
     if (job.status === 'completed' || job.status === 'failed') {
       return job;
     }
@@ -122,11 +136,12 @@ export async function pollJob(statusUrl: string, options: PollOptions = {}): Pro
       throw new ApiError('The calculation is taking too long. Try again later.', 504);
     }
     await sleep(intervalMs);
+    throwIfAborted(signal);
   }
 }
 
 // Starts a calculation and waits for its result.
 export async function runQuery(request: JobRequest, options: PollOptions = {}): Promise<JobStatus> {
-  const started = await startJob(request, options.fetchImpl);
+  const started = await startJob(request, options.fetchImpl, options.signal);
   return pollJob(started.status_url, options);
 }

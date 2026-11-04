@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ApiError, pollJob, startJob } from './api';
+import { ApiError, isAbortError, pollJob, startJob } from './api';
 
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -65,5 +65,29 @@ describe('pollJob', () => {
     await expect(
       pollJob('/api/jobs/7/', { fetchImpl: fetchImpl as unknown as typeof fetch, sleep, timeoutMs: -1 }),
     ).rejects.toBeInstanceOf(ApiError);
+  });
+});
+
+describe('cancelling', () => {
+  it('stops polling when the signal is aborted', async () => {
+    const controller = new AbortController();
+    const fetchImpl = vi.fn(async () => jsonResponse({ job_id: 1, status: 'started', created: '' }));
+    const sleep = vi.fn(async () => controller.abort());
+    const error = await pollJob('/api/jobs/1/', {
+      fetchImpl: fetchImpl as unknown as typeof fetch,
+      sleep,
+      signal: controller.signal,
+    }).catch((e) => e);
+    expect(isAbortError(error)).toBe(true);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not start a job after the signal is aborted', async () => {
+    const controller = new AbortController();
+    controller.abort();
+    const fetchImpl = vi.fn();
+    const error = await startJob({ action: 'default', querySelection: selection }, fetchImpl as unknown as typeof fetch, controller.signal).catch((e) => e);
+    expect(isAbortError(error)).toBe(true);
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 });

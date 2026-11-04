@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { chartGeometry } from './trend';
-import { formatValue } from './format';
+import { exactQuantity, formatQuantity, quantityParts } from './units';
 import type { LegendItem, StackRow } from './stacks';
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
@@ -12,10 +12,25 @@ export function Field({ label, children }: { label: string; children: ReactNode 
   );
 }
 
-export function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
+export function Stat({
+  label,
+  value,
+  unit,
+  title,
+  sub,
+}: {
+  label: string;
+  value: string;
+  unit?: string;
+  title?: string;
+  sub: string;
+}) {
   return (
     <div className="stat">
-      <span className="stat-value tabular">{value}</span>
+      <span className="stat-value tabular" title={title}>
+        {value}
+        {unit && <span className="stat-unit"> {unit}</span>}
+      </span>
       <span className="stat-label">{label}</span>
       <span className="stat-sub">{sub}</span>
     </div>
@@ -29,21 +44,21 @@ export interface RankedRow {
 }
 
 // Numbered top-N list; the selected sector or region is highlighted.
-export function RankList({ title, rows }: { title: string; rows: RankedRow[] }) {
+export function RankList({ title, rows, unit }: { title: string; rows: RankedRow[]; unit: string }) {
   return (
     <div className="rank">
       <span className="bars-title">{title}</span>
       {rows.map((row, i) => (
         <div className={`rank-row${row.highlight ? ' selected' : ''}`} key={row.label}>
           <span className="rank-name" title={row.label}>{i + 1}. {row.label}</span>
-          <span className="tabular">{formatValue(row.value)}</span>
+          <span className="tabular" title={exactQuantity(row.value, unit)}>{formatQuantity(row.value, unit)}</span>
         </div>
       ))}
     </div>
   );
 }
 
-export function StackedBars({ title, rows, legend }: { title: string; rows: StackRow[]; legend: LegendItem[] }) {
+export function StackedBars({ title, rows, legend, unit }: { title: string; rows: StackRow[]; legend: LegendItem[]; unit: string }) {
   const max = Math.max(...rows.map((r) => r.total), 0);
   return (
     <div className="bars">
@@ -56,13 +71,13 @@ export function StackedBars({ title, rows, legend }: { title: string; rows: Stac
               {row.segments.map((s) => (
                 <div
                   key={s.label}
-                  title={`${s.label}: ${formatValue(s.value)}`}
+                  title={`${s.label}: ${formatQuantity(s.value, unit)}`}
                   style={{ flex: `${s.value} 1 0`, background: s.color }}
                 />
               ))}
             </div>
           </div>
-          <span className="bar-value tabular">{formatValue(row.total)}</span>
+          <span className="bar-value tabular" title={exactQuantity(row.total, unit)}>{formatQuantity(row.total, unit)}</span>
         </div>
       ))}
       <div className="legend">
@@ -81,22 +96,32 @@ export function TrendChart({
   years,
   base,
   scenario,
+  unit,
 }: {
   title: string;
   years: number[];
   base: (number | null)[];
   scenario: (number | null)[] | null;
+  unit: string;
 }) {
   const hasData = base.some((v) => v !== null);
   const geometry = hasData ? chartGeometry(years, base, scenario) : null;
+  const shown = [...base, ...(scenario ?? [])].filter((v): v is number => v !== null);
+  const lo = Math.min(...shown);
+  const hi = Math.max(...shown);
+  const summary = geometry
+    ? `Footprint from ${years[0]} to ${years[years.length - 1]}, between ${formatQuantity(lo, unit)} and ${formatQuantity(hi, unit)}.`
+    : '';
   return (
     <div className="chart-card">
       <span className="field-label">{title}</span>
       {geometry ? (
-        <svg viewBox="0 0 260 130" width="100%" role="img" aria-label="Footprint over time, baseline and scenario">
+        <svg viewBox="0 0 260 130" width="100%" role="img" aria-label={`${summary} Baseline dashed${scenario ? ', scenario solid' : ''}.`}>
           <line x1="20" y1="110" x2="250" y2="110" stroke="var(--border-strong)" strokeWidth="1" />
           <polyline points={geometry.base} fill="none" stroke="var(--bar)" strokeWidth="2" strokeDasharray="4 3" />
           {geometry.scenario && <polyline points={geometry.scenario} fill="none" stroke="var(--primary)" strokeWidth="2.5" />}
+          <text x="2" y="18" fontSize="9" fill="var(--muted)">{quantityParts(hi, unit).number}</text>
+          {lo !== hi && <text x="2" y="108" fontSize="9" fill="var(--muted)">{quantityParts(lo, unit).number}</text>}
           {geometry.labels.map((l) => (
             <text key={l.year} x={l.x} y="124" fontSize="10" fill="var(--muted)" textAnchor="middle">{l.year}</text>
           ))}
@@ -105,6 +130,7 @@ export function TrendChart({
         <p className="muted small">Run an analysis to see the trend.</p>
       )}
       <div className="legend">
+        {geometry && <span>Scale: {quantityParts(hi, unit).unit}</span>}
         <span><span className="swatch dash" />Baseline</span>
         <span><span className="swatch line" />Scenario</span>
       </div>

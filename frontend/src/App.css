@@ -304,3 +304,43 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
   font-size: 12px; background: var(--bg-side); border-left: 3px solid var(--primary); border-radius: 6px;
 }
 .intervention > select { width: 100%; max-width: none; padding: 8px 10px; font-size: 13px; border: 1px solid var(--border-strong); border-radius: 8px; background-color: var(--surface); color: var(--text); }
+
+/* Values and units */
+.stat-unit { font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--text-2); }
+.table td.right, .table th.right { white-space: nowrap; }
+.table th { font-size: 12px; }
+.delta-up, .delta-down, .delta-flat { font-weight: 500; }
+.bar-value { flex: 0 0 120px; white-space: nowrap; }
+.rank-row span:last-child { white-space: nowrap; }
+.bars .bar-name { flex-basis: 140px; }
+.bars .bar-value { flex-basis: 108px; }
+.bars .bar-track { min-width: 90px; }
+.split > * { flex-basis: 360px; }
+
+/* Compact direct-impact table */
+.table td { padding: 6px 10px; }
+.show-all { align-self: flex-start; }
+
+/* Stopping an analysis */
+.stop {
+  padding: 4px 12px; border: 1px solid var(--danger); border-radius: 8px;
+  background: transparent; color: var(--danger); font-weight: 600;
+}
+.stop:hover { background: var(--fail-bg); }
+.controls .stop { padding: 9px 16px; font-size: 14px; }
+.status.cancelled { background: var(--bg-side); color: var(--muted); }
+
+/* Precalculated and outdated results */
+.notice {
+  margin: 0; padding: 10px 14px; font-size: 13px; color: var(--text-2);
+  background: var(--primary-soft); border: 1px solid var(--border); border-radius: var(--radius);
+}
+.results { display: flex; flex-direction: column; gap: 20px; }
+.results.stale { opacity: 0.55; }
+
+/* Resuming a stopped analysis */
+.resume {
+  padding: 4px 12px; border: 1px solid var(--primary); border-radius: 8px;
+  background: transparent; color: var(--primary); font-weight: 600;
+}
+.resume:hover:not(:disabled) { background: var(--primary-soft); }

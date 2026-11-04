@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { fetchCatalog, runQuery, type Catalog, type Intervention, type JobResult, type Selection } from './api';
+import { fetchCatalog, isAbortError, pollJob, startJob, type Catalog, type Intervention, type JobRequest, type JobResult, type Selection } from './api';
 import { ConsentBanner, Field, RankList, Stat, StackedBars, TrendChart } from './components';
 import { loadConsent, saveConsent, type Consent } from './consent';
-import { formatValue, percent, percentChange, sortedEntries, tone } from './format';
+import { deltaText, percent, percentChange, sortedEntries, tone } from './format';
+import { exactQuantity, formatQuantity, quantityParts } from './units';
 import { nuts2Codes, nuts2Share, nuts2Shares } from './nuts2';
 import { buildPresets } from './presets';
+import { loadPrecalculated } from './precalculated';
 import {
   CHANGE_LIMIT,
   compareRows,
@@ -20,6 +22,7 @@ import { trendYears } from './trend';
 const DEFAULT_COUNTRY = 'Netherlands';
 const DEFAULT_YEAR = 2011;
 const TOP_N = 5;
+const DIRECT_ROWS = 10; // rows of the direct-impact table shown before "Show all"
 const TASK_LABELS: Record<string, string> = {
   footprintCountry: 'Footprint in country',
   footprintAll: 'Footprint, all regions',
@@ -42,16 +45,53 @@ interface Results {
 
 type QueryKey = Exclude<keyof Results, 'trend'>;
 
+// What a result was calculated for, so the panels keep describing it after the selection changes.
+interface ResultContext {
+  sector: string;
+  country: string;
+  year: number;
+  unit: string;
+}
+
 interface RunOutcome {
   baseline: Results;
   scenario: Results | null;
   years: number[];
+  ctx: ResultContext;
+  key: string; // the selection (sector, country, indicator, year) the result belongs to
+  precalculated: boolean;
+}
+
+// Everything a run needs, copied when it starts.
+interface RunSpec {
+  sectorId: number;
+  countryId: number;
+  indicatorId: number;
+  year: number;
+  sectorName: string;
+  countryName: string;
+  unit: string;
+  interventions: Intervention[] | null;
+  years: number[];
+  allCountries: number[];
+  allSectors: number[];
+}
+
+// A query's job on the server and, once finished, its result.
+interface CacheEntry {
+  statusUrl?: string;
+  result?: JobResult;
+}
+
+interface RunRecord {
+  spec: RunSpec;
+  cache: Map<string, CacheEntry>;
 }
 
 interface QueueItem {
   id: number;
   label: string;
-  status: 'running' | 'completed' | 'failed';
+  status: 'running' | 'completed' | 'failed' | 'cancelled';
   detail: string;
   tasks: TaskState[];
   summary?: string[];
@@ -67,6 +107,28 @@ interface TaskState {
 
 type Panel = 'left' | 'right';
 type Level = 'country' | 'nuts2';
+
+async function cachedQuery(
+  record: RunRecord,
+  key: string,
+  request: JobRequest,
+  signal: AbortSignal,
+): Promise<JobResult> {
+  let entry = record.cache.get(key);
+  if (!entry) {
+    entry = {};
+    record.cache.set(key, entry);
+  }
+  if (entry.result) return entry.result;
+  if (!entry.statusUrl) entry.statusUrl = (await startJob(request, fetch, signal)).status_url;
+  const job = await pollJob(entry.statusUrl, { signal });
+  if (job.status === 'failed' || !job.result) {
+    entry.statusUrl = undefined; // a retry starts a fresh job
+    throw new Error('Calculation failed');
+  }
+  entry.result = job.result;
+  return job.result;
+}
 
 export default function App() {
   const [catalog, setCatalog] = useState<Catalog | null>(null);
@@ -85,9 +147,12 @@ export default function App() {
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [open, setOpen] = useState<Record<Panel, boolean>>({ left: true, right: true });
   const [helpOpen, setHelpOpen] = useState(false);
+  const [showAllRows, setShowAllRows] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
   const [consent, setConsent] = useState<Consent | null>(() => loadConsent());
   const nextId = useRef(1);
+  const controllers = useRef(new Map<number, AbortController>());
+  const runs = useRef(new Map<number, RunRecord>());
 
   useEffect(() => {
     fetchCatalog()
@@ -98,6 +163,45 @@ export default function App() {
         setSectorId((data.products.find((p) => /^electricity nec/i.test(p.name)) ?? data.products[0])?.global_id ?? null);
         const indicator = data.indicators.find((i) => /GHG/i.test(i.name)) ?? data.indicators[0];
         setIndicatorId(indicator?.global_id ?? null);
+        return loadPrecalculated().then((pre) => {
+          if (!pre) return;
+          const sector = data.products.find((p) => p.name === pre.context.sector);
+          const home = data.countries.find((c) => c.name === pre.context.country);
+          const pick = data.indicators.find((i) => i.name === pre.context.indicator);
+          if (!sector || !home || !pick || !data.years.includes(pre.context.year)) return;
+          setSectorId(sector.global_id);
+          setCountryId(home.global_id);
+          setIndicatorId(pick.global_id);
+          setYear(pre.context.year);
+          const baselineResults: Results = {
+            ...pre.results,
+            trend: Object.fromEntries(Object.entries(pre.results.trend).map(([y, v]) => [Number(y), v])),
+          };
+          const trendCount = pre.context.years.filter((y) => y !== pre.context.year).length;
+          setQueue((existing) =>
+            existing.some((item) => item.detail.startsWith('Precalculated')) ? existing : [
+            {
+              id: newId(),
+              label: `${sector.name} · ${home.name} · ${pre.context.year} · precalculated`,
+              status: 'completed',
+              detail: `Precalculated, generated ${pre.context.generated}`,
+              tasks: [
+                ...Object.values(TASK_LABELS).map((label) => ({ name: label, done: 1, total: 1, failed: false })),
+                ...(trendCount > 0 ? [{ name: TREND_LABEL, done: trendCount, total: trendCount, failed: false }] : []),
+              ],
+              summary: summarize(baselineResults, null, { countryName: home.name, unit: pick.unit } as RunSpec),
+            },
+            ...existing,
+          ]);
+          setOutcome({
+            baseline: baselineResults,
+            scenario: null,
+            years: pre.context.years,
+            ctx: { sector: sector.name, country: home.name, year: pre.context.year, unit: pick.unit },
+            key: `${sector.global_id}|${home.global_id}|${pick.global_id}|${pre.context.year}`,
+            precalculated: true,
+          });
+        });
       })
       .catch((error: Error) => setLoadError(error.message));
   }, []);
@@ -108,7 +212,7 @@ export default function App() {
     return { countryName, productName };
   }, [catalog]);
 
-  const unit = useMemo(() => {
+  const selectedUnit = useMemo(() => {
     const indicator = catalog?.indicators.find((i) => i.global_id === indicatorId);
     return indicator?.unit ?? '';
   }, [catalog, indicatorId]);
@@ -116,12 +220,22 @@ export default function App() {
   const selectedCountry = countryId !== null ? names.countryName.get(countryId) ?? '' : '';
   const selectedSector = sectorId !== null ? names.productName.get(sectorId) ?? '' : '';
 
+  // The panels describe the result on screen, which can differ from the selection after a change.
+  const ctx = outcome?.ctx ?? null;
+  const shownSector = ctx?.sector ?? selectedSector;
+  const shownCountry = ctx?.country ?? selectedCountry;
+  const shownYear = ctx?.year ?? year;
+  const unit = ctx?.unit ?? selectedUnit;
+  const stale = outcome !== null && outcome.key !== `${sectorId}|${countryId}|${indicatorId}|${year}`;
+
   // NUTS2 view: a placeholder split of the country total until regional data is loaded.
-  const codes = nuts2Codes(selectedCountry);
+  const controlCodes = nuts2Codes(selectedCountry);
+  const controlCode = nuts2Code && controlCodes.includes(nuts2Code) ? nuts2Code : controlCodes[0] ?? null;
+  const codes = nuts2Codes(shownCountry);
   const useNuts2 = level === 'nuts2' && codes.length > 0;
   const selectedCode = nuts2Code && codes.includes(nuts2Code) ? nuts2Code : codes[0] ?? null;
   const share = useNuts2 && selectedCode ? nuts2Share(codes, selectedCode) : 1;
-  const unitName = useNuts2 && selectedCode ? selectedCode : selectedCountry;
+  const unitName = useNuts2 && selectedCode ? selectedCode : shownCountry;
 
   const setQueueItem = (id: number, patch: Partial<QueueItem>) =>
     setQueue((items) => items.map((item) => (item.id === id ? { ...item, ...patch } : item)));
@@ -158,63 +272,62 @@ export default function App() {
     setConsent(value);
   }
 
-  // Runs the analysis queries; with interventions they use the scenario ("model") action.
+  // Runs the analysis queries of one set; with interventions they use the scenario ("model") action.
+  // Queries that already finished, or were already started on the server, are not started again,
+  // which is what lets a stopped run resume.
   async function runSet(
-    interventions: Intervention[] | null,
-    years: number[],
+    record: RunRecord,
+    setKey: 'base' | 'scen',
     taskName: (label: string) => string,
     onTask: (name: string, failed?: boolean) => void,
+    signal: AbortSignal,
   ): Promise<Results> {
-    if (!catalog || sectorId === null || countryId === null || indicatorId === null) {
-      throw new Error('The catalog is not loaded yet');
-    }
-    const allCountries = catalog.countries.map((c) => c.global_id);
-    const allSectors = catalog.products.map((p) => p.global_id);
-    const common = { extn: [indicatorId], year: [String(year)] };
-    const one = { ...common, nodesSec: [sectorId] };
-    const everySector = { ...common, nodesSec: allSectors };
+    const { spec } = record;
+    const common = { extn: [spec.indicatorId], year: [String(spec.year)] };
+    const one = { ...common, nodesSec: [spec.sectorId] };
+    const everySector = { ...common, nodesSec: spec.allSectors };
     const requests: Record<QueryKey, Selection> = {
-      footprintCountry: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: [countryId] },
-      footprintAll: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: allCountries },
-      direct: { ...one, dimType: 'Hotspot', vizType: 'Geographic', nodesReg: allCountries },
-      contributions: { ...one, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: [countryId] },
-      topSectors: { ...everySector, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: allCountries },
-      topRegions: { ...everySector, dimType: 'Contribution', vizType: 'Geographic', nodesReg: allCountries },
+      footprintCountry: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: [spec.countryId] },
+      footprintAll: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: spec.allCountries },
+      direct: { ...one, dimType: 'Hotspot', vizType: 'Geographic', nodesReg: spec.allCountries },
+      contributions: { ...one, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: [spec.countryId] },
+      topSectors: { ...everySector, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: spec.allCountries },
+      topRegions: { ...everySector, dimType: 'Contribution', vizType: 'Geographic', nodesReg: spec.allCountries },
     };
-    const action = interventions ? 'model' : 'default';
-    const model_details = interventions ?? undefined;
+    const action = spec.interventions ? 'model' : 'default';
+    const model_details = spec.interventions ?? undefined;
 
     const main = Promise.all(
       (Object.entries(requests) as [QueryKey, Selection][]).map(async ([key, selection]) => {
         const name = taskName(TASK_LABELS[key]);
         try {
-          const job = await runQuery({ action, querySelection: selection, model_details });
-          if (job.status === 'failed' || !job.result) throw new Error('Calculation failed');
+          const result = await cachedQuery(record, `${setKey}:${key}`, { action, querySelection: selection, model_details }, signal);
           onTask(name);
-          return [key, job.result] as const;
+          return [key, result] as const;
         } catch (error) {
-          onTask(name, true);
+          if (!isAbortError(error)) onTask(name, true);
           throw error;
         }
       }),
     );
     // The trend is secondary: a failed year leaves a gap instead of failing the run.
     const trend = Promise.all(
-      years
-        .filter((y) => y !== year)
+      spec.years
+        .filter((y) => y !== spec.year)
         .map(async (y) => {
           try {
-            const job = await runQuery({
-              action,
-              querySelection: { ...requests.footprintCountry, year: [String(y)] },
-              model_details,
-            });
-            const value = job.status === 'completed' ? job.result?.rawResultData[selectedCountry] ?? null : null;
-            return [y, value] as const;
-          } catch {
-            return [y, null] as const;
-          } finally {
+            const result = await cachedQuery(
+              record,
+              `${setKey}:trend:${y}`,
+              { action, querySelection: { ...requests.footprintCountry, year: [String(y)] }, model_details },
+              signal,
+            );
             onTask(taskName(TREND_LABEL));
+            return [y, result.rawResultData[spec.countryName] ?? null] as const;
+          } catch (error) {
+            if (isAbortError(error)) throw error;
+            onTask(taskName(TREND_LABEL));
+            return [y, null] as const;
           }
         }),
     );
@@ -222,27 +335,89 @@ export default function App() {
     const collected: Partial<Results> = {};
     for (const [key, result] of settled) collected[key] = result;
     collected.trend = Object.fromEntries(trendEntries);
-    collected.trend[year] = collected.footprintCountry?.rawResultData[selectedCountry] ?? null;
+    collected.trend[spec.year] = collected.footprintCountry?.rawResultData[spec.countryName] ?? null;
     return collected as Results;
   }
 
   // Short result lines for a queue entry.
-  function summarize(base: Results, scen: Results | null): string[] {
-    const own = base.footprintCountry.rawResultData[selectedCountry] ?? 0;
+  function summarize(base: Results, scen: Results | null, spec: RunSpec): string[] {
+    const own = base.footprintCountry.rawResultData[spec.countryName] ?? 0;
     const all = sortedEntries(base.footprintAll.rawResultData);
     const global = all.reduce((sum, [, value]) => sum + value, 0);
-    const position = all.findIndex(([name]) => name === selectedCountry) + 1;
+    const position = all.findIndex(([name]) => name === spec.countryName) + 1;
     const lines = [
-      `Footprint in ${selectedCountry}: ${formatValue(own)} ${unit}`,
+      `Footprint in ${spec.countryName}: ${formatQuantity(own, spec.unit)}`,
       `${percent(own, global)} of global${position > 0 ? ` · rank #${position}` : ''}`,
     ];
     const top = sortedEntries((scen ?? base).contributions.rawResultData)[0];
     if (top) lines.push(`Top supplying sector: ${top[0]}`);
     if (scen) {
-      const changed = scen.footprintCountry.rawResultData[selectedCountry] ?? 0;
-      lines.push(`Scenario: ${formatValue(changed)} ${unit} (${percentChange(own, changed)})`);
+      const changed = scen.footprintCountry.rawResultData[spec.countryName] ?? 0;
+      lines.push(`Scenario: ${formatQuantity(changed, spec.unit)} (${percentChange(own, changed)})`);
     }
     return lines;
+  }
+
+  // Starts, or resumes, the run in the record. Progress and results go to its queue entry.
+  async function execute(runId: number, record: RunRecord) {
+    const { spec } = record;
+    const trendCount = spec.years.filter((y) => y !== spec.year).length;
+    const nameFor = (prefix: string | null) => (label: string) => (prefix ? `${prefix}: ${label}` : label);
+    const baselineName = nameFor(spec.interventions ? 'Baseline' : null);
+    const scenarioName = nameFor('Scenario');
+    const setTasks = (name: (label: string) => string): TaskState[] => [
+      ...Object.values(TASK_LABELS).map((label) => ({ name: name(label), done: 0, total: 1, failed: false })),
+      ...(trendCount > 0 ? [{ name: name(TREND_LABEL), done: 0, total: trendCount, failed: false }] : []),
+    ];
+    const controller = new AbortController();
+    controllers.current.set(runId, controller);
+    setBusy(true);
+    setRunError(null);
+    setQueueItem(runId, {
+      status: 'running',
+      detail: 'Started',
+      summary: undefined,
+      tasks: [...setTasks(baselineName), ...(spec.interventions ? setTasks(scenarioName) : [])],
+    });
+    const onTask = (name: string, failed = false) =>
+      setQueue((items) =>
+        items.map((item) =>
+          item.id === runId
+            ? {
+                ...item,
+                tasks: item.tasks.map((t) =>
+                  t.name === name ? { ...t, done: failed ? t.done : t.done + 1, failed: t.failed || failed } : t,
+                ),
+              }
+            : item,
+        ),
+      );
+    try {
+      const [baseline, scenario] = await Promise.all([
+        runSet(record, 'base', baselineName, onTask, controller.signal),
+        spec.interventions ? runSet(record, 'scen', scenarioName, onTask, controller.signal) : Promise.resolve(null),
+      ]);
+      setOutcome({
+        baseline,
+        scenario,
+        years: spec.years,
+        ctx: { sector: spec.sectorName, country: spec.countryName, year: spec.year, unit: spec.unit },
+        key: `${spec.sectorId}|${spec.countryId}|${spec.indicatorId}|${spec.year}`,
+        precalculated: false,
+      });
+      setQueueItem(runId, { summary: summarize(baseline, scenario, spec), status: 'completed', detail: `Finished ${new Date().toLocaleTimeString()}` });
+    } catch (error) {
+      controller.abort(); // stop waiting for the queries that are still running
+      if (isAbortError(error)) {
+        setQueueItem(runId, { status: 'cancelled', detail: 'Stopped. Resume continues with what is left.' });
+      } else {
+        setRunError((error as Error).message);
+        setQueueItem(runId, { status: 'failed', detail: (error as Error).message });
+      }
+    } finally {
+      controllers.current.delete(runId);
+      setBusy(controllers.current.size > 0);
+    }
   }
 
   async function run(forceScenario = false) {
@@ -263,55 +438,45 @@ export default function App() {
     }
     if (forceScenario) setApplyScenario(true);
 
-    const years = trendYears(catalog.years, year);
-    const trendCount = years.filter((y) => y !== year).length;
-    const nameFor = (prefix: string | null) => (label: string) => (prefix ? `${prefix}: ${label}` : label);
-    const baselineName = nameFor(interventions ? 'Baseline' : null);
-    const scenarioName = nameFor('Scenario');
-    const setTasks = (name: (label: string) => string): TaskState[] => [
-      ...Object.values(TASK_LABELS).map((label) => ({ name: name(label), done: 0, total: 1, failed: false })),
-      ...(trendCount > 0 ? [{ name: name(TREND_LABEL), done: 0, total: trendCount, failed: false }] : []),
-    ];
-    const tasks = [...setTasks(baselineName), ...(interventions ? setTasks(scenarioName) : [])];
-    setBusy(true);
-    setRunError(null);
+    // Everything the run needs is copied here, so later changes to the selection do not affect it.
+    const spec: RunSpec = {
+      sectorId,
+      countryId,
+      indicatorId,
+      year,
+      sectorName: selectedSector,
+      countryName: selectedCountry,
+      unit: selectedUnit,
+      interventions,
+      years: trendYears(catalog.years, year),
+      allCountries: catalog.countries.map((c) => c.global_id),
+      allSectors: catalog.products.map((p) => p.global_id),
+    };
     const runId = newId();
+    runs.current.set(runId, { spec, cache: new Map() });
     setQueue((existing) => [
       {
         id: runId,
         label: `${selectedSector} · ${selectedCountry} · ${year}${interventions ? ' · with scenario' : ''}`,
         status: 'running',
         detail: 'Started',
-        tasks,
+        tasks: [],
       },
       ...existing,
     ]);
-    const onTask = (name: string, failed = false) =>
-      setQueue((items) =>
-        items.map((item) =>
-          item.id === runId
-            ? {
-                ...item,
-                tasks: item.tasks.map((t) =>
-                  t.name === name ? { ...t, done: failed ? t.done : t.done + 1, failed: t.failed || failed } : t,
-                ),
-              }
-            : item,
-        ),
-      );
-    try {
-      const [baseline, scenario] = await Promise.all([
-        runSet(null, years, baselineName, onTask),
-        interventions ? runSet(interventions, years, scenarioName, onTask) : Promise.resolve(null),
-      ]);
-      setOutcome({ baseline, scenario, years });
-      setQueueItem(runId, { summary: summarize(baseline, scenario), status: 'completed', detail: `Finished ${new Date().toLocaleTimeString()}` });
-    } catch (error) {
-      setRunError((error as Error).message);
-      setQueueItem(runId, { status: 'failed', detail: (error as Error).message });
-    } finally {
-      setBusy(false);
-    }
+    await execute(runId, runs.current.get(runId)!);
+  }
+
+  // Continues a stopped or failed run: finished queries are kept, and jobs the server already
+  // started are waited for instead of being started again.
+  function resumeRun(id: number) {
+    const record = runs.current.get(id);
+    if (record && controllers.current.size === 0) void execute(id, record);
+  }
+
+  // Stops waiting for a run. The server may still finish calculations it has already started.
+  function stopRun(id: number) {
+    controllers.current.get(id)?.abort();
   }
 
   if (loadError) {
@@ -326,15 +491,16 @@ export default function App() {
   const view = scenario ?? baseline; // what the panels show; the baseline is the reference for changes
 
   // Question 1
-  const countryFootprint = (r: Results | null) => (r?.footprintCountry.rawResultData[selectedCountry] ?? 0) * share;
+  const countryFootprint = (r: Results | null) => (r?.footprintCountry.rawResultData[shownCountry] ?? 0) * share;
   const baseFootprint = countryFootprint(baseline);
   const viewFootprint = countryFootprint(view);
   const globalOf = (r: Results | null) =>
     Object.values(r?.footprintAll.rawResultData ?? {}).reduce((sum, value) => sum + value, 0);
   const baseGlobal = globalOf(baseline);
   const viewGlobal = globalOf(view);
+  const regionCount = view ? Object.keys(view.footprintAll.rawResultData).length : 0;
   const rank = view
-    ? sortedEntries(view.footprintAll.rawResultData).findIndex(([name]) => name === selectedCountry) + 1
+    ? sortedEntries(view.footprintAll.rawResultData).findIndex(([name]) => name === shownCountry) + 1
     : 0;
   const topSectors = view ? sortedEntries(view.topSectors.consumed ?? {}).slice(0, TOP_N) : [];
   const topRegions = view ? sortedEntries(view.topRegions.rawResultData).slice(0, TOP_N) : [];
@@ -347,11 +513,20 @@ export default function App() {
   const directScenario = scenario?.direct.rawResultData ?? null;
   const directRows = baseline
     ? useNuts2
-      ? nuts2Rows(codes, directBase[selectedCountry] ?? 0, directScenario ? directScenario[selectedCountry] ?? 0 : null)
+      ? nuts2Rows(codes, directBase[shownCountry] ?? 0, directScenario ? directScenario[shownCountry] ?? 0 : null)
       : compareRows(directBase, directScenario)
     : [];
+  const highlighted = useNuts2 ? selectedCode : shownCountry;
+  // The table shows the largest rows and always the selected one, even when it is further down.
+  const rankedRows = directRows.map((row, index) => ({ row, rank: index + 1 }));
+  const shownRows = showAllRows
+    ? rankedRows
+    : [
+        ...rankedRows.slice(0, DIRECT_ROWS),
+        ...rankedRows.slice(DIRECT_ROWS).filter(({ row }) => row.name === highlighted),
+      ];
+  const hiddenRows = rankedRows.length - shownRows.length;
   const maxDirect = Math.max(...directRows.map((r) => r.scenario ?? r.base), 0);
-  const highlighted = useNuts2 ? selectedCode : selectedCountry;
 
   // Trend chart
   const trendBase = outcome ? outcome.years.map((y) => scaled(outcome.baseline.trend[y], share)) : [];
@@ -359,10 +534,10 @@ export default function App() {
 
   const presets = buildPresets(catalog, countryId, sectorId);
   const scenarioNote = useNuts2
-    ? `NUTS2 view: ${selectedCode} values are a placeholder split of ${selectedCountry}.`
+    ? `NUTS2 view: ${selectedCode} values are a placeholder split of ${shownCountry}.`
     : scenario
       ? 'Scenario applied: results show the scenario, with change against the baseline.'
-      : `Baseline results for ${year}. Open Scenario modelling on the left and tick "Apply" to see the effect.`;
+      : `Baseline results for ${shownYear}. Open Scenario modelling on the left and tick "Apply" to see the effect.`;
 
   return (
     <Shell>
@@ -399,7 +574,8 @@ export default function App() {
               Each intervention changes the model before it runs. Results show the change against the baseline.
             </p>
             <TrendChart
-              title={`${selectedSector} footprint over time${unit ? ` (${unit})` : ''}`}
+              title={`${shownSector} footprint over time`}
+              unit={unit}
               years={outcome?.years ?? []}
               base={trendBase}
               scenario={trendScenario}
@@ -463,12 +639,12 @@ export default function App() {
             {level === 'nuts2' && (
               <Field label="NUTS2 region">
                 <select
-                  value={selectedCode ?? ''}
-                  disabled={codes.length === 0}
+                  value={controlCode ?? ''}
+                  disabled={controlCodes.length === 0}
                   onChange={(e) => setNuts2Code(e.target.value)}
                 >
-                  {codes.length === 0 && <option value="">None for {selectedCountry}</option>}
-                  {codes.map((code) => <option key={code} value={code}>{code}</option>)}
+                  {controlCodes.length === 0 && <option value="">None for {selectedCountry}</option>}
+                  {controlCodes.map((code) => <option key={code} value={code}>{code}</option>)}
                 </select>
               </Field>
             )}
@@ -491,29 +667,51 @@ export default function App() {
             <button className="primary" onClick={() => run()} disabled={busy}>
               {busy ? 'Running…' : 'Run analysis'}
             </button>
+            {busy && (
+              <button className="stop" onClick={() => [...controllers.current.keys()].forEach(stopRun)}>
+                Stop
+              </button>
+            )}
           </section>
 
           <p className="scenario-note">{scenarioNote}</p>
-          {level === 'nuts2' && codes.length === 0 && (
+          {level === 'nuts2' && controlCodes.length === 0 && (
             <p className="muted small">No NUTS2 regions are available for {selectedCountry}; showing country values.</p>
           )}
           {runError && <p className="error">{runError}</p>}
           {!baseline && !busy && <p className="muted">Choose a sector and run the analysis.</p>}
 
+          {outcome?.precalculated && !stale && (
+            <p className="notice" role="status">
+              <strong>Precalculated example:</strong> {shownSector} in {shownCountry}, {shownYear}. Choose your own sector,
+              country and year, then press Run analysis.
+            </p>
+          )}
+          {stale && (
+            <p className="notice" role="status">
+              The results below are for {shownSector} in {shownCountry}, {shownYear}. You changed the selection; press
+              Run analysis to update them.
+            </p>
+          )}
+
           {baseline && view && (
-            <>
+            <div className={`results${stale ? ' stale' : ''}`}>
               <section className="card">
-                <h2>1. What are the footprint impacts of {selectedSector} in {unitName}?</h2>
+                <h2>1. What are the footprint impacts of {shownSector} in {unitName}?</h2>
                 <div className="cards">
                   <Stat
                     label={`Footprint in ${unitName}`}
-                    value={formatValue(viewFootprint)}
-                    sub={scenario ? `${percentChange(baseFootprint, viewFootprint)} vs baseline` : `Baseline ${year} · ${unit}`}
+                    value={quantityParts(viewFootprint, unit).number}
+                    unit={quantityParts(viewFootprint, unit).unit}
+                    title={exactQuantity(viewFootprint, unit)}
+                    sub={scenario ? `${deltaText(baseFootprint, viewFootprint)} vs baseline` : `Baseline, ${shownYear}`}
                   />
                   <Stat
-                    label={`Global footprint of ${selectedSector}`}
-                    value={formatValue(viewGlobal)}
-                    sub={scenario ? `${percentChange(baseGlobal, viewGlobal)} vs baseline` : `All regions · ${unit}`}
+                    label={`Global footprint of ${shownSector}`}
+                    value={quantityParts(viewGlobal, unit).number}
+                    unit={quantityParts(viewGlobal, unit).unit}
+                    title={exactQuantity(viewGlobal, unit)}
+                    sub={scenario ? `${deltaText(baseGlobal, viewGlobal)} vs baseline` : 'Sum over all regions'}
                   />
                   <Stat
                     label="Share of global footprint"
@@ -523,27 +721,30 @@ export default function App() {
                   <Stat
                     label="Rank among regions"
                     value={useNuts2 ? '—' : rank > 0 ? `#${rank}` : '—'}
-                    sub={useNuts2 ? 'Rank shown at country level' : `For ${selectedSector}`}
+                    unit={!useNuts2 && rank > 0 ? `of ${regionCount}` : undefined}
+                    sub={useNuts2 ? 'Rank shown at country level' : `For ${shownSector}, 1 is highest`}
                   />
                 </div>
                 <div className="split">
                   <RankList
                     title="Top sectors, global footprint"
-                    rows={topSectors.map(([label, value]) => ({ label, value, highlight: label === selectedSector }))}
+                    unit={unit}
+                    rows={topSectors.map(([label, value]) => ({ label, value, highlight: label === shownSector }))}
                   />
                   <RankList
                     title="Top regions, global footprint (all sectors)"
-                    rows={topRegions.map(([label, value]) => ({ label, value, highlight: label === selectedCountry }))}
+                    unit={unit}
+                    rows={topRegions.map(([label, value]) => ({ label, value, highlight: label === shownCountry }))}
                   />
                 </div>
               </section>
 
               <section className="card">
-                <h2>2. What is the contribution of other sectors to {selectedSector} in {selectedCountry}, and where are they located?</h2>
+                <h2>2. What is the contribution of other sectors to {shownSector} in {shownCountry}, and where are they located?</h2>
                 {stacks ? (
                   <div className="split">
-                    <StackedBars title="Top contributing sectors (stacks by country)" rows={stacks.sectors} legend={stacks.countryLegend} />
-                    <StackedBars title="Top contributing countries (stacks by sector)" rows={stacks.countries} legend={stacks.sectorLegend} />
+                    <StackedBars title="Top contributing sectors (stacks by country)" rows={stacks.sectors} legend={stacks.countryLegend} unit={unit} />
+                    <StackedBars title="Top contributing countries (stacks by sector)" rows={stacks.countries} legend={stacks.sectorLegend} unit={unit} />
                   </div>
                 ) : (
                   <p className="muted small">The server returned no supply-chain breakdown.</p>
@@ -553,32 +754,32 @@ export default function App() {
               <section className="card">
                 <h2>
                   {useNuts2
-                    ? `3. What are the direct impacts of ${selectedSector} in each NUTS2 region of ${selectedCountry}?`
-                    : `3. What are the direct impacts of ${selectedSector} in each region?`}
+                    ? `3. What are the direct impacts of ${shownSector} in each NUTS2 region of ${shownCountry}?`
+                    : `3. What are the direct impacts of ${shownSector} in each region?`}
                 </h2>
                 <table className="table">
                   <thead>
                     <tr>
                       <th>{useNuts2 ? 'NUTS2 region' : 'Region'}</th>
                       <th>Share of direct impact</th>
-                      <th className="right">Value ({unit})</th>
-                      {scenario && <th className="right">Δ</th>}
+                      <th className="right">Value</th>
+                      {scenario && <th className="right">Change vs baseline</th>}
                     </tr>
                   </thead>
                   <tbody>
-                    {directRows.map((row) => {
+                    {shownRows.map(({ row, rank: rowRank }) => {
                       const value = row.scenario ?? row.base;
                       const selected = row.name === highlighted;
                       return (
                         <tr key={row.name} className={selected ? 'selected' : undefined}>
-                          <td>{row.name}{selected ? '  ← selected' : ''}</td>
+                          <td><span className="muted">{rowRank}.</span> {row.name}{selected ? '  ← selected' : ''}</td>
                           <td>
                             <div className="bar-track"><div className="bar-fill" style={{ width: `${maxDirect ? (value / maxDirect) * 100 : 0}%` }} /></div>
                           </td>
-                          <td className="right tabular">{formatValue(value)}</td>
+                          <td className="right tabular" title={exactQuantity(value, unit)}>{formatQuantity(value, unit)}</td>
                           {row.scenario !== null && (
                             <td className={`right tabular delta-${tone(row.base, row.scenario)}`}>
-                              {percentChange(row.base, row.scenario)}
+                              {deltaText(row.base, row.scenario)}
                             </td>
                           )}
                         </tr>
@@ -586,13 +787,19 @@ export default function App() {
                     })}
                   </tbody>
                 </table>
+                {rankedRows.length > DIRECT_ROWS && (
+                  <button className="ghost small show-all" onClick={() => setShowAllRows(!showAllRows)}>
+                    {showAllRows ? `Show top ${DIRECT_ROWS} only` : `Show all ${rankedRows.length} (${hiddenRows} more)`}
+                  </button>
+                )}
               </section>
-            </>
+            </div>
           )}
 
           <p className="footnote">
             Source: EXIOBASE 3.3, RaMa-Scene dataset v4. NUTS2 values are a placeholder split of the country total until
-            regional EXIOBASE data is loaded. Δ compares the scenario with the baseline and shows only when the scenario is applied.
+            regional EXIOBASE data is loaded. Changes compare the scenario with the baseline and show only when the scenario is applied.
+            Values are shown in the most readable unit for their size{unit ? ` (indicator unit: ${quantityParts(1, unit).unit || unit})` : ''}; hover a value for the exact number.
           </p>
 
           {consent === null && (
@@ -619,7 +826,28 @@ export default function App() {
                 <div className="job-head">
                   <span className="job-name">{item.label}</span>
                   <span className={`status ${item.status}`}>{item.status}</span>
-                  {queue.length > 1 && (
+                  {item.status === 'running' && (
+                    <button
+                      className="stop small"
+                      aria-label={`Stop ${item.label}`}
+                      title="Stop this analysis"
+                      onClick={() => stopRun(item.id)}
+                    >
+                      Stop
+                    </button>
+                  )}
+                  {(item.status === 'cancelled' || item.status === 'failed') && runs.current.has(item.id) && (
+                    <button
+                      className="resume small"
+                      aria-label={`${item.status === 'cancelled' ? 'Resume' : 'Retry'} ${item.label}`}
+                      title="Continue with the queries that are not finished"
+                      disabled={busy}
+                      onClick={() => resumeRun(item.id)}
+                    >
+                      {item.status === 'cancelled' ? 'Resume' : 'Retry'}
+                    </button>
+                  )}
+                  {queue.length > 1 && item.status !== 'running' && (
                     <button
                       className="ghost small job-delete"
                       aria-label="Delete this analysis"
