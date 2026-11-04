@@ -28,3 +28,7 @@ __pycache__/
 /log
 
 /virtualenv
+#ignore environment files with secrets (never commit)
+.env
+.env.*
+!.env.example
