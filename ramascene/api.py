@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from rest_framework import status
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
+from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from ramascene import services
 from ramascene.models import Country, Indicator, Job, ModellingProduct, Product
+from ramascene.nuts2 import load_nuts2
 from ramascene.serializers import JobRequestSerializer
 
 # default cap on jobs that are queued or running at the same time (one class of 20-50 students)
@@ -19,6 +21,18 @@ class JobListView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(
+        request=JobRequestSerializer,
+        responses={
+            202: inline_serializer("JobAccepted", {
+                "job_id": serializers.IntegerField(),
+                "status": serializers.CharField(),
+                "status_url": serializers.CharField(),
+            }),
+            400: OpenApiResponse(description="The request body is not valid."),
+            429: OpenApiResponse(description="The server is busy. Try again in a few minutes."),
+        },
+    )
     def post(self, request):
         serializer = JobRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -42,6 +56,18 @@ class JobDetailView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(
+        responses={
+            200: inline_serializer("JobStatus", {
+                "job_id": serializers.IntegerField(),
+                "name": serializers.CharField(),
+                "status": serializers.CharField(),
+                "created": serializers.DateTimeField(),
+                "result": serializers.JSONField(required=False),
+            }),
+            404: OpenApiResponse(description="No job with this id."),
+        },
+    )
     def get(self, request, job_id):
         job = get_object_or_404(Job, pk=job_id)
         body = {
@@ -65,6 +91,14 @@ class CatalogView(APIView):
     authentication_classes = []
     permission_classes = []
 
+    @extend_schema(responses=inline_serializer("Catalog", {
+        "years": serializers.ListField(child=serializers.IntegerField()),
+        "products": serializers.ListField(child=serializers.DictField()),
+        "countries": serializers.ListField(child=serializers.DictField()),
+        "indicators": serializers.ListField(child=serializers.DictField()),
+        "nuts2": serializers.JSONField(),
+        "consumers": serializers.ListField(child=serializers.DictField()),
+    }))
     def get(self, request):
         products = Product.objects.filter(identifier="LEAF").order_by("name")
         countries = Country.objects.filter(identifier="LEAF").order_by("name")
@@ -75,6 +109,7 @@ class CatalogView(APIView):
             "products": [{"global_id": p.global_id, "name": p.name, "code": p.code} for p in products],
             "countries": [{"global_id": c.global_id, "name": c.name, "code": c.code} for c in countries],
             "indicators": [{"global_id": i.global_id, "name": i.name, "unit": i.unit} for i in indicators],
+            "nuts2": load_nuts2(),
             "consumers": [{"global_id": m.global_id, "name": m.name, "final": m.identifier == "FINALCONSUMPTION"}
                           for m in consumers],
         })

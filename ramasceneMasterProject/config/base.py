@@ -20,30 +20,8 @@ PROJECT_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__)),
 )
 
-# create the actual template link to tell the project were the template is
-TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
-
-# get the static directory for images etc
-STATIC_PATH = os.path.join(BASE_DIR, 'static_assets')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# The web page is a separate single-page app (frontend/) that nginx serves; Django only serves the API.
 STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    STATIC_PATH,
-    os.path.join(BASE_DIR, 'assets'),
-
-)
-
-WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': 'bundles/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-    }
-}
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,7 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ramascene',
     'rest_framework',
-    'webpack_loader',
+    'drf_spectacular',
     'django_celery_results',
 ]
 
@@ -63,6 +41,15 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# generated OpenAPI schema, served at /api/schema/ with a Swagger UI at /api/docs/
+SPECTACULAR_SETTINGS = {
+    "TITLE": "RaMa-Scene API",
+    "DESCRIPTION": "Start footprint and scenario calculations and read their results.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # maximum number of jobs queued or running at the same time (429 above this)
@@ -93,7 +80,7 @@ ROOT_URLCONF = 'ramasceneMasterProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATE_PATH],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

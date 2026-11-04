@@ -4,9 +4,6 @@
 # ignore node_modules (use commands to built)
 /node_modules
 
-#ignore bundle created by django (use commands to built)
-/assets/bundles
-
 #(ignore sqlite)
 sqlite3*
 
@@ -56,3 +53,5 @@ db *.sqlite3*
 *.pyc
 .pytest_cache/
 *.tsbuildinfo
+*.log
+coverage/

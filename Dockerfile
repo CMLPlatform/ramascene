@@ -1,157 +1,33 @@
-# --- TARGET node ---
-ARG NODE_VERSION=12.22-dev
-ARG PYTHON_VER=3.6
-ARG NGINX_VERSION=1.21
+# syntax=docker/dockerfile:1
+# Three images from one file: `frontend` (nginx + built single-page app), `backend` (Django API and Celery workers).
 
-FROM wodby/node:${NODE_VERSION} AS node
+# ---- build the single-page app
+FROM node:22-alpine AS frontend-build
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
 
-# copy sources
-COPY package.json yarn.lock webpack.config.js ./
-COPY --chown=node:node assets ./assets
+# ---- web server: serves the app and proxies /api/ to the backend
+FROM nginx:1.27-alpine AS frontend
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=frontend-build /app/dist /usr/share/nginx/html
 
-# install all node packages
-RUN npm install
-
-# build reactjs bundle
-ARG HOST
-ARG WS_HOST
-ARG PROTOCOL
-ARG WS_PROTOCOL
-
-RUN ./node_modules/.bin/webpack --config webpack.config.js
-
-# --- END TARGET node ---
-
-
-# --- TARGET build ---
-ARG PYTHON_VER
-ARG NGINX_VERSION
-
-FROM wodby/python:${PYTHON_VER}-dev AS build
-
-# copy all webpack files
-COPY --from=node --chown=wodby:wodby /usr/src/app/assets/bundles ./assets/bundles
-COPY --from=node --chown=wodby:wodby /usr/src/app/webpack-stats.json ./
-
-# copy sources
-COPY --chown=wodby:wodby ramascene ./ramascene
-COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject
-COPY --chown=wodby:wodby static_assets ./static_assets
-COPY --chown=wodby:wodby templates ./templates
-COPY --chown=wodby:wodby .env manage.py requirements.txt rtd_requirements.txt  ./
-
-# Install all python packages & clean up
-RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
-
-# Install gettext
-# USER root
-# RUN set -ex; \
-#     apk add --update --no-cache gettext
-# USER wodby
-
-# compile localized strings
-# RUN python manage.py compilemessages
-
-# compile all assets
-ARG DJANGO_SETTINGS_MODULE
-ARG HOST
-ARG DATASETS_VERSION
-ARG SECRET_KEY
-ARG BROKER_URL
-ARG PUBLIC_DIR
-ARG WS_HOST
-ARG PROTOCOL
-ARG WS_PROTOCOL
-ARG REDIS_HOST
-ARG DATABASE_NAME
-
-RUN python manage.py collectstatic
-
-# --- END TARGET build ---
-
-
-# --- TARGET python ---
-ARG PYTHON_VER
-ARG NGINX_VERSION
-
-FROM wodby/python:${PYTHON_VER} AS python
-
-ARG DJANGO_SETTINGS_MODULE
-ARG HOST
-ARG DATASETS_VERSION
-ARG SECRET_KEY
-ARG BROKER_URL
-ARG PUBLIC_DIR
-ARG WS_HOST
-ARG PROTOCOL
-ARG WS_PROTOCOL
-ARG REDIS_HOST
-ARG DATABASE_NAME
-
-ENV PYTHONUNBUFFERED=1
-
-# create directories
-USER root
-RUN install -o wodby -g wodby -d ./logs
-RUN install -o wodby -g wodby -d /mnt/data
-RUN install -o wodby -g wodby -d /mnt/datasets
-USER wodby
-
-# Copy all packages
-COPY --from=build --chown=wodby:wodby /home/wodby/.local /home/wodby/.local
-COPY --from=build --chown=wodby:wodby /usr/src/app/webpack-stats.json ./
-
-# Copy all source files
-COPY --chown=wodby:wodby python_ini ./python_ini
-COPY --chown=wodby:wodby ramascene ./ramascene
-COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject
-COPY --chown=wodby:wodby templates ./templates
-COPY manage.py .env LICENSE README.md ./
-
-ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
-ENV DATASETS_DIR=/mnt/datasets
-
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-RUN python manage.py populateHierarchies
-
-EXPOSE 8000
-CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p", "8000"]
-
-# --- END TARGET python ---
-
-
-# --- TARGET reverse proxy ---
-ARG NGINX_VERSION
-
-FROM wodby/nginx:${NGINX_VERSION} as nginx
-
-RUN { \
-        echo "map \$http_upgrade \$connection_upgrade {" ; \
-        echo "    default upgrade;" ; \
-        echo "    '' close;" ; \
-        echo "}" ; \
-        echo "include upstream.conf;" ; \
-        echo "server {" ; \
-        echo "    listen 80 default_server;" ; \
-        echo "    server_name default;" ; \
-        echo "    root /var/www/html;" ; \
-        echo "    include preset.conf;" ; \
-
-        echo "    location /ws/ {" ; \
-        echo "        proxy_pass http://app_server/;" ; \
-        echo "        proxy_http_version 1.1;" ; \
-        echo "        proxy_set_header Upgrade \$http_upgrade;" ; \
-        echo "        proxy_set_header Connection \$connection_upgrade;" ; \
-        echo "        proxy_set_header Host \$http_host;" ; \
-        echo "        proxy_redirect off;" ; \
-        echo "    }" ; \
-
-        echo "    include defaults.conf;" ; \
-        echo "}" ; \
-    } > /etc/nginx/conf.d/ramascene_vhost.conf;
-
-# Copy all static files
-COPY --from=build --chown=wodby:wodby /usr/src/app/public/ /var/www/html/
-
-# --- END TARGET nginx ---
+# ---- backend: API (gunicorn) and workers (celery), same code and dependencies
+FROM python:3.13-slim AS backend
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.production
+WORKDIR /srv/ramascene
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY manage.py ./
+COPY ramasceneMasterProject/ ramasceneMasterProject/
+COPY ramascene/ ramascene/
+COPY python_ini/ python_ini/
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN useradd --system --uid 10001 ramascene && mkdir /srv/data && chown ramascene /srv/data \
+    && chmod +x /entrypoint.sh
+USER ramascene
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["gunicorn", "ramasceneMasterProject.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "60"]

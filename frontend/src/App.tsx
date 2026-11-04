@@ -4,7 +4,7 @@ import { ConsentBanner, Field, RankList, Stat, StackedBars, TrendChart } from '.
 import { loadConsent, saveConsent, type Consent } from './consent';
 import { deltaText, percent, percentChange, sortedEntries, tone } from './format';
 import { exactQuantity, formatQuantity, quantityParts } from './units';
-import { nuts2Codes, nuts2Share, nuts2Shares } from './nuts2';
+import { nuts2Regions, nuts2Share, nuts2Shares } from './nuts2';
 import { buildPresets } from './presets';
 import { loadPrecalculated } from './precalculated';
 import {
@@ -229,13 +229,16 @@ export default function App() {
   const stale = outcome !== null && outcome.key !== `${sectorId}|${countryId}|${indicatorId}|${year}`;
 
   // NUTS2 view: a placeholder split of the country total until regional data is loaded.
-  const controlCodes = nuts2Codes(selectedCountry);
+  const regionNames = new Map(Object.values(catalog?.nuts2 ?? {}).flat().map((r) => [r.code, r.name]));
+  const regionLabel = (code: string) => (regionNames.has(code) ? `${code} ${regionNames.get(code)}` : code);
+  const controlRegions = nuts2Regions(catalog?.nuts2, selectedCountry);
+  const controlCodes = controlRegions.map((r) => r.code);
   const controlCode = nuts2Code && controlCodes.includes(nuts2Code) ? nuts2Code : controlCodes[0] ?? null;
-  const codes = nuts2Codes(shownCountry);
+  const codes = nuts2Regions(catalog?.nuts2, shownCountry).map((r) => r.code);
   const useNuts2 = level === 'nuts2' && codes.length > 0;
   const selectedCode = nuts2Code && codes.includes(nuts2Code) ? nuts2Code : codes[0] ?? null;
   const share = useNuts2 && selectedCode ? nuts2Share(codes, selectedCode) : 1;
-  const unitName = useNuts2 && selectedCode ? selectedCode : shownCountry;
+  const unitName = useNuts2 && selectedCode ? regionLabel(selectedCode) : shownCountry;
 
   const setQueueItem = (id: number, patch: Partial<QueueItem>) =>
     setQueue((items) => items.map((item) => (item.id === id ? { ...item, ...patch } : item)));
@@ -534,7 +537,7 @@ export default function App() {
 
   const presets = buildPresets(catalog, countryId, sectorId);
   const scenarioNote = useNuts2
-    ? `NUTS2 view: ${selectedCode} values are a placeholder split of ${shownCountry}.`
+    ? `NUTS2 view: ${selectedCode ? regionLabel(selectedCode) : ""} values are a placeholder split of ${shownCountry}.`
     : scenario
       ? 'Scenario applied: results show the scenario, with change against the baseline.'
       : `Baseline results for ${shownYear}. Open Scenario modelling on the left and tick "Apply" to see the effect.`;
@@ -644,7 +647,7 @@ export default function App() {
                   onChange={(e) => setNuts2Code(e.target.value)}
                 >
                   {controlCodes.length === 0 && <option value="">None for {selectedCountry}</option>}
-                  {controlCodes.map((code) => <option key={code} value={code}>{code}</option>)}
+                  {controlRegions.map((r) => <option key={r.code} value={r.code}>{r.code} · {r.name}</option>)}
                 </select>
               </Field>
             )}
@@ -772,7 +775,7 @@ export default function App() {
                       const selected = row.name === highlighted;
                       return (
                         <tr key={row.name} className={selected ? 'selected' : undefined}>
-                          <td><span className="muted">{rowRank}.</span> {row.name}{selected ? '  ← selected' : ''}</td>
+                          <td><span className="muted">{rowRank}.</span> {useNuts2 ? regionLabel(row.name) : row.name}{selected ? '  ← selected' : ''}</td>
                           <td>
                             <div className="bar-track"><div className="bar-fill" style={{ width: `${maxDirect ? (value / maxDirect) * 100 : 0}%` }} /></div>
                           </td>

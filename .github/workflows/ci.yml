@@ -1,0 +1,40 @@
+name: CI
+on:
+  push:
+    branches: [modernization, main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13", cache: pip}
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: >
+          python -m pytest -q ramascene/tests/test_api_catalog.py ramascene/tests/test_api_jobs.py
+          ramascene/tests/test_nuts2.py ramascene/tests/test_database_integration.py
+          ramascene/tests/test_woodbury.py
+        env:
+          DJANGO_SETTINGS_MODULE: ramasceneMasterProject.config.dev
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: frontend}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --target backend -t ramascene-backend .
+      - run: docker build --target frontend -t ramascene-web .

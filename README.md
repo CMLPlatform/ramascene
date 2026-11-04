@@ -30,7 +30,8 @@ The client polls the job endpoint until the status is `completed` or `failed`. T
 | `ramasceneMasterProject/` | Project settings (`config/`), Celery app, URL routing |
 | `frontend/` | React + TypeScript frontend |
 | `python_ini/data/` | Hierarchies and indicator tables loaded by `populateHierarchies` |
-| `static_assets/` | Static files used by the current pages, including the hierarchy CSVs |
+| `scripts/` | Development helpers (`dev-up.sh`) and `make_precalculated.py` |
+| `docker/`, `.github/workflows/` | nginx config and container entrypoint; CI and manual deploy workflows |
 | `docs/` | Sphinx documentation |
 | `requirements.txt`, `requirements-dev.txt` | Python dependencies (runtime, and tests) |
 | `docker-compose.yml`, `Dockerfile` | Container setup |
@@ -117,3 +118,21 @@ since the app no longer uses Channels. Deployments are approved by the project o
 
 RaMa-Scene is released under the GNU General Public License v3.0. Contributions are welcome through pull
 requests on the repository.
+
+## Deployment
+
+The stack in `docker-compose.yml` has five containers: `web` (nginx, serves the built frontend and proxies
+`/api/`), `api` (gunicorn), two Celery workers (`calc_default` and `modelling` queues) and RabbitMQ. Only `web`
+publishes a port (8080); put TLS in front of it.
+
+1. Copy `.env.example` to `.env` and fill it in. `DATASETS_DIR` is the folder on the server with the dataset
+   (mounted read-only into the containers).
+2. `docker compose up -d --build`. The `api` container applies migrations and loads the hierarchies at start.
+3. The precalculated landing analysis is `frontend/public/precalculated.json`; regenerate it with
+   `python scripts/make_precalculated.py` whenever the dataset changes.
+
+The `Deploy` GitHub workflow runs this on the server over SSH. It is manual and uses the `production`
+environment, which should require an approval before it runs.
+
+Known limits: the API and the workers share one SQLite file on a volume, which is fine for the expected load
+but should move to PostgreSQL if concurrency grows.

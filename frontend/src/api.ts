@@ -6,12 +6,18 @@ export interface Indicator { global_id: number; name: string; unit: string }
 
 export interface Consumer { global_id: number; name: string; final: boolean }
 
+export interface Nuts2Region {
+  code: string;
+  name: string;
+}
+
 export interface Catalog {
   years: number[];
   products: Product[];
   countries: Country[];
   indicators: Indicator[];
   consumers: Consumer[];
+  nuts2?: Record<string, Nuts2Region[]>; // NUTS2 regions per country name, from CircuMAT
 }
 
 export type DimType = 'Contribution' | 'Hotspot';
