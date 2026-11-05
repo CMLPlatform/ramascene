@@ -530,6 +530,11 @@ export default function App() {
     r ? sortedEntries(r.produced?.origins ?? {}).findIndex(([name]) => name === shownCountry) + 1 : 0;
   const baseProduced = producedFootprint(baseline);
   const viewProduced = producedFootprint(view);
+  // Denominators of the share card: the whole world, or for a NUTS2 region the footprint of its country.
+  const nationalConsumption = (view?.footprintCountry.rawResultData[shownCountry] ?? 0);
+  const nationalProduction = view?.produced?.origins?.[shownCountry] ?? null;
+  const shareBase = useNuts2 ? nationalConsumption : viewGlobal;
+  const shareBaseProduced = useNuts2 ? nationalProduction : viewGlobal;
   const regionCount = view ? Object.keys(view.footprintAll.rawResultData).length : 0;
   const rank = view
     ? sortedEntries(view.footprintAll.rawResultData).findIndex(([name]) => name === shownCountry) + 1
@@ -782,11 +787,11 @@ export default function App() {
                     sub={scenario ? `${deltaText(baseGlobal, viewGlobal)} vs baseline` : 'Sum over all regions'}
                   />
                   <Stat
-                    label="Share of global footprint"
-                    value={percent(viewFootprint, viewGlobal)}
-                    sub={viewProduced !== null
-                      ? `Consumption · production side: ${percent(viewProduced, viewGlobal)}`
-                      : `${unitName} as share of global`}
+                    label={useNuts2 ? 'Share of national footprint' : 'Share of global footprint'}
+                    value={percent(viewFootprint, shareBase)}
+                    sub={viewProduced !== null && shareBaseProduced !== null
+                      ? `Consumption · production side: ${percent(viewProduced, shareBaseProduced)}`
+                      : `${unitName} as share of ${useNuts2 ? shownCountry : 'global'}`}
                   />
                   <Stat
                     label="Rank among regions"
