@@ -62,3 +62,34 @@ def test_consumption_footprint_matches_matrix_calculation(resource, eager_celery
     got = sum(body["result"]["rawResultData"].values())
     assert got == pytest.approx(expected, rel=1e-9)
     assert body["result"]["unit"] == {ghg.name: "kg CO2 eq"}
+
+
+@pytest.mark.django_db(transaction=True)
+def test_a_theme_selects_all_its_industries(resource, eager_celery):
+    """Selecting an aggregate (here the Energy theme) gives the footprint of all its industries together."""
+    from ramascene import dimensions
+    from ramascene.models import Country, Indicator, Product
+
+    with open(META) as fh:
+        meta = json.load(fh)
+    year = meta["years"][-2]
+    ghg = Indicator.objects.get(name="GHG emissions: Total")
+    country = Country.objects.get(code="NL", identifier="LEAF")
+    theme = Product.objects.get(name="Energy", identifier="AGG")
+    members = [int(i) for i in theme.leaf_children_local.split("#")]
+    assert 20 < len(members) < 40
+
+    client = APIClient()
+    response = client.post("/api/jobs/", {"action": "default", "querySelection": {
+        "dimType": "Contribution", "vizType": "Sectoral", "nodesSec": [theme.global_id],
+        "nodesReg": [country.global_id], "extn": [ghg.global_id], "year": [str(year)]}}, format="json")
+    assert response.status_code == 202, response.content
+    body = client.get(response.json()["status_url"]).json()
+    assert body["status"] == "completed"
+
+    P, C = dimensions.n_products(), dimensions.n_countries()
+    rows = np.array([c * P + m for c in range(C) for m in members])
+    B, L, Y = load(year, "B"), load(year, "L", mmap=True), load(year, "Y")
+    bL = np.asarray(B[ghg.global_id - 1]) @ np.asarray(L)
+    expected = float(bL[rows] @ np.asarray(Y)[rows, country.local_id - 1])
+    assert sum(body["result"]["rawResultData"].values()) == pytest.approx(expected, rel=1e-9)

@@ -1,237 +1,229 @@
 name	code	global_id	parent_id	local_id	level	identifier	leaf_children_global	leaf_children_local
-Total	total	1	0	1	1	TOTAL	74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91#92#93#94#95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110#111#112#113#114#115#116#117#118#119#120#121#122#123#124#125#126#127#128#129#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162#163#164#165#166#167#168#169#170#171#172#173#174#175#176#177#178#179#180#181#182#183#184#185#186#187#188#189#190#191#192#193#194#195#196#197#198#199#200#201#202#203#204#205#206#207#208#209#210#211#212#213#214#215#216#217#218#219#220#221#222#223#224#225#226#227#228#229#230#231#232#233#234#235#236	0#1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#28#29#30#31#32#33#34#35#36#37#38#39#40#41#42#43#44#45#46#47#48#49#50#51#52#53#54#55#56#57#58#59#60#61#62#63#64#65#66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91#92#93#94#95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110#111#112#113#114#115#116#117#118#119#120#121#122#123#124#125#126#127#128#129#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162
-Agriculture, hunting and forestry	A	2	1	1	2	AGG	74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91	0#1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#17
-Fishing	B	3	1	2	2	AGG	92	18
-Mining and quarrying	C	4	1	3	2	AGG	93#94#95#96#97#98#99#100#101#102#103#104#105#106#107	19#20#21#22#23#24#25#26#27#28#29#30#31#32#33
-Manufacturing	D	5	1	4	2	AGG	108#109#110#111#112#113#114#115#116#117#118#119#120#121#122#123#124#125#126#127#128#129#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162#163#164#165#166#167#168	34#35#36#37#38#39#40#41#42#43#44#45#46#47#48#49#50#51#52#53#54#55#56#57#58#59#60#61#62#63#64#65#66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91#92#93#94
-Electricity, gas and water supply	E	6	1	5	2	AGG	169#170#171#172#173#174#175#176#177#178#179#180#181#182#183#184#185	95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110#111
-Construction	F	7	1	6	2	AGG	186#187	112#113
-Trade	G	8	1	7	2	AGG	188#189#190#191	114#115#116#117
-Hotels and restaurants	H	9	1	8	2	AGG	192	118
-Transport, storage and communication	I	10	1	9	2	AGG	193#194#195#196#197#198#199#200	119#120#121#122#123#124#125#126
-Financial intermediation	J	11	1	10	2	AGG	201#202#203	127#128#129
-Real estate, renting and business activities	K	12	1	11	2	AGG	204#205#206#207#208	130#131#132#133#134
-Public administration	L	13	1	12	2	AGG	209	135
-Education	M	14	1	13	2	AGG	210	136
-Health and social work	N	15	1	14	2	AGG	211	137
-Waste treatment and disposal	O	16	1	15	2	AGG	212#213#214#215#216#217#218#219#220#221#222#223#224#225#226#227#228#229#230#231	138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157
-Other service activities	P	17	1	16	2	AGG	232#233#234#235#236	158#159#160#161#162
-Crop cultivation	A1	18	2	1	3	AGG	74#75#76#77#78#79#80#81	0#1#2#3#4#5#6#7
-Animal farming and animal products	A2	19	2	2	3	AGG	82#83#84#85#86#87#88	8#9#10#11#12#13#14
-Manure treatment	A3	20	2	3	3	AGG	89#90	15#16
-Forestry and logging	A4	21	2	4	3	AGG	91	17
-Fishing and fish farming	B1	22	3	5	3	AGG	92	18
-Mining of coal, lignite and peat	C1	23	4	6	3	AGG	93	19
-Oil and gas extraction	C2	24	4	7	3	AGG	94#95#96	20#21#22
-Mining of uranium and thorium	C3	25	4	8	3	AGG	97	23
-Mining of metal ores	C4	26	4	9	3	AGG	98#99#100#101#102#103#104	24#25#26#27#28#29#30
-Other mining and quarrying	C5	27	4	10	3	AGG	105#106#107	31#32#33
-Food products and beverages	D1	28	5	11	3	AGG	108#109#110#111#112#113#114#115#116#117#118	34#35#36#37#38#39#40#41#42#43#44
-Tobacco products	D2	29	5	12	3	AGG	119	45
-Textiles, wearing apparel and leather	D3	30	5	13	3	AGG	120#121#122	46#47#48
-Wood, pulp, paper and printing	D4	31	5	14	3	AGG	123#124#125#126#127#128	49#50#51#52#53#54
-Coke, refined petroleum and nuclear fuel	D5	32	5	15	3	AGG	129#130#131	55#56#57
-Chemicals, plastics and fertilisers	D6	33	5	16	3	AGG	132#133#134#135#136	58#59#60#61#62
-Rubber and plastic products	D7	34	5	17	3	AGG	137	63
-Glass, ceramics, cement and other non-metallic minerals	D8	35	5	18	3	AGG	138#139#140#141#142#143#144	64#65#66#67#68#69#70
-Basic metals and casting	D9	36	5	19	3	AGG	145#146#147#148#149#150#151#152#153#154#155#156#157	71#72#73#74#75#76#77#78#79#80#81#82#83
-Fabricated metal products	D10	37	5	20	3	AGG	158	84
-Machinery and equipment	D11	38	5	21	3	AGG	159#160#161#162#163	85#86#87#88#89
-Transport equipment	D12	39	5	22	3	AGG	164#165	90#91
-Furniture and manufacturing n.e.c.	D13	40	5	23	3	AGG	166	92
-Recycling	D14	41	5	24	3	AGG	167#168	93#94
-Electricity production	E1	42	6	25	3	AGG	169#170#171#172#173#174#175#176#177#178#179#180	95#96#97#98#99#100#101#102#103#104#105#106
-Electricity transmission and distribution	E2	43	6	26	3	AGG	181#182	107#108
-Gas and steam supply	E3	44	6	27	3	AGG	183#184	109#110
-Water supply	E4	45	6	28	3	AGG	185	111
-Construction	F1	46	7	29	3	AGG	186#187	112#113
-Motor vehicle trade, repair and fuel retail	G1	47	8	30	3	AGG	188#189	114#115
-Wholesale trade	G2	48	8	31	3	AGG	190	116
-Retail trade	G3	49	8	32	3	AGG	191	117
-Hotels and restaurants	H1	50	9	33	3	AGG	192	118
-Land transport and pipelines	I1	51	10	34	3	AGG	193#194#195	119#120#121
-Water transport	I2	52	10	35	3	AGG	196#197	122#123
-Air transport	I3	53	10	36	3	AGG	198	124
-Supporting and auxiliary transport activities	I4	54	10	37	3	AGG	199	125
-Post and telecommunications	I5	55	10	38	3	AGG	200	126
-Financial intermediation	J1	56	11	39	3	AGG	201	127
-Insurance and pension funding	J2	57	11	40	3	AGG	202	128
-Auxiliary financial activities	J3	58	11	41	3	AGG	203	129
-Real estate	K1	59	12	42	3	AGG	204	130
-Renting of machinery and equipment	K2	60	12	43	3	AGG	205	131
-Computer and related activities	K3	61	12	44	3	AGG	206	132
-Research and development	K4	62	12	45	3	AGG	207	133
-Other business activities	K5	63	12	46	3	AGG	208	134
-Public administration and defence	L1	64	13	47	3	AGG	209	135
-Education	M1	65	14	48	3	AGG	210	136
-Health and social work	N1	66	15	49	3	AGG	211	137
-Incineration of waste	O1	67	16	50	3	AGG	212#213#214#215#216#217#218	138#139#140#141#142#143#144
-Biogasification and composting	O2	68	16	51	3	AGG	219#220#221#222#223	145#146#147#148#149
-Waste water treatment	O3	69	16	52	3	AGG	224#225	150#151
-Landfill of waste	O4	70	16	53	3	AGG	226#227#228#229#230#231	152#153#154#155#156#157
-Membership, recreational and other services	P1	71	17	54	3	AGG	232#233#234	158#159#160
-Private households with employed persons	P2	72	17	55	3	AGG	235	161
-Extra-territorial organizations and bodies	P3	73	17	56	3	AGG	236	162
-Cultivation of paddy rice	i001	74	18	1	4	LEAF	None	None
-Cultivation of wheat	i002	75	18	2	4	LEAF	None	None
-Cultivation of cereal grains nec	i003	76	18	3	4	LEAF	None	None
-Cultivation of vegetables, fruit, nuts	i004	77	18	4	4	LEAF	None	None
-Cultivation of oil seeds	i005	78	18	5	4	LEAF	None	None
-Cultivation of sugar cane, sugar beet	i006	79	18	6	4	LEAF	None	None
-Cultivation of plant-based fibers	i007	80	18	7	4	LEAF	None	None
-Cultivation of crops nec	i008	81	18	8	4	LEAF	None	None
-Cattle farming	i009	82	19	9	4	LEAF	None	None
-Pigs farming	i010	83	19	10	4	LEAF	None	None
-Poultry farming	i011	84	19	11	4	LEAF	None	None
-Meat animals nec	i012	85	19	12	4	LEAF	None	None
-Animal products nec	i013	86	19	13	4	LEAF	None	None
-Raw milk	i014	87	19	14	4	LEAF	None	None
-Wool, silk-worm cocoons	i015	88	19	15	4	LEAF	None	None
-Manure treatment (conventional), storage and land application	i016	89	20	16	4	LEAF	None	None
-Manure treatment (biogas), storage and land application	i017	90	20	17	4	LEAF	None	None
-Forestry, logging and related service activities (02)	i018	91	21	18	4	LEAF	None	None
-Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)	i019	92	22	19	4	LEAF	None	None
-Mining of coal and lignite; extraction of peat (10)	i020	93	23	20	4	LEAF	None	None
-Extraction of crude petroleum and services related to crude oil extraction, excluding surveying	i021	94	24	21	4	LEAF	None	None
-Extraction of natural gas and services related to natural gas extraction, excluding surveying	i022	95	24	22	4	LEAF	None	None
-Extraction, liquefaction, and regasification of other petroleum and gaseous materials	i023	96	24	23	4	LEAF	None	None
-Mining of uranium and thorium ores (12)	i024	97	25	24	4	LEAF	None	None
-Mining of iron ores	i025	98	26	25	4	LEAF	None	None
-Mining of copper ores and concentrates	i026	99	26	26	4	LEAF	None	None
-Mining of nickel ores and concentrates	i027	100	26	27	4	LEAF	None	None
-Mining of aluminium ores and concentrates	i028	101	26	28	4	LEAF	None	None
-Mining of precious metal ores and concentrates	i029	102	26	29	4	LEAF	None	None
-Mining of lead, zinc and tin ores and concentrates	i030	103	26	30	4	LEAF	None	None
-Mining of other non-ferrous metal ores and concentrates	i031	104	26	31	4	LEAF	None	None
-Quarrying of stone	i032	105	27	32	4	LEAF	None	None
-Quarrying of sand and clay	i033	106	27	33	4	LEAF	None	None
-Mining of chemical and fertilizer minerals, production of salt, other mining and quarrying n.e.c.	i034	107	27	34	4	LEAF	None	None
-Processing of meat cattle	i035	108	28	35	4	LEAF	None	None
-Processing of meat pigs	i036	109	28	36	4	LEAF	None	None
-Processing of meat poultry	i037	110	28	37	4	LEAF	None	None
-Production of meat products nec	i038	111	28	38	4	LEAF	None	None
-Processing vegetable oils and fats	i039	112	28	39	4	LEAF	None	None
-Processing of dairy products	i040	113	28	40	4	LEAF	None	None
-Processed rice	i041	114	28	41	4	LEAF	None	None
-Sugar refining	i042	115	28	42	4	LEAF	None	None
-Processing of Food products nec	i043	116	28	43	4	LEAF	None	None
-Manufacture of beverages	i044	117	28	44	4	LEAF	None	None
-Manufacture of fish products	i045	118	28	45	4	LEAF	None	None
-Manufacture of tobacco products (16)	i046	119	29	46	4	LEAF	None	None
-Manufacture of textiles (17)	i047	120	30	47	4	LEAF	None	None
-Manufacture of wearing apparel; dressing and dyeing of fur (18)	i048	121	30	48	4	LEAF	None	None
-Tanning and dressing of leather; manufacture of luggage, handbags, saddlery, harness and footwear (19)	i049	122	30	49	4	LEAF	None	None
-Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)	i050	123	31	50	4	LEAF	None	None
-Re-processing of secondary wood material into new wood material	i051	124	31	51	4	LEAF	None	None
-Pulp	i052	125	31	52	4	LEAF	None	None
-Re-processing of secondary paper into new pulp	i053	126	31	53	4	LEAF	None	None
-Paper	i054	127	31	54	4	LEAF	None	None
-Publishing, printing and reproduction of recorded media (22)	i055	128	31	55	4	LEAF	None	None
-Manufacture of coke oven products	i056	129	32	56	4	LEAF	None	None
-Petroleum Refinery	i057	130	32	57	4	LEAF	None	None
-Processing of nuclear fuel	i058	131	32	58	4	LEAF	None	None
-Plastics, basic	i059	132	33	59	4	LEAF	None	None
-Re-processing of secondary plastic into new plastic	i060	133	33	60	4	LEAF	None	None
-N-fertiliser	i061	134	33	61	4	LEAF	None	None
-P- and other fertiliser	i062	135	33	62	4	LEAF	None	None
-Chemicals nec	i063	136	33	63	4	LEAF	None	None
-Manufacture of rubber and plastic products (25)	i064	137	34	64	4	LEAF	None	None
-Manufacture of glass and glass products	i065	138	35	65	4	LEAF	None	None
-Re-processing of secondary glass into new glass	i066	139	35	66	4	LEAF	None	None
-Manufacture of ceramic goods	i067	140	35	67	4	LEAF	None	None
-Manufacture of bricks, tiles and construction products, in baked clay	i068	141	35	68	4	LEAF	None	None
-Manufacture of cement, lime and plaster	i069	142	35	69	4	LEAF	None	None
-Re-processing of ash into clinker	i070	143	35	70	4	LEAF	None	None
-Manufacture of other non-metallic mineral products n.e.c.	i071	144	35	71	4	LEAF	None	None
-Manufacture of basic iron and steel and of ferro-alloys and first products thereof	i072	145	36	72	4	LEAF	None	None
-Re-processing of secondary steel into new steel	i073	146	36	73	4	LEAF	None	None
-Precious metals production	i074	147	36	74	4	LEAF	None	None
-Re-processing of secondary preciuos metals into new preciuos metals	i075	148	36	75	4	LEAF	None	None
-Aluminium production	i076	149	36	76	4	LEAF	None	None
-Re-processing of secondary aluminium into new aluminium	i077	150	36	77	4	LEAF	None	None
-Lead, zinc and tin production	i078	151	36	78	4	LEAF	None	None
-Re-processing of secondary lead into new lead, zinc and tin	i079	152	36	79	4	LEAF	None	None
-Copper production	i080	153	36	80	4	LEAF	None	None
-Re-processing of secondary copper into new copper	i081	154	36	81	4	LEAF	None	None
-Other non-ferrous metal production	i082	155	36	82	4	LEAF	None	None
-Re-processing of secondary other non-ferrous metals into new other non-ferrous metals	i083	156	36	83	4	LEAF	None	None
-Casting of metals	i084	157	36	84	4	LEAF	None	None
-Manufacture of fabricated metal products, except machinery and equipment (28)	i085	158	37	85	4	LEAF	None	None
-Manufacture of machinery and equipment n.e.c. (29)	i086	159	38	86	4	LEAF	None	None
-Manufacture of office machinery and computers (30)	i087	160	38	87	4	LEAF	None	None
-Manufacture of electrical machinery and apparatus n.e.c. (31)	i088	161	38	88	4	LEAF	None	None
-Manufacture of radio, television and communication equipment and apparatus (32)	i089	162	38	89	4	LEAF	None	None
-Manufacture of medical, precision and optical instruments, watches and clocks (33)	i090	163	38	90	4	LEAF	None	None
-Manufacture of motor vehicles, trailers and semi-trailers (34)	i091	164	39	91	4	LEAF	None	None
-Manufacture of other transport equipment (35)	i092	165	39	92	4	LEAF	None	None
-Manufacture of furniture; manufacturing n.e.c. (36)	i093	166	40	93	4	LEAF	None	None
-Recycling of waste and scrap	i094	167	41	94	4	LEAF	None	None
-Recycling of bottles by direct reuse	i095	168	41	95	4	LEAF	None	None
-Production of electricity by coal	i096	169	42	96	4	LEAF	None	None
-Production of electricity by gas	i097	170	42	97	4	LEAF	None	None
-Production of electricity by nuclear	i098	171	42	98	4	LEAF	None	None
-Production of electricity by hydro	i099	172	42	99	4	LEAF	None	None
-Production of electricity by wind	i100	173	42	100	4	LEAF	None	None
-Production of electricity by petroleum and other oil derivatives	i101	174	42	101	4	LEAF	None	None
-Production of electricity by biomass and waste	i102	175	42	102	4	LEAF	None	None
-Production of electricity by solar photovoltaic	i103	176	42	103	4	LEAF	None	None
-Production of electricity by solar thermal	i104	177	42	104	4	LEAF	None	None
-Production of electricity by tide, wave, ocean	i105	178	42	105	4	LEAF	None	None
-Production of electricity by Geothermal	i106	179	42	106	4	LEAF	None	None
-Production of electricity nec	i107	180	42	107	4	LEAF	None	None
-Transmission of electricity	i108	181	43	108	4	LEAF	None	None
-Distribution and trade of electricity	i109	182	43	109	4	LEAF	None	None
-Manufacture of gas; distribution of gaseous fuels through mains	i110	183	44	110	4	LEAF	None	None
-Steam and hot water supply	i111	184	44	111	4	LEAF	None	None
-Collection, purification and distribution of water (41)	i112	185	45	112	4	LEAF	None	None
-Construction (45)	i113	186	46	113	4	LEAF	None	None
-Re-processing of secondary construction material into aggregates	i114	187	46	114	4	LEAF	None	None
-Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries	i115	188	47	115	4	LEAF	None	None
-Retail sale of automotive fuel	i116	189	47	116	4	LEAF	None	None
-Wholesale trade and commission trade, except of motor vehicles and motorcycles (51)	i117	190	48	117	4	LEAF	None	None
-Retail trade, except of motor vehicles and motorcycles; repair of personal and household goods (52)	i118	191	49	118	4	LEAF	None	None
-Hotels and restaurants (55)	i119	192	50	119	4	LEAF	None	None
-Transport via railways	i120	193	51	120	4	LEAF	None	None
-Other land transport	i121	194	51	121	4	LEAF	None	None
-Transport via pipelines	i122	195	51	122	4	LEAF	None	None
-Sea and coastal water transport	i123	196	52	123	4	LEAF	None	None
-Inland water transport	i124	197	52	124	4	LEAF	None	None
-Air transport (62)	i125	198	53	125	4	LEAF	None	None
-Supporting and auxiliary transport activities; activities of travel agencies (63)	i126	199	54	126	4	LEAF	None	None
-Post and telecommunications (64)	i127	200	55	127	4	LEAF	None	None
-Financial intermediation, except insurance and pension funding (65)	i128	201	56	128	4	LEAF	None	None
-Insurance and pension funding, except compulsory social security (66)	i129	202	57	129	4	LEAF	None	None
-Activities auxiliary to financial intermediation (67)	i130	203	58	130	4	LEAF	None	None
-Real estate activities (70)	i131	204	59	131	4	LEAF	None	None
-Renting of machinery and equipment without operator and of personal and household goods (71)	i132	205	60	132	4	LEAF	None	None
-Computer and related activities (72)	i133	206	61	133	4	LEAF	None	None
-Research and development (73)	i134	207	62	134	4	LEAF	None	None
-Other business activities (74)	i135	208	63	135	4	LEAF	None	None
-Public administration and defence; compulsory social security (75)	i136	209	64	136	4	LEAF	None	None
-Education (80)	i137	210	65	137	4	LEAF	None	None
-Health and social work (85)	i138	211	66	138	4	LEAF	None	None
-Incineration of waste: Food	i139	212	67	139	4	LEAF	None	None
-Incineration of waste: Paper	i140	213	67	140	4	LEAF	None	None
-Incineration of waste: Plastic	i141	214	67	141	4	LEAF	None	None
-Incineration of waste: Metals and Inert materials	i142	215	67	142	4	LEAF	None	None
-Incineration of waste: Textiles	i143	216	67	143	4	LEAF	None	None
-Incineration of waste: Wood	i144	217	67	144	4	LEAF	None	None
-Incineration of waste: Oil/Hazardous waste	i145	218	67	145	4	LEAF	None	None
-Biogasification of food waste, incl. land application	i146	219	68	146	4	LEAF	None	None
-Biogasification of paper, incl. land application	i147	220	68	147	4	LEAF	None	None
-Biogasification of sewage slugde, incl. land application	i148	221	68	148	4	LEAF	None	None
-Composting of food waste, incl. land application	i149	222	68	149	4	LEAF	None	None
-Composting of paper and wood, incl. land application	i150	223	68	150	4	LEAF	None	None
-Waste water treatment, food	i151	224	69	151	4	LEAF	None	None
-Waste water treatment, other	i152	225	69	152	4	LEAF	None	None
-Landfill of waste: Food	i153	226	70	153	4	LEAF	None	None
-Landfill of waste: Paper	i154	227	70	154	4	LEAF	None	None
-Landfill of waste: Plastic	i155	228	70	155	4	LEAF	None	None
-Landfill of waste: Inert/metal/hazardous	i156	229	70	156	4	LEAF	None	None
-Landfill of waste: Textiles	i157	230	70	157	4	LEAF	None	None
-Landfill of waste: Wood	i158	231	70	158	4	LEAF	None	None
-Activities of membership organisation n.e.c. (91)	i159	232	71	159	4	LEAF	None	None
-Recreational, cultural and sporting activities (92)	i160	233	71	160	4	LEAF	None	None
-Other service activities (93)	i161	234	71	161	4	LEAF	None	None
-Private households with employed persons (95)	i162	235	72	162	4	LEAF	None	None
-Extra-territorial organizations and bodies	i163	236	73	163	4	LEAF	None	None
+Total	total	1	0	1	1	TOTAL	66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91#92#93#94#95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110#111#112#113#114#115#116#117#118#119#120#121#122#123#124#125#126#127#128#129#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162#163#164#165#166#167#168#169#170#171#172#173#174#175#176#177#178#179#180#181#182#183#184#185#186#187#188#189#190#191#192#193#194#195#196#197#198#199#200#201#202#203#204#205#206#207#208#209#210#211#212#213#214#215#216#217#218#219#220#221#222#223#224#225#226#227#228	0#1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#17#18#19#20#21#22#23#24#25#26#27#28#29#30#31#32#33#34#35#36#37#38#39#40#41#42#43#44#45#46#47#48#49#50#51#52#53#54#55#56#57#58#59#60#61#62#63#64#65#66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#83#84#85#86#87#88#89#90#91#92#93#94#95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110#111#112#113#114#115#116#117#118#119#120#121#122#123#124#125#126#127#128#129#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162
+Food and agriculture	FOOD	2	1	1	2	AGG	66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#84#100#101#102#103#104#105#106#107#108#109#110#111	0#1#2#3#4#5#6#7#8#9#10#11#12#13#14#15#16#18#34#35#36#37#38#39#40#41#42#43#44#45
+Energy	ENERGY	3	1	2	2	AGG	85#86#87#88#89#121#122#123#161#162#163#164#165#166#167#168#169#170#171#172#173#174#175#176	19#20#21#22#23#55#56#57#95#96#97#98#99#100#101#102#103#104#105#106#107#108#109#110
+Construction and shelter	SHELTER	4	1	3	2	AGG	177#178#179#196	111#112#113#130
+Services	SERVICES	5	1	4	2	AGG	180#181#182#183#184#192#193#194#195#197#198#199#200#201#202#203#204#205#206#207#208#209#210#211#212#213#214#215#216#217#218#219#220#221#222#223#224#225#226#227#228	114#115#116#117#118#126#127#128#129#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#150#151#152#153#154#155#156#157#158#159#160#161#162
+Transport	TRANSPORT	6	1	5	2	AGG	185#186#187#188#189#190#191	119#120#121#122#123#124#125
+Raw material extraction and processing	RAW	7	1	6	2	AGG	83#90#91#92#93#94#95#96#97#98#99#115#116#117#118#119#124#125#126#127#128#130#131#132#133#134#135#136#137#138#139#140#141#142#143#144#145#146#147#148#149#159#160	17#24#25#26#27#28#29#30#31#32#33#49#50#51#52#53#58#59#60#61#62#64#65#66#67#68#69#70#71#72#73#74#75#76#77#78#79#80#81#82#83#93#94
+Manufacturing	MANUF	8	1	7	2	AGG	112#113#114#120#129#150#151#152#153#154#155#156#157#158	46#47#48#54#63#84#85#86#87#88#89#90#91#92
+Crop cultivation	A1	9	2	1	3	AGG	66#67#68#69#70#71#72#73	0#1#2#3#4#5#6#7
+Animal farming and animal products	A2	10	2	2	3	AGG	74#75#76#77#78#79#80	8#9#10#11#12#13#14
+Manure treatment	A3	11	2	3	3	AGG	81#82	15#16
+Fishing and fish farming	B1	12	2	4	3	AGG	84	18
+Food products and beverages	D1	13	2	5	3	AGG	100#101#102#103#104#105#106#107#108#109#110	34#35#36#37#38#39#40#41#42#43#44
+Tobacco products	D2	14	2	6	3	AGG	111	45
+Mining of coal, lignite and peat	C1	15	3	7	3	AGG	85	19
+Oil and gas extraction	C2	16	3	8	3	AGG	86#87#88	20#21#22
+Mining of uranium and thorium	C3	17	3	9	3	AGG	89	23
+Coke, refined petroleum and nuclear fuel	D5	18	3	10	3	AGG	121#122#123	55#56#57
+Electricity production	E1	19	3	11	3	AGG	161#162#163#164#165#166#167#168#169#170#171#172	95#96#97#98#99#100#101#102#103#104#105#106
+Electricity transmission and distribution	E2	20	3	12	3	AGG	173#174	107#108
+Gas and steam supply	E3	21	3	13	3	AGG	175#176	109#110
+Water supply	E4	22	4	14	3	AGG	177	111
+Construction	F1	23	4	15	3	AGG	178#179	112#113
+Real estate	K1	24	4	16	3	AGG	196	130
+Motor vehicle trade, repair and fuel retail	G1	25	5	17	3	AGG	180#181	114#115
+Wholesale trade	G2	26	5	18	3	AGG	182	116
+Retail trade	G3	27	5	19	3	AGG	183	117
+Hotels and restaurants	H1	28	5	20	3	AGG	184	118
+Post and telecommunications	I5	29	5	21	3	AGG	192	126
+Financial intermediation	J1	30	5	22	3	AGG	193	127
+Insurance and pension funding	J2	31	5	23	3	AGG	194	128
+Auxiliary financial activities	J3	32	5	24	3	AGG	195	129
+Renting of machinery and equipment	K2	33	5	25	3	AGG	197	131
+Computer and related activities	K3	34	5	26	3	AGG	198	132
+Research and development	K4	35	5	27	3	AGG	199	133
+Other business activities	K5	36	5	28	3	AGG	200	134
+Public administration and defence	L1	37	5	29	3	AGG	201	135
+Education	M1	38	5	30	3	AGG	202	136
+Health and social work	N1	39	5	31	3	AGG	203	137
+Incineration of waste	O1	40	5	32	3	AGG	204#205#206#207#208#209#210	138#139#140#141#142#143#144
+Biogasification and composting	O2	41	5	33	3	AGG	211#212#213#214#215	145#146#147#148#149
+Waste water treatment	O3	42	5	34	3	AGG	216#217	150#151
+Landfill of waste	O4	43	5	35	3	AGG	218#219#220#221#222#223	152#153#154#155#156#157
+Membership, recreational and other services	P1	44	5	36	3	AGG	224#225#226	158#159#160
+Private households with employed persons	P2	45	5	37	3	AGG	227	161
+Extra-territorial bodies	P3	46	5	38	3	AGG	228	162
+Land transport and pipelines	I1	47	6	39	3	AGG	185#186#187	119#120#121
+Water transport	I2	48	6	40	3	AGG	188#189	122#123
+Air transport	I3	49	6	41	3	AGG	190	124
+Supporting and auxiliary transport activities	I4	50	6	42	3	AGG	191	125
+Forestry and logging	A4	51	7	43	3	AGG	83	17
+Mining of metal ores	C4	52	7	44	3	AGG	90#91#92#93#94#95#96	24#25#26#27#28#29#30
+Other mining and quarrying	C5	53	7	45	3	AGG	97#98#99	31#32#33
+Wood, pulp and paper	D4	54	7	46	3	AGG	115#116#117#118#119	49#50#51#52#53
+Chemicals, plastics and fertilisers	D6	55	7	47	3	AGG	124#125#126#127#128	58#59#60#61#62
+Glass, ceramics, cement and other non-metallic minerals	D8	56	7	48	3	AGG	130#131#132#133#134#135#136	64#65#66#67#68#69#70
+Basic metals and casting	D9	57	7	49	3	AGG	137#138#139#140#141#142#143#144#145#146#147#148#149	71#72#73#74#75#76#77#78#79#80#81#82#83
+Recycling	D14	58	7	50	3	AGG	159#160	93#94
+Textiles, wearing apparel and leather	D3	59	8	51	3	AGG	112#113#114	46#47#48
+Publishing and printing	D4P	60	8	52	3	AGG	120	54
+Rubber and plastic products	D7	61	8	53	3	AGG	129	63
+Fabricated metal products	D10	62	8	54	3	AGG	150	84
+Machinery and equipment	D11	63	8	55	3	AGG	151#152#153#154#155	85#86#87#88#89
+Transport equipment	D12	64	8	56	3	AGG	156#157	90#91
+Furniture and manufacturing n.e.c.	D13	65	8	57	3	AGG	158	92
+Cultivation of paddy rice	i001	66	9	1	4	LEAF	None	None
+Cultivation of wheat	i002	67	9	2	4	LEAF	None	None
+Cultivation of cereal grains nec	i003	68	9	3	4	LEAF	None	None
+Cultivation of vegetables, fruit, nuts	i004	69	9	4	4	LEAF	None	None
+Cultivation of oil seeds	i005	70	9	5	4	LEAF	None	None
+Cultivation of sugar cane, sugar beet	i006	71	9	6	4	LEAF	None	None
+Cultivation of plant-based fibers	i007	72	9	7	4	LEAF	None	None
+Cultivation of crops nec	i008	73	9	8	4	LEAF	None	None
+Cattle farming	i009	74	10	9	4	LEAF	None	None
+Pigs farming	i010	75	10	10	4	LEAF	None	None
+Poultry farming	i011	76	10	11	4	LEAF	None	None
+Meat animals nec	i012	77	10	12	4	LEAF	None	None
+Animal products nec	i013	78	10	13	4	LEAF	None	None
+Raw milk	i014	79	10	14	4	LEAF	None	None
+Wool, silk-worm cocoons	i015	80	10	15	4	LEAF	None	None
+Manure treatment (conventional), storage and land application	i016	81	11	16	4	LEAF	None	None
+Manure treatment (biogas), storage and land application	i017	82	11	17	4	LEAF	None	None
+Fishing, operating of fish hatcheries and fish farms; service activities incidental to fishing (05)	i019	84	12	19	4	LEAF	None	None
+Processing of meat cattle	i035	100	13	35	4	LEAF	None	None
+Processing of meat pigs	i036	101	13	36	4	LEAF	None	None
+Processing of meat poultry	i037	102	13	37	4	LEAF	None	None
+Production of meat products nec	i038	103	13	38	4	LEAF	None	None
+Processing vegetable oils and fats	i039	104	13	39	4	LEAF	None	None
+Processing of dairy products	i040	105	13	40	4	LEAF	None	None
+Processed rice	i041	106	13	41	4	LEAF	None	None
+Sugar refining	i042	107	13	42	4	LEAF	None	None
+Processing of Food products nec	i043	108	13	43	4	LEAF	None	None
+Manufacture of beverages	i044	109	13	44	4	LEAF	None	None
+Manufacture of fish products	i045	110	13	45	4	LEAF	None	None
+Manufacture of tobacco products (16)	i046	111	14	46	4	LEAF	None	None
+Mining of coal and lignite; extraction of peat (10)	i020	85	15	20	4	LEAF	None	None
+Extraction of crude petroleum and services related to crude oil extraction, excluding surveying	i021	86	16	21	4	LEAF	None	None
+Extraction of natural gas and services related to natural gas extraction, excluding surveying	i022	87	16	22	4	LEAF	None	None
+Extraction, liquefaction, and regasification of other petroleum and gaseous materials	i023	88	16	23	4	LEAF	None	None
+Mining of uranium and thorium ores (12)	i024	89	17	24	4	LEAF	None	None
+Manufacture of coke oven products	i056	121	18	56	4	LEAF	None	None
+Petroleum Refinery	i057	122	18	57	4	LEAF	None	None
+Processing of nuclear fuel	i058	123	18	58	4	LEAF	None	None
+Production of electricity by coal	i096	161	19	96	4	LEAF	None	None
+Production of electricity by gas	i097	162	19	97	4	LEAF	None	None
+Production of electricity by nuclear	i098	163	19	98	4	LEAF	None	None
+Production of electricity by hydro	i099	164	19	99	4	LEAF	None	None
+Production of electricity by wind	i100	165	19	100	4	LEAF	None	None
+Production of electricity by petroleum and other oil derivatives	i101	166	19	101	4	LEAF	None	None
+Production of electricity by biomass and waste	i102	167	19	102	4	LEAF	None	None
+Production of electricity by solar photovoltaic	i103	168	19	103	4	LEAF	None	None
+Production of electricity by solar thermal	i104	169	19	104	4	LEAF	None	None
+Production of electricity by tide, wave, ocean	i105	170	19	105	4	LEAF	None	None
+Production of electricity by Geothermal	i106	171	19	106	4	LEAF	None	None
+Production of electricity nec	i107	172	19	107	4	LEAF	None	None
+Transmission of electricity	i108	173	20	108	4	LEAF	None	None
+Distribution and trade of electricity	i109	174	20	109	4	LEAF	None	None
+Manufacture of gas; distribution of gaseous fuels through mains	i110	175	21	110	4	LEAF	None	None
+Steam and hot water supply	i111	176	21	111	4	LEAF	None	None
+Collection, purification and distribution of water (41)	i112	177	22	112	4	LEAF	None	None
+Construction (45)	i113	178	23	113	4	LEAF	None	None
+Re-processing of secondary construction material into aggregates	i114	179	23	114	4	LEAF	None	None
+Real estate activities (70)	i131	196	24	131	4	LEAF	None	None
+Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries	i115	180	25	115	4	LEAF	None	None
+Retail sale of automotive fuel	i116	181	25	116	4	LEAF	None	None
+Wholesale trade and commission trade, except of motor vehicles and motorcycles (51)	i117	182	26	117	4	LEAF	None	None
+Retail trade, except of motor vehicles and motorcycles; repair of personal and household goods (52)	i118	183	27	118	4	LEAF	None	None
+Hotels and restaurants (55)	i119	184	28	119	4	LEAF	None	None
+Post and telecommunications (64)	i127	192	29	127	4	LEAF	None	None
+Financial intermediation, except insurance and pension funding (65)	i128	193	30	128	4	LEAF	None	None
+Insurance and pension funding, except compulsory social security (66)	i129	194	31	129	4	LEAF	None	None
+Activities auxiliary to financial intermediation (67)	i130	195	32	130	4	LEAF	None	None
+Renting of machinery and equipment without operator and of personal and household goods (71)	i132	197	33	132	4	LEAF	None	None
+Computer and related activities (72)	i133	198	34	133	4	LEAF	None	None
+Research and development (73)	i134	199	35	134	4	LEAF	None	None
+Other business activities (74)	i135	200	36	135	4	LEAF	None	None
+Public administration and defence; compulsory social security (75)	i136	201	37	136	4	LEAF	None	None
+Education (80)	i137	202	38	137	4	LEAF	None	None
+Health and social work (85)	i138	203	39	138	4	LEAF	None	None
+Incineration of waste: Food	i139	204	40	139	4	LEAF	None	None
+Incineration of waste: Paper	i140	205	40	140	4	LEAF	None	None
+Incineration of waste: Plastic	i141	206	40	141	4	LEAF	None	None
+Incineration of waste: Metals and Inert materials	i142	207	40	142	4	LEAF	None	None
+Incineration of waste: Textiles	i143	208	40	143	4	LEAF	None	None
+Incineration of waste: Wood	i144	209	40	144	4	LEAF	None	None
+Incineration of waste: Oil/Hazardous waste	i145	210	40	145	4	LEAF	None	None
+Biogasification of food waste, incl. land application	i146	211	41	146	4	LEAF	None	None
+Biogasification of paper, incl. land application	i147	212	41	147	4	LEAF	None	None
+Biogasification of sewage slugde, incl. land application	i148	213	41	148	4	LEAF	None	None
+Composting of food waste, incl. land application	i149	214	41	149	4	LEAF	None	None
+Composting of paper and wood, incl. land application	i150	215	41	150	4	LEAF	None	None
+Waste water treatment, food	i151	216	42	151	4	LEAF	None	None
+Waste water treatment, other	i152	217	42	152	4	LEAF	None	None
+Landfill of waste: Food	i153	218	43	153	4	LEAF	None	None
+Landfill of waste: Paper	i154	219	43	154	4	LEAF	None	None
+Landfill of waste: Plastic	i155	220	43	155	4	LEAF	None	None
+Landfill of waste: Inert/metal/hazardous	i156	221	43	156	4	LEAF	None	None
+Landfill of waste: Textiles	i157	222	43	157	4	LEAF	None	None
+Landfill of waste: Wood	i158	223	43	158	4	LEAF	None	None
+Activities of membership organisation n.e.c. (91)	i159	224	44	159	4	LEAF	None	None
+Recreational, cultural and sporting activities (92)	i160	225	44	160	4	LEAF	None	None
+Other service activities (93)	i161	226	44	161	4	LEAF	None	None
+Private households with employed persons (95)	i162	227	45	162	4	LEAF	None	None
+Extra-territorial organizations and bodies	i163	228	46	163	4	LEAF	None	None
+Transport via railways	i120	185	47	120	4	LEAF	None	None
+Other land transport	i121	186	47	121	4	LEAF	None	None
+Transport via pipelines	i122	187	47	122	4	LEAF	None	None
+Sea and coastal water transport	i123	188	48	123	4	LEAF	None	None
+Inland water transport	i124	189	48	124	4	LEAF	None	None
+Air transport (62)	i125	190	49	125	4	LEAF	None	None
+Supporting and auxiliary transport activities; activities of travel agencies (63)	i126	191	50	126	4	LEAF	None	None
+Forestry, logging and related service activities (02)	i018	83	51	18	4	LEAF	None	None
+Mining of iron ores	i025	90	52	25	4	LEAF	None	None
+Mining of copper ores and concentrates	i026	91	52	26	4	LEAF	None	None
+Mining of nickel ores and concentrates	i027	92	52	27	4	LEAF	None	None
+Mining of aluminium ores and concentrates	i028	93	52	28	4	LEAF	None	None
+Mining of precious metal ores and concentrates	i029	94	52	29	4	LEAF	None	None
+Mining of lead, zinc and tin ores and concentrates	i030	95	52	30	4	LEAF	None	None
+Mining of other non-ferrous metal ores and concentrates	i031	96	52	31	4	LEAF	None	None
+Quarrying of stone	i032	97	53	32	4	LEAF	None	None
+Quarrying of sand and clay	i033	98	53	33	4	LEAF	None	None
+Mining of chemical and fertilizer minerals, production of salt, other mining and quarrying n.e.c.	i034	99	53	34	4	LEAF	None	None
+Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials (20)	i050	115	54	50	4	LEAF	None	None
+Re-processing of secondary wood material into new wood material	i051	116	54	51	4	LEAF	None	None
+Pulp	i052	117	54	52	4	LEAF	None	None
+Re-processing of secondary paper into new pulp	i053	118	54	53	4	LEAF	None	None
+Paper	i054	119	54	54	4	LEAF	None	None
+Plastics, basic	i059	124	55	59	4	LEAF	None	None
+Re-processing of secondary plastic into new plastic	i060	125	55	60	4	LEAF	None	None
+N-fertiliser	i061	126	55	61	4	LEAF	None	None
+P- and other fertiliser	i062	127	55	62	4	LEAF	None	None
+Chemicals nec	i063	128	55	63	4	LEAF	None	None
+Manufacture of glass and glass products	i065	130	56	65	4	LEAF	None	None
+Re-processing of secondary glass into new glass	i066	131	56	66	4	LEAF	None	None
+Manufacture of ceramic goods	i067	132	56	67	4	LEAF	None	None
+Manufacture of bricks, tiles and construction products, in baked clay	i068	133	56	68	4	LEAF	None	None
+Manufacture of cement, lime and plaster	i069	134	56	69	4	LEAF	None	None
+Re-processing of ash into clinker	i070	135	56	70	4	LEAF	None	None
+Manufacture of other non-metallic mineral products n.e.c.	i071	136	56	71	4	LEAF	None	None
+Manufacture of basic iron and steel and of ferro-alloys and first products thereof	i072	137	57	72	4	LEAF	None	None
+Re-processing of secondary steel into new steel	i073	138	57	73	4	LEAF	None	None
+Precious metals production	i074	139	57	74	4	LEAF	None	None
+Re-processing of secondary preciuos metals into new preciuos metals	i075	140	57	75	4	LEAF	None	None
+Aluminium production	i076	141	57	76	4	LEAF	None	None
+Re-processing of secondary aluminium into new aluminium	i077	142	57	77	4	LEAF	None	None
+Lead, zinc and tin production	i078	143	57	78	4	LEAF	None	None
+Re-processing of secondary lead into new lead, zinc and tin	i079	144	57	79	4	LEAF	None	None
+Copper production	i080	145	57	80	4	LEAF	None	None
+Re-processing of secondary copper into new copper	i081	146	57	81	4	LEAF	None	None
+Other non-ferrous metal production	i082	147	57	82	4	LEAF	None	None
+Re-processing of secondary other non-ferrous metals into new other non-ferrous metals	i083	148	57	83	4	LEAF	None	None
+Casting of metals	i084	149	57	84	4	LEAF	None	None
+Recycling of waste and scrap	i094	159	58	94	4	LEAF	None	None
+Recycling of bottles by direct reuse	i095	160	58	95	4	LEAF	None	None
+Manufacture of textiles (17)	i047	112	59	47	4	LEAF	None	None
+Manufacture of wearing apparel; dressing and dyeing of fur (18)	i048	113	59	48	4	LEAF	None	None
+Tanning and dressing of leather; manufacture of luggage, handbags, saddlery, harness and footwear (19)	i049	114	59	49	4	LEAF	None	None
+Publishing, printing and reproduction of recorded media (22)	i055	120	60	55	4	LEAF	None	None
+Manufacture of rubber and plastic products (25)	i064	129	61	64	4	LEAF	None	None
+Manufacture of fabricated metal products, except machinery and equipment (28)	i085	150	62	85	4	LEAF	None	None
+Manufacture of machinery and equipment n.e.c. (29)	i086	151	63	86	4	LEAF	None	None
+Manufacture of office machinery and computers (30)	i087	152	63	87	4	LEAF	None	None
+Manufacture of electrical machinery and apparatus n.e.c. (31)	i088	153	63	88	4	LEAF	None	None
+Manufacture of radio, television and communication equipment and apparatus (32)	i089	154	63	89	4	LEAF	None	None
+Manufacture of medical, precision and optical instruments, watches and clocks (33)	i090	155	63	90	4	LEAF	None	None
+Manufacture of motor vehicles, trailers and semi-trailers (34)	i091	156	64	91	4	LEAF	None	None
+Manufacture of other transport equipment (35)	i092	157	64	92	4	LEAF	None	None
+Manufacture of furniture; manufacturing n.e.c. (36)	i093	158	65	93	4	LEAF	None	None

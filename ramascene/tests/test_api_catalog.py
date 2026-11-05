@@ -40,7 +40,8 @@ class CatalogApiTests(TestCase):
         response = APIClient().get('/api/catalog/')
         self.assertEqual(response.status_code, 200)
         body = response.json()
-        self.assertEqual(body["products"], [{"global_id": 10, "name": "Electricity", "code": "p1"}])
+        self.assertEqual(body["products"], [{"global_id": 10, "name": "Electricity", "code": "p1", "parent_id": 0}])
+        self.assertEqual(body["sector_nodes"], [{"global_id": 1, "name": "Total", "code": "p0", "level": 0, "parent_id": 0}])
         self.assertEqual(body["countries"], [{"global_id": 20, "name": "Netherlands", "code": "NL"}])
         self.assertEqual(body["indicators"], [{"global_id": 5, "name": "GHG emissions", "unit": "kg CO2 eq", "parent_id": 0, "level": 1},
                                               {"global_id": 6, "name": "Land use", "unit": "km2", "parent_id": 0, "level": 1}])

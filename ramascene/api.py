@@ -94,6 +94,7 @@ class CatalogView(APIView):
         "unavailable": serializers.DictField(),
         "source": serializers.CharField(),
         "products": serializers.ListField(child=serializers.DictField()),
+        "sector_nodes": serializers.ListField(child=serializers.DictField()),
         "countries": serializers.ListField(child=serializers.DictField()),
         "indicators": serializers.ListField(child=serializers.DictField()),
         "nuts2": serializers.JSONField(),
@@ -101,6 +102,7 @@ class CatalogView(APIView):
     }))
     def get(self, request):
         products = Product.objects.filter(identifier="LEAF").order_by("name")
+        sector_nodes = Product.objects.exclude(identifier="LEAF").order_by("global_id")
         countries = Country.objects.filter(identifier="LEAF").order_by("name")
         indicators = Indicator.objects.order_by("global_id")
         consumers = ModellingProduct.objects.filter(identifier__in=["LEAF", "FINALCONSUMPTION"]).order_by("name")
@@ -112,7 +114,11 @@ class CatalogView(APIView):
             "nowcast_years": dataset.nowcast_years(),
             "unavailable": unavailable,
             "source": dataset.source(),
-            "products": [{"global_id": p.global_id, "name": p.name, "code": p.code} for p in products],
+            "products": [{"global_id": p.global_id, "name": p.name, "code": p.code, "parent_id": p.parent_id}
+                         for p in products],
+            # the total, themes and groups: a job can select any of them, the server expands it to its industries
+            "sector_nodes": [{"global_id": n.global_id, "name": n.name, "code": n.code, "level": n.level,
+                              "parent_id": n.parent_id} for n in sector_nodes],
             "countries": [{"global_id": c.global_id, "name": c.name, "code": c.code} for c in countries],
             "indicators": [{"global_id": i.global_id, "name": i.name, "unit": i.unit, "parent_id": i.parent_id,
                             "level": i.level} for i in indicators],

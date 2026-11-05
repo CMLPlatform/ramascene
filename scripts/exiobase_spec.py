@@ -25,92 +25,92 @@ N_FINAL_DEMAND = 7  # categories per region in Y.txt, summed to one column per r
 # already delivered in kg CO2-eq. Methane is taken as 27.0 (non-fossil) for all sources.
 GWP100 = OrderedDict([("CO2", 1.0), ("CH4", 27.0), ("N2O", 273.0), ("SF6", 25200.0), ("NF3", 17400.0)])
 
-# (section code, section name, [(group code, group name, first industry, last industry), ...])
+# The industries are grouped in three levels for selection in the app:
+#   theme  (7, a rough grouping for students)  >  group (about 60)  >  industry (163, the EXIOBASE industries)
+# A group is a list of industry ranges; it belongs to exactly one theme.
+# (theme code, theme name, [(group code, group name, [(first industry, last industry), ...]), ...])
 # Industry numbers are 0-based positions in the EXIOBASE industry list (x.txt order).
-SECTIONS = [
-    ("A", "Agriculture, hunting and forestry", [
-        ("A1", "Crop cultivation", 0, 7),
-        ("A2", "Animal farming and animal products", 8, 14),
-        ("A3", "Manure treatment", 15, 16),
-        ("A4", "Forestry and logging", 17, 17)]),
-    ("B", "Fishing", [
-        ("B1", "Fishing and fish farming", 18, 18)]),
-    ("C", "Mining and quarrying", [
-        ("C1", "Mining of coal, lignite and peat", 19, 19),
-        ("C2", "Oil and gas extraction", 20, 22),
-        ("C3", "Mining of uranium and thorium", 23, 23),
-        ("C4", "Mining of metal ores", 24, 30),
-        ("C5", "Other mining and quarrying", 31, 33)]),
-    ("D", "Manufacturing", [
-        ("D1", "Food products and beverages", 34, 44),
-        ("D2", "Tobacco products", 45, 45),
-        ("D3", "Textiles, wearing apparel and leather", 46, 48),
-        ("D4", "Wood, pulp, paper and printing", 49, 54),
-        ("D5", "Coke, refined petroleum and nuclear fuel", 55, 57),
-        ("D6", "Chemicals, plastics and fertilisers", 58, 62),
-        ("D7", "Rubber and plastic products", 63, 63),
-        ("D8", "Glass, ceramics, cement and other non-metallic minerals", 64, 70),
-        ("D9", "Basic metals and casting", 71, 83),
-        ("D10", "Fabricated metal products", 84, 84),
-        ("D11", "Machinery and equipment", 85, 89),
-        ("D12", "Transport equipment", 90, 91),
-        ("D13", "Furniture and manufacturing n.e.c.", 92, 92),
-        ("D14", "Recycling", 93, 94)]),
-    ("E", "Electricity, gas and water supply", [
-        ("E1", "Electricity production", 95, 106),
-        ("E2", "Electricity transmission and distribution", 107, 108),
-        ("E3", "Gas and steam supply", 109, 110),
-        ("E4", "Water supply", 111, 111)]),
-    ("F", "Construction", [
-        ("F1", "Construction", 112, 113)]),
-    ("G", "Trade", [
-        ("G1", "Motor vehicle trade, repair and fuel retail", 114, 115),
-        ("G2", "Wholesale trade", 116, 116),
-        ("G3", "Retail trade", 117, 117)]),
-    ("H", "Hotels and restaurants", [
-        ("H1", "Hotels and restaurants", 118, 118)]),
-    ("I", "Transport, storage and communication", [
-        ("I1", "Land transport and pipelines", 119, 121),
-        ("I2", "Water transport", 122, 123),
-        ("I3", "Air transport", 124, 124),
-        ("I4", "Supporting and auxiliary transport activities", 125, 125),
-        ("I5", "Post and telecommunications", 126, 126)]),
-    ("J", "Financial intermediation", [
-        ("J1", "Financial intermediation", 127, 127),
-        ("J2", "Insurance and pension funding", 128, 128),
-        ("J3", "Auxiliary financial activities", 129, 129)]),
-    ("K", "Real estate, renting and business activities", [
-        ("K1", "Real estate", 130, 130),
-        ("K2", "Renting of machinery and equipment", 131, 131),
-        ("K3", "Computer and related activities", 132, 132),
-        ("K4", "Research and development", 133, 133),
-        ("K5", "Other business activities", 134, 134)]),
-    ("L", "Public administration", [
-        ("L1", "Public administration and defence", 135, 135)]),
-    ("M", "Education", [
-        ("M1", "Education", 136, 136)]),
-    ("N", "Health and social work", [
-        ("N1", "Health and social work", 137, 137)]),
-    ("O", "Waste treatment and disposal", [
-        ("O1", "Incineration of waste", 138, 144),
-        ("O2", "Biogasification and composting", 145, 149),
-        ("O3", "Waste water treatment", 150, 151),
-        ("O4", "Landfill of waste", 152, 157)]),
-    ("P", "Other service activities", [
-        ("P1", "Membership, recreational and other services", 158, 160),
-        ("P2", "Private households with employed persons", 161, 161),
-        ("P3", "Extra-territorial organizations and bodies", 162, 162)]),
+THEMES = [
+    ("FOOD", "Food and agriculture", [
+        ("A1", "Crop cultivation", [(0, 7)]),
+        ("A2", "Animal farming and animal products", [(8, 14)]),
+        ("A3", "Manure treatment", [(15, 16)]),
+        ("B1", "Fishing and fish farming", [(18, 18)]),
+        ("D1", "Food products and beverages", [(34, 44)]),
+        ("D2", "Tobacco products", [(45, 45)])]),
+    ("ENERGY", "Energy", [
+        ("C1", "Mining of coal, lignite and peat", [(19, 19)]),
+        ("C2", "Oil and gas extraction", [(20, 22)]),
+        ("C3", "Mining of uranium and thorium", [(23, 23)]),
+        ("D5", "Coke, refined petroleum and nuclear fuel", [(55, 57)]),
+        ("E1", "Electricity production", [(95, 106)]),
+        ("E2", "Electricity transmission and distribution", [(107, 108)]),
+        ("E3", "Gas and steam supply", [(109, 110)])]),
+    ("SHELTER", "Construction and shelter", [
+        ("E4", "Water supply", [(111, 111)]),
+        ("F1", "Construction", [(112, 113)]),
+        ("K1", "Real estate", [(130, 130)])]),
+    ("SERVICES", "Services", [
+        ("G1", "Motor vehicle trade, repair and fuel retail", [(114, 115)]),
+        ("G2", "Wholesale trade", [(116, 116)]),
+        ("G3", "Retail trade", [(117, 117)]),
+        ("H1", "Hotels and restaurants", [(118, 118)]),
+        ("I5", "Post and telecommunications", [(126, 126)]),
+        ("J1", "Financial intermediation", [(127, 127)]),
+        ("J2", "Insurance and pension funding", [(128, 128)]),
+        ("J3", "Auxiliary financial activities", [(129, 129)]),
+        ("K2", "Renting of machinery and equipment", [(131, 131)]),
+        ("K3", "Computer and related activities", [(132, 132)]),
+        ("K4", "Research and development", [(133, 133)]),
+        ("K5", "Other business activities", [(134, 134)]),
+        ("L1", "Public administration and defence", [(135, 135)]),
+        ("M1", "Education", [(136, 136)]),
+        ("N1", "Health and social work", [(137, 137)]),
+        ("O1", "Incineration of waste", [(138, 144)]),
+        ("O2", "Biogasification and composting", [(145, 149)]),
+        ("O3", "Waste water treatment", [(150, 151)]),
+        ("O4", "Landfill of waste", [(152, 157)]),
+        ("P1", "Membership, recreational and other services", [(158, 160)]),
+        ("P2", "Private households with employed persons", [(161, 161)]),
+        ("P3", "Extra-territorial bodies", [(162, 162)])]),
+    ("TRANSPORT", "Transport", [
+        ("I1", "Land transport and pipelines", [(119, 121)]),
+        ("I2", "Water transport", [(122, 123)]),
+        ("I3", "Air transport", [(124, 124)]),
+        ("I4", "Supporting and auxiliary transport activities", [(125, 125)])]),
+    ("RAW", "Raw material extraction and processing", [
+        ("A4", "Forestry and logging", [(17, 17)]),
+        ("C4", "Mining of metal ores", [(24, 30)]),
+        ("C5", "Other mining and quarrying", [(31, 33)]),
+        ("D4", "Wood, pulp and paper", [(49, 53)]),
+        ("D6", "Chemicals, plastics and fertilisers", [(58, 62)]),
+        ("D8", "Glass, ceramics, cement and other non-metallic minerals", [(64, 70)]),
+        ("D9", "Basic metals and casting", [(71, 83)]),
+        ("D14", "Recycling", [(93, 94)])]),
+    ("MANUF", "Manufacturing", [
+        ("D3", "Textiles, wearing apparel and leather", [(46, 48)]),
+        ("D4P", "Publishing and printing", [(54, 54)]),
+        ("D7", "Rubber and plastic products", [(63, 63)]),
+        ("D10", "Fabricated metal products", [(84, 84)]),
+        ("D11", "Machinery and equipment", [(85, 89)]),
+        ("D12", "Transport equipment", [(90, 91)]),
+        ("D13", "Furniture and manufacturing n.e.c.", [(92, 92)])]),
 ]
 
 
-def check_sections(n=N_INDUSTRIES):
-    """The groups must cover every industry exactly once, in order."""
-    expected = 0
-    for _, _, groups in SECTIONS:
-        for code, _, first, last in groups:
-            assert first == expected and last >= first, f"group {code} breaks the sequence at {expected}"
-            expected = last + 1
-    assert expected == n, f"groups cover {expected} industries, expected {n}"
+def group_industries(ranges):
+    return [j for first, last in ranges for j in range(first, last + 1)]
+
+
+def check_themes(n=N_INDUSTRIES):
+    """Every industry belongs to exactly one group, and group codes are unique."""
+    seen, codes = [], set()
+    for _, _, groups in THEMES:
+        for code, _, ranges in groups:
+            assert code not in codes, f"group code {code} is used twice"
+            codes.add(code)
+            seen += group_industries(ranges)
+    assert sorted(seen) == list(range(n)), "groups do not cover every industry exactly once"
 
 
 def indicator_table(labels):
@@ -260,4 +260,4 @@ def indicator_table(labels):
     return table
 
 
-check_sections()
+check_themes()

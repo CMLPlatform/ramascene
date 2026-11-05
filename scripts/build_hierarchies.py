@@ -5,10 +5,10 @@ Usage
 
 Writes, in python_ini/data/
     mod_indicators.csv                                    indicator list (row i of B is global_id i + 1)
-    mod_final_productTree_exiovisuals.csv                 Total > section > group > industry (selection trees)
+    mod_final_productTree_exiovisuals.csv                 Total > theme > group > industry (selection trees)
     modelling_mod_final_productTree_exiovisuals.csv       the same industries for the scenario page
 and checks that the existing country tree still matches the 49 regions of the dataset.
-The grouping of the industries lives in scripts/exiobase_spec.py. Afterwards load the files with
+The grouping of the industries (themes > groups > industries) lives in scripts/exiobase_spec.py. Afterwards load the files with
     python manage.py populateHierarchies   (on an empty database)
 """
 import csv
@@ -40,46 +40,51 @@ def join(values):
 def product_rows(industries, modelling):
     """Rows of a selection tree (modelling=False) or of the scenario tree (modelling=True).
 
-    Selection tree: Total (global 1), sections, groups, industries; industries are numbered after all groups.
-    Scenario tree: no Total row, sections at the top, and a final 'Y: Final Consumption' node.
+    Selection tree: Total (global 1), themes, groups, industries; industries are numbered after all groups.
+    Scenario tree: no Total row, themes at the top, and a final 'Y: Final Consumption' node.
+    Industries keep their EXIOBASE position: industry j has local id j + 1 and global id leaf_base + j + 1,
+    whatever the order of the rows in the file.
     """
     prefix = "S: " if modelling else ""
-    n_sec = len(spec.SECTIONS)
-    n_grp = sum(len(g) for _, _, g in spec.SECTIONS)
+    n_theme = len(spec.THEMES)
+    n_group = sum(len(g) for _, _, g in spec.THEMES)
     offset = 0 if modelling else 1                     # the Total row takes global id 1
-    sec_id = {code: offset + i + 1 for i, (code, _, _) in enumerate(spec.SECTIONS)}
-    grp_id, grp_parent, k = {}, {}, offset + n_sec
-    for scode, _, groups in spec.SECTIONS:
-        for gcode, _, _, _ in groups:
+    theme_id = {code: offset + i + 1 for i, (code, _, _) in enumerate(spec.THEMES)}
+    group_id, group_parent, k = {}, {}, offset + n_theme
+    for tcode, _, groups in spec.THEMES:
+        for gcode, _, _ in groups:
             k += 1
-            grp_id[gcode], grp_parent[gcode] = k, sec_id[scode]
-    leaf_base = offset + n_sec + n_grp                 # global id of industry j is leaf_base + j + 1
+            group_id[gcode], group_parent[gcode] = k, theme_id[tcode]
+    leaf_base = offset + n_theme + n_group
     n = len(industries)
-    level0 = 2
+    gid = lambda members: join(leaf_base + j + 1 for j in sorted(members))
+    lid = lambda members: join(sorted(members))
     rows = []
     if modelling:
         rows.append(["Y: Final Consumption", "final_consumption", leaf_base + n + 1, 0, 1, 2,
                      "FINALCONSUMPTION", "None", "None"])
     else:
-        rows.append(["Total", "total", 1, 0, 1, 1, "TOTAL",
-                     join(leaf_base + j + 1 for j in range(n)), join(range(n))])
-    for i, (scode, sname, groups) in enumerate(spec.SECTIONS):
-        first, last = groups[0][2], groups[-1][3]
-        rows.append([prefix + sname, scode, sec_id[scode], 0 if modelling else 1, i + 1, level0, "AGG",
-                     join(leaf_base + j + 1 for j in range(first, last + 1)), join(range(first, last + 1))])
+        rows.append(["Total", "total", 1, 0, 1, 1, "TOTAL", gid(range(n)), lid(range(n))])
+    for i, (tcode, tname, groups) in enumerate(spec.THEMES):
+        members = [j for _, _, ranges in groups for j in spec.group_industries(ranges)]
+        rows.append([prefix + tname, tcode, theme_id[tcode], 0 if modelling else 1, i + 1, 2, "AGG",
+                     gid(members), lid(members)])
     local = 0
-    for scode, _, groups in spec.SECTIONS:
-        for gcode, gname, first, last in groups:
+    for tcode, _, groups in spec.THEMES:
+        for gcode, gname, ranges in groups:
             local += 1
-            rows.append([prefix + gname, gcode, grp_id[gcode], grp_parent[gcode], local, level0 + 1, "AGG",
-                         join(leaf_base + j + 1 for j in range(first, last + 1)), join(range(first, last + 1))])
-    for scode, _, groups in spec.SECTIONS:
-        for gcode, _, first, last in groups:
-            for j in range(first, last + 1):
-                rows.append([prefix + industries[j], f"i{j + 1:03d}", leaf_base + j + 1, grp_id[gcode], j + 1,
-                             level0 + 2, "LEAF", "None", "None"])
+            members = spec.group_industries(ranges)
+            rows.append([prefix + gname, gcode, group_id[gcode], group_parent[gcode], local, 3, "AGG",
+                         gid(members), lid(members)])
+    for tcode, _, groups in spec.THEMES:
+        for gcode, _, ranges in groups:
+            for j in spec.group_industries(ranges):
+                rows.append([prefix + industries[j], f"i{j + 1:03d}", leaf_base + j + 1, group_id[gcode], j + 1,
+                             4, "LEAF", "None", "None"])
     ids = [r[2] for r in rows]
     assert len(set(ids)) == len(ids), "global ids are not unique"
+    names = [r[0] for r in rows]
+    assert len(set(names)) == len(names), "two nodes have the same name"
     return rows
 
 

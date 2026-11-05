@@ -1,6 +1,8 @@
 // Client for the RaMa-Scene REST API (see ramascene/api.py).
 
-export interface Product { global_id: number; name: string; code: string }
+export interface Product { global_id: number; name: string; code: string; parent_id?: number }
+// The total, a theme or a group of industries; a job can select any of them
+export interface SectorNode { global_id: number; name: string; code: string; level: number; parent_id: number }
 export interface Country { global_id: number; name: string; code: string }
 export interface Indicator { global_id: number; name: string; unit: string; parent_id: number; level: number }
 
@@ -17,6 +19,7 @@ export interface Catalog {
   unavailable?: Record<string, number[]>; // indicator ids without data, per year
   source?: string;
   products: Product[];
+  sector_nodes?: SectorNode[];
   countries: Country[];
   indicators: Indicator[];
   consumers: Consumer[];

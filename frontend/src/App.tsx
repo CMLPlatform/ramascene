@@ -7,6 +7,7 @@ import { exactQuantity, formatQuantity, quantityParts } from './units';
 import { nuts2Regions, nuts2Share, nuts2Shares } from './nuts2';
 import { defaultYear, groupIndicators, isNowcast, isUnavailable, yearLabel } from './indicators';
 import { buildPresets } from './presets';
+import { memberNames, sectorMenu, sectorName } from './sectors';
 import { loadPrecalculated } from './precalculated';
 import {
   CHANGE_LIMIT,
@@ -235,7 +236,7 @@ export default function App() {
   }, [catalog, indicatorId]);
 
   const selectedCountry = countryId !== null ? names.countryName.get(countryId) ?? '' : '';
-  const selectedSector = sectorId !== null ? names.productName.get(sectorId) ?? '' : '';
+  const selectedSector = catalog ? sectorName(catalog, sectorId) : '';
 
   // The panels describe the result on screen, which can differ from the selection after a change.
   const ctx = outcome?.ctx ?? null;
@@ -533,6 +534,7 @@ export default function App() {
   const rank = view
     ? sortedEntries(view.footprintAll.rawResultData).findIndex(([name]) => name === shownCountry) + 1
     : 0;
+  const sectorMembers = new Set(catalog ? memberNames(catalog, shownSector) : [shownSector]);
   const topSectors = view ? sortedEntries(view.topSectors.consumed ?? {}).slice(0, TOP_N) : [];
   const topRegions = view ? sortedEntries(view.topRegions.rawResultData).slice(0, TOP_N) : [];
 
@@ -564,6 +566,7 @@ export default function App() {
   const trendScenario = outcome?.scenario ? outcome.years.map((y) => scaled(outcome.scenario!.trend[y], share)) : null;
 
   const presets = buildPresets(catalog, countryId, sectorId);
+  const menu = sectorMenu(catalog);
   const scenarioNote = useNuts2
     ? `NUTS2 view: ${selectedCode ? regionLabel(selectedCode) : ""} values are a placeholder split of ${shownCountry}.`
     : scenario
@@ -644,8 +647,16 @@ export default function App() {
         <main className="main" id="analysis">
           <section className="controls">
             <Field label="Sector">
-              <select value={sectorId} onChange={(e) => setSectorId(Number(e.target.value))}>
-                {catalog.products.map((p) => <option key={p.global_id} value={p.global_id}>{p.name}</option>)}
+              <select value={sectorId ?? ''} onChange={(e) => setSectorId(Number(e.target.value))}>
+                {menu.all && <option value={menu.all.id}>{menu.all.label}</option>}
+                {menu.themes.length === 0 && catalog.products.map((p) => <option key={p.global_id} value={p.global_id}>{p.name}</option>)}
+                {menu.themes.map((theme) => (
+                  <optgroup key={theme.name} label={theme.name}>
+                    {theme.choices.map((c) => (
+                      <option key={c.id} value={c.id}>{`${'\u00a0\u00a0\u00a0'.repeat(c.indent)}${c.label}`}</option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
             </Field>
             <Field label="Country">
@@ -798,7 +809,7 @@ export default function App() {
                   <RankList
                     title="Top sectors, global footprint"
                     unit={unit}
-                    rows={topSectors.map(([label, value]) => ({ label, value, highlight: label === shownSector }))}
+                    rows={topSectors.map(([label, value]) => ({ label, value, highlight: sectorMembers.has(label) }))}
                   />
                   <RankList
                     title="Top regions, global footprint (all sectors)"
