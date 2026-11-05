@@ -3,7 +3,7 @@
 RaMa-Scene analyses Environmentally Extended Input-Output (EEIO) tables. It answers three questions for a
 chosen sector and year: the footprint of a sector in a region, the sectors that contribute to it, and the
 direct impacts of the sector in each region. Scenario modelling (changing technology or final demand) is
-planned. The data is EXIOBASE 3.3, in the RaMa-Scene dataset version v4.
+planned. The data is EXIOBASE 3.11.2 (industry by industry, 2015 to 2024), in the RaMa-Scene dataset version v5.
 
 Licence: GPL-3.0. See [LICENSE](LICENSE).
 
@@ -45,7 +45,7 @@ separate repository, `ramascene-preprocessing`. They are not needed to run the a
 - Python 3.13
 - Node.js 22 or newer
 - RabbitMQ (the Celery broker)
-- The EXIOBASE dataset, version v4, as binary matrices per year. The data is not in this repository.
+- The EXIOBASE dataset, version v5, as binary matrices per year. The data is not in this repository.
 
 ### Python environment
 ```
@@ -57,7 +57,7 @@ pip install -r requirements-dev.txt
 ### Configuration
 Copy `.env.example` to `.env` and fill in the values. Settings are read from the environment:
 - `DJANGO_SETTINGS_MODULE` selects the settings module, for example `ramasceneMasterProject.config.dev`.
-- `DATASETS_DIR` is the folder containing the dataset, and `DATASETS_VERSION` is `v4`.
+- `DATASETS_DIR` is the folder containing the dataset, and `DATASETS_VERSION` is `v5`.
 - `BROKER_URL` is the Celery broker.
 - `RAMASCENE_MAX_ACTIVE_JOBS` caps the jobs queued or running at once.
 
@@ -95,9 +95,11 @@ pytest
 
 - `test_api_jobs.py`, `test_api_catalog.py`, `test_woodbury.py`, `test_modelling.py`: unit tests. They run
   without the dataset, except where a test needs the database.
-- `test_validation_analytical.py`: runs the job API against the v3 reference values for 2011. It needs the
-  dataset and the populated database, and runs Celery eagerly.
-- `test_celery_integration.py`: starts a real Celery worker, so it needs RabbitMQ.
+- `test_dataset_job.py` and `test_dataset_consistency.py`: check the converted dataset, and a job through the API
+  against the matrices. They need the dataset (`DATASETS_DIR`, `DATASETS_VERSION`) and run Celery eagerly.
+  `test_validation_analytical.py` is skipped: its EXIOBASE 3.3 reference values no longer apply.
+- `test_celery_integration.py`: is skipped until its selections are updated for 163 industries (it starts a real
+  Celery worker, so it needs RabbitMQ).
 
 Frontend:
 ```

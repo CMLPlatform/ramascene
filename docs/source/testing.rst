@@ -30,7 +30,11 @@ The validation test checks results against values computed outside the applicati
 The test sends each query to the job API, runs Celery eagerly, and compares the result with the expected values
 within a tolerance.
 
-Only EXIOBASE v3 reference values exist for 2011. Set these variables first:
+The reference values in ``validation_files`` come from EXIOBASE 3.3 and no longer apply, so that test is skipped.
+Two tests check the current dataset instead: ``test_dataset_consistency.py`` checks the matrices (shapes, the
+Leontief inverse, final demand, the stored validation results) and ``test_dataset_job.py`` starts a job through the
+API and compares the result with the number computed directly from the matrices. Both are skipped without a
+dataset. Set these variables first:
 
 * ``DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev``
 * ``DATASETS_DIR``: the folder with the dataset.

@@ -87,7 +87,19 @@ def stressor_labels(zf):
     return labels
 
 
-def convert_year(year, zip_path, out_root, force):
+def reference(source):
+    """Labels from the first archive that has every stressor group (the now-cast year misses some)."""
+    for path in sorted(source.glob("IOT_*_ixi.zip")):
+        zf = zipfile.ZipFile(path)
+        names = set(zf.namelist())
+        if all(f"{g}/unit.txt" in names for g in GROUPS):
+            xdf = pd.read_csv(zf.open("x.txt"), sep="\t")
+            return (stressor_labels(zf), list(dict.fromkeys(xdf["region"])),
+                    list(dict.fromkeys(xdf["sector"])), path.name)
+    raise SystemExit("no archive with all stressor groups found")
+
+
+def convert_year(year, zip_path, out_root, force, labels, table):
     out = out_root / str(year)
     if (out / "validation.json").exists() and not force:
         log(f"{year}: already converted, skipping")
@@ -154,15 +166,26 @@ def convert_year(year, zip_path, out_root, force):
     log(f"{year}: Leontief check {validation['leontief_max_rel_to_largest_output']:.2e}")
 
     # ---- stressors
-    labels = stressor_labels(zf)
-    table = spec.indicator_table(labels)
+    names = set(zf.namelist())
+    missing = [g for g in GROUPS if f"{g}/F.txt" not in names]
+    year_labels = {}
+    for g in GROUPS:
+        if g not in missing:
+            u = pd.read_csv(zf.open(find(zf, f"{g}/unit.txt")), sep="\t")
+            year_labels[g] = list(u.iloc[:, 0])
+            lacking = set(labels[g]) - set(year_labels[g])
+            assert not lacking, f"{g}: stressors missing in {year}: {sorted(lacking)[:3]}"
+            # a year may carry extra stressors (e.g. BC, OC in 2024); rows are always looked up by name
     needed = sorted({(g, s) for row in table for g, s, _ in row["recipe"] if g != "__output__"})
     F = {}
     for g in sorted({g for g, _ in needed}):
+        if g in missing:   # not in this archive: zeros, and the indicators are reported as unavailable
+            F[g] = pd.DataFrame(np.zeros((len(labels[g]), n)), index=labels[g])
+            continue
         f_lab, f_val = read_table(zf, find(zf, f"{g}/F.txt"), 1)
-        assert f_val.shape[1] == n
-        assert list(f_lab.iloc[:, 0]) == labels[g], f"{g}: F rows differ from unit.txt"
-        F[g] = pd.DataFrame(f_val, index=labels[g])
+        assert f_val.shape == (len(year_labels[g]), n)
+        assert list(f_lab.iloc[:, 0]) == year_labels[g], f"{g}: F rows differ from unit.txt"
+        F[g] = pd.DataFrame(f_val, index=year_labels[g])
     B = np.zeros((len(table), n))
     direct = np.zeros(len(table))
     lost = np.zeros(len(table))      # signed amount that sits in industries without output
@@ -181,6 +204,9 @@ def convert_year(year, zip_path, out_root, force):
     scale_k = np.maximum(np.abs(direct), 1e-12)
     rel = np.abs(global_fp - (direct - lost)) / scale_k
     validation["indicators"] = len(table)
+    validation["missing_stressor_groups"] = missing
+    validation["unavailable_indicators"] = [
+        r["name"] for r in table if r["recipe"][0][0] in missing and all(g in missing for g, _, _ in r["recipe"])]
     validation["footprint_vs_direct_max_rel"] = float(rel.max())
     validation["footprint_vs_direct_worst_indicator"] = table[int(rel.argmax())]["name"]
     share = lost_abs / scale_k
@@ -205,7 +231,7 @@ def convert_year(year, zip_path, out_root, force):
     with open(out / "validation.json", "w") as fh:
         json.dump(validation, fh, indent=2)
     log(f"{year}: done in {validation['seconds']} s")
-    return dict(regions=regions, industries=industries, table=table, labels=labels)
+    return validation
 
 
 def md5(path):
@@ -224,32 +250,40 @@ def main():
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    meta_path = args.output / f"dataset_{V}.json"
-    info = None
+    labels, regions, industries, ref_name = reference(args.source)
+    table = spec.indicator_table(labels)
+    log(f"labels from {ref_name}: {len(table)} indicators")
     for year in args.years:
         zip_path = args.source / f"IOT_{year}_ixi.zip"
         if not zip_path.exists():
             log(f"{year}: {zip_path} not found")
             continue
-        got = convert_year(year, zip_path, args.output, args.force)
-        info = info or got
-    if info is not None:
-        table = info["table"]
-        meta = {
-            "version": V,
-            "source": f"EXIOBASE {spec.EXIOBASE_VERSION}, industry by industry (ixi), https://zenodo.org/records/23039074",
-            "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "regions": info["regions"],
-            "industries": info["industries"],
-            "gwp100": spec.GWP100,
-            "gwp_note": "IPCC AR6, 100 years; HFC and PFC are delivered in kg CO2-eq; biogenic CO2 is excluded, "
-                        "CH4 and N2O from biomass combustion are included.",
-            "indicators": [dict(index=i, name=r["name"], unit=r["unit"], level=r["level"], parent=r["parent"],
-                                recipe=[[g, s, w] for g, s, w in r["recipe"]]) for i, r in enumerate(table)],
-        }
-        with open(meta_path, "w") as fh:
-            json.dump(meta, fh, indent=1)
-        log(f"wrote {meta_path}")
+        convert_year(year, zip_path, args.output, args.force, labels, table)
+
+    done = sorted(int(p.parent.name) for p in args.output.glob("*/validation.json"))
+    unavailable = {}
+    for y in done:
+        u = json.load(open(args.output / str(y) / "validation.json")).get("unavailable_indicators", [])
+        if u:
+            unavailable[str(y)] = u
+    meta = {
+        "version": V,
+        "source": f"EXIOBASE {spec.EXIOBASE_VERSION}, industry by industry (ixi), https://zenodo.org/records/23039074",
+        "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "years": done,
+        "nowcast_years": [y for y in spec.NOWCAST_YEARS if y in done],
+        "regions": regions,
+        "industries": industries,
+        "gwp100": spec.GWP100,
+        "gwp_note": "IPCC AR6, 100 years; HFC and PFC are delivered in kg CO2-eq; biogenic CO2 is excluded, "
+                    "CH4 and N2O from biomass combustion are included.",
+        "unavailable_indicators_by_year": unavailable,
+        "indicators": [dict(index=i, name=r["name"], unit=r["unit"], level=r["level"], parent=r["parent"],
+                            recipe=[[g, s, w] for g, s, w in r["recipe"]]) for i, r in enumerate(table)],
+    }
+    with open(args.output / f"dataset_{V}.json", "w") as fh:
+        json.dump(meta, fh, indent=1)
+    log(f"wrote dataset_{V}.json for years {done[0]}-{done[-1]}" if done else "nothing converted")
 
 
 if __name__ == "__main__":

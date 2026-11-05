@@ -16,6 +16,8 @@ DATASET_VERSION = "v5"
 EXIOBASE_VERSION = "3.11.2"
 N_INDUSTRIES = 163
 N_REGIONS = 49
+# Years EXIOBASE 3.11.2 projects instead of measures ("2024 is a now-cast" on the Zenodo page)
+NOWCAST_YEARS = [2024]
 N_FINAL_DEMAND = 7  # categories per region in Y.txt, summed to one column per region for the app
 
 # IPCC AR6, 100-year horizon, without climate-carbon feedbacks. NF3 = 17,400 is the value the

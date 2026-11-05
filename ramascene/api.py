@@ -6,7 +6,7 @@ from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ramascene import services
+from ramascene import dataset, services
 from ramascene.models import Country, Indicator, Job, ModellingProduct, Product
 from ramascene.nuts2 import load_nuts2
 from ramascene.serializers import JobRequestSerializer
@@ -81,9 +81,6 @@ class JobDetailView(APIView):
         return Response(body)
 
 
-# years covered by the EXIOBASE dataset (v4 binaries, see DATASET_DIR)
-DATASET_YEARS = list(range(1995, 2012))
-
 
 class CatalogView(APIView):
     """Selectable products, countries, indicators and years, with the global ids the calculations use."""
@@ -93,6 +90,9 @@ class CatalogView(APIView):
 
     @extend_schema(responses=inline_serializer("Catalog", {
         "years": serializers.ListField(child=serializers.IntegerField()),
+        "nowcast_years": serializers.ListField(child=serializers.IntegerField()),
+        "unavailable": serializers.DictField(),
+        "source": serializers.CharField(),
         "products": serializers.ListField(child=serializers.DictField()),
         "countries": serializers.ListField(child=serializers.DictField()),
         "indicators": serializers.ListField(child=serializers.DictField()),
@@ -102,13 +102,20 @@ class CatalogView(APIView):
     def get(self, request):
         products = Product.objects.filter(identifier="LEAF").order_by("name")
         countries = Country.objects.filter(identifier="LEAF").order_by("name")
-        indicators = Indicator.objects.order_by("name")
+        indicators = Indicator.objects.order_by("global_id")
         consumers = ModellingProduct.objects.filter(identifier__in=["LEAF", "FINALCONSUMPTION"]).order_by("name")
+        by_name = {i.name: i.global_id for i in indicators}
+        unavailable = {str(y): sorted(by_name[n] for n in dataset.unavailable(y) if n in by_name)
+                       for y in dataset.years() if dataset.unavailable(y)}
         return Response({
-            "years": DATASET_YEARS,
+            "years": dataset.years(),
+            "nowcast_years": dataset.nowcast_years(),
+            "unavailable": unavailable,
+            "source": dataset.source(),
             "products": [{"global_id": p.global_id, "name": p.name, "code": p.code} for p in products],
             "countries": [{"global_id": c.global_id, "name": c.name, "code": c.code} for c in countries],
-            "indicators": [{"global_id": i.global_id, "name": i.name, "unit": i.unit} for i in indicators],
+            "indicators": [{"global_id": i.global_id, "name": i.name, "unit": i.unit, "parent_id": i.parent_id,
+                            "level": i.level} for i in indicators],
             "nuts2": load_nuts2(),
             "consumers": [{"global_id": m.global_id, "name": m.name, "final": m.identifier == "FINALCONSUMPTION"}
                           for m in consumers],

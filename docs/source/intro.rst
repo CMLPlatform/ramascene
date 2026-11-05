@@ -3,7 +3,7 @@ Introduction
 ############
 
 RaMa-Scene is a Django and React web application. It analyses Environmentally Extended Input-Output (EEIO)
-tables from EXIOBASE v3.3. The application calculates results on request. It loads the EXIOBASE matrices
+tables from EXIOBASE v3.11.2. The application calculates results on request. It loads the EXIOBASE matrices
 into memory and runs the calculations in background workers (Celery).
 
 Implementation overview

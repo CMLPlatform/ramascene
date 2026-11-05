@@ -54,9 +54,11 @@ export default function About() {
         </p>
         <h3>Data</h3>
         <p>
-          The database is EXIOBASE v3.3.sm (1995–2011), in Industry Technology Assumption (ITA) and product-by-product
-          format (RaMa-Scene dataset version v4). You can select from 200 products, including secondary raw materials, 49 countries and regions, and a list
-          of impact indicators. This allows complex multi-variate analysis.{' '}
+          The database is EXIOBASE v3.11.2 (2015–2024; 2024 is a now-cast), in industry-by-industry format
+          (RaMa-Scene dataset version v5). You can select from 163 industries, including recycling and waste treatment,
+          49 countries and regions, and a list of indicators on greenhouse gases, value added, employment, materials,
+          energy, land, water, nutrients and deforestation. Land use and deforestation are not available for 2024.
+          This allows complex multi-variate analysis.{' '}
           <External href="http://exiobase.eu/">Read more</External>
         </p>
         <h3>Hotspot and Contribution analysis</h3>

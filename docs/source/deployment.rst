@@ -35,7 +35,7 @@ Steps
    * ``SECRET_KEY``: a long random string.
    * ``HOST``: the domain name of the server.
    * ``DATASETS_DIR``: the folder on the server with the dataset. It is mounted read-only at ``/datasets``.
-   * ``DATASETS_VERSION``: the dataset version, for example ``v4``.
+   * ``DATASETS_VERSION``: the dataset version, for example ``v5``.
    * ``BROKER_URL`` and the ``RABBITMQ_*`` values: the broker address and its credentials.
    * ``RAMASCENE_MAX_ACTIVE_JOBS`` and ``MODELLING_MEM_LIMIT``: see :doc:`performance`.
    * ``DATASET_N_PRODUCTS`` and ``DATASET_N_COUNTRIES``: the size of the dataset.

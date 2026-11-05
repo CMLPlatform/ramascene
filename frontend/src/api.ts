@@ -2,7 +2,7 @@
 
 export interface Product { global_id: number; name: string; code: string }
 export interface Country { global_id: number; name: string; code: string }
-export interface Indicator { global_id: number; name: string; unit: string }
+export interface Indicator { global_id: number; name: string; unit: string; parent_id: number; level: number }
 
 export interface Consumer { global_id: number; name: string; final: boolean }
 
@@ -13,6 +13,9 @@ export interface Nuts2Region {
 
 export interface Catalog {
   years: number[];
+  nowcast_years?: number[]; // years that are projections, not measured data
+  unavailable?: Record<string, number[]>; // indicator ids without data, per year
+  source?: string;
   products: Product[];
   countries: Country[];
   indicators: Indicator[];

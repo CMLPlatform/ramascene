@@ -24,10 +24,12 @@ Returns the items that a user can select.
 .. code-block:: json
 
     {
-      "years": [1995, 1996, "...", 2011],
+      "years": [2015, 2016, "...", 2024],
+      "nowcast_years": [2024],
+      "unavailable": {"2024": [105, 106]},
       "products": [{"global_id": 12, "name": "Wheat", "code": "i01.a"}],
       "countries": [{"global_id": 3, "name": "Netherlands", "code": "NL"}],
-      "indicators": [{"global_id": 2, "name": "GHG emissions", "unit": "kg CO2 eq"}],
+      "indicators": [{"global_id": 5, "name": "GHG emissions: Total", "unit": "kg CO2 eq", "parent_id": 0, "level": 1}],
       "consumers": [{"global_id": 7, "name": "Final consumption", "final": true}],
       "nuts2": {"Netherlands": [{"code": "NL11", "name": "Groningen"}]}
     }

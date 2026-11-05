@@ -2,14 +2,14 @@
 
 The matrices are laid out region by region: row index = region * n_products + product. The sizes come from
 settings, so a new EXIOBASE version with another classification only needs `DATASET_N_PRODUCTS` and
-`DATASET_N_COUNTRIES` changed (EXIOBASE 3.3 product-by-product: 200 and 49; 3.11 industry-by-industry: 163 and 49).
+`DATASET_N_COUNTRIES` changed (EXIOBASE 3.11.2 industry-by-industry: 163 and 49; the older 3.3 product-by-product data was 200 and 49).
 The defaults below keep the earlier dataset working.
 """
 from django.conf import settings
 
 
 def n_products():
-    return int(getattr(settings, "N_PRODUCTS", 200))
+    return int(getattr(settings, "N_PRODUCTS", 163))
 
 
 def n_countries():

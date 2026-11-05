@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
@@ -16,6 +18,7 @@ VALID_QUERY = {
 }
 
 
+@override_settings(DATASET_DIR="/nonexistent")
 class JobApiValidationTests(TestCase):
     """Requests that are rejected before any calculation starts."""
 
@@ -56,6 +59,7 @@ class JobApiValidationTests(TestCase):
         self.assertEqual(Job.objects.count(), 0)
 
 
+@override_settings(DATASET_DIR="/nonexistent")
 class JobApiLimitTests(TestCase):
     def test_too_many_active_jobs_returns_429(self):
         with override_settings(RAMASCENE_MAX_ACTIVE_JOBS=0):
@@ -77,6 +81,7 @@ class JobApiDetailTests(TestCase):
         self.assertNotIn("result", response.json())
 
 
+@override_settings(DATASET_DIR="/nonexistent")
 class JobApiInterventionTests(TestCase):
     """Scenario requests: intervention structure and ids are checked before a job is created."""
 
@@ -137,3 +142,42 @@ class JobApiInterventionTests(TestCase):
         response = self.post(self.body([]))
         self.assertEqual(response.status_code, 400)
         self.assertIn("model_details", response.json())
+
+
+class JobApiDatasetYearTests(TestCase):
+    """A job must use a year that is in the dataset and an indicator that has data in that year."""
+
+    def setUp(self):
+        import json
+        import tempfile
+        from pathlib import Path
+
+        from ramascene.models import Indicator
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        (Path(folder.name) / "dataset_v5.json").write_text(json.dumps({
+            "years": [2023, 2024], "unavailable_indicators_by_year": {"2024": ["Land use"]}}))
+        override = override_settings(DATASET_DIR=folder.name, DATASET_VERSION="v5")
+        override.enable()
+        self.addCleanup(override.disable)
+        Indicator.objects.create(name="Land use", unit="km2", global_id=6, parent_id=0, local_id=1, level=1)
+        Indicator.objects.create(name="GHG", unit="kg", global_id=5, parent_id=0, local_id=2, level=1)
+
+    def post(self, year, indicator):
+        body = {"action": "default", "querySelection": dict(VALID_QUERY["querySelection"], year=[year], extn=[indicator])}
+        return APIClient().post("/api/jobs/", body, format="json")
+
+    def test_year_outside_the_dataset_is_rejected(self):
+        response = self.post("2011", 5)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("not in the dataset", str(response.json()))
+
+    def test_indicator_without_data_in_that_year_is_rejected(self):
+        response = self.post("2024", 6)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Land use has no data for 2024", str(response.json()))
+
+    def test_the_same_indicator_is_fine_in_a_year_that_has_data(self):
+        with mock.patch("ramascene.api.services.submit_job") as submit:
+            submit.return_value = mock.Mock(id=1, status="started")
+            self.assertEqual(self.post("2023", 6).status_code, 202)

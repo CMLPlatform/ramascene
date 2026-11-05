@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from ramascene.models import Country, ModellingProduct, Product
+from ramascene import dataset
+from ramascene.models import Country, Indicator, ModellingProduct, Product
 
 # the four view combinations the analysis routes understand (see tasks.execute_calc)
 VALID_VIEWS = {
@@ -62,7 +63,29 @@ class JobRequestSerializer(serializers.Serializer):
         for key in ("nodesSec", "nodesReg", "extn"):
             if not isinstance(value[key], list):
                 raise serializers.ValidationError(f"{key} must be a list")
+        self._check_years(value)
         return value
+
+    @staticmethod
+    def _check_years(value):
+        """Years must exist in the dataset, and the indicators must have data in them."""
+        available = dataset.years()
+        if not available:
+            return
+        for year in value["year"]:
+            try:
+                year = int(year)
+            except (TypeError, ValueError):
+                raise serializers.ValidationError(f"year {year!r} is not a number")
+            if year not in available:
+                raise serializers.ValidationError(f"year {year} is not in the dataset ({available[0]}-{available[-1]})")
+            missing = dataset.unavailable(year)
+            if missing:
+                names = Indicator.objects.filter(global_id__in=[i for i in value["extn"] if isinstance(i, int)]
+                                                 ).values_list("name", flat=True)
+                bad = sorted(set(names) & missing)
+                if bad:
+                    raise serializers.ValidationError(f"{bad[0]} has no data for {year}")
 
     def validate(self, attrs):
         if attrs["action"] == "model" and not attrs.get("model_details"):

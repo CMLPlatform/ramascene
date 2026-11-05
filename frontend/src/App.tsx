@@ -5,6 +5,7 @@ import { loadConsent, saveConsent, type Consent } from './consent';
 import { deltaText, percent, percentChange, sortedEntries, tone } from './format';
 import { exactQuantity, formatQuantity, quantityParts } from './units';
 import { nuts2Regions, nuts2Share, nuts2Shares } from './nuts2';
+import { defaultYear, groupIndicators, isNowcast, isUnavailable, yearLabel } from './indicators';
 import { buildPresets } from './presets';
 import { loadPrecalculated } from './precalculated';
 import {
@@ -23,7 +24,7 @@ import PanelToggle from './PanelToggle';
 import { loadPanels, savePanels, type PanelState } from './panels';
 
 const DEFAULT_COUNTRY = 'Netherlands';
-const DEFAULT_YEAR = 2011;
+const DEFAULT_YEAR = 2023; // until the catalog tells the latest measured year
 const TOP_N = 5;
 const DIRECT_ROWS = 10; // rows of the direct-impact table shown before "Show all"
 const TASK_LABELS: Record<string, string> = {
@@ -171,9 +172,11 @@ export default function App() {
     fetchCatalog()
       .then((data) => {
         setCatalog(data);
+        const startYear = defaultYear(data);
+        if (startYear !== null) setYear(startYear);
         const country = data.countries.find((c) => c.name === DEFAULT_COUNTRY) ?? data.countries[0];
         setCountryId(country?.global_id ?? null);
-        setSectorId((data.products.find((p) => /^electricity nec/i.test(p.name)) ?? data.products[0])?.global_id ?? null);
+        setSectorId((data.products.find((p) => /^production of electricity by coal/i.test(p.name)) ?? data.products[0])?.global_id ?? null);
         const indicator = data.indicators.find((i) => /GHG/i.test(i.name)) ?? data.indicators[0];
         setIndicatorId(indicator?.global_id ?? null);
         return loadPrecalculated().then((pre) => {
@@ -577,7 +580,7 @@ export default function App() {
           <a href="#about" aria-current={page === 'about' ? 'page' : undefined}>About</a>
           <a href="https://rama-scene.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Docs</a>
         </nav>
-        <span className="pill">EXIOBASE 3.3 · dataset v4</span>
+        <span className="pill">EXIOBASE 3.11.2 · dataset v5</span>
         <button className="ghost" aria-expanded={helpOpen} onClick={() => setHelpOpen(!helpOpen)}>Help</button>
       </header>
       {helpOpen && (
@@ -670,12 +673,29 @@ export default function App() {
             )}
             <Field label="Indicator">
               <select value={indicatorId ?? ''} onChange={(e) => setIndicatorId(Number(e.target.value))}>
-                {catalog.indicators.map((i) => <option key={i.global_id} value={i.global_id}>{i.name}</option>)}
+                {groupIndicators(catalog.indicators).map((group) => {
+                  const options = group.items.map((i) => (
+                    <option key={i.global_id} value={i.global_id} disabled={isUnavailable(catalog, year, i.global_id)}>
+                      {i.level > 1 ? `\u00a0\u00a0${i.name}` : i.name}
+                    </option>
+                  ));
+                  return group.label === null ? options : <optgroup key={group.items[0].global_id} label={group.label}>{options}</optgroup>;
+                })}
               </select>
             </Field>
             <Field label="Year">
-              <select value={year} onChange={(e) => setYear(Number(e.target.value))}>
-                {catalog.years.map((y) => <option key={y} value={y}>{y}</option>)}
+              <select
+                value={year}
+                onChange={(e) => {
+                  const next = Number(e.target.value);
+                  setYear(next);
+                  // an indicator without data in that year falls back to the greenhouse gas total
+                  if (isUnavailable(catalog, next, indicatorId)) {
+                    setIndicatorId((catalog.indicators.find((i) => /GHG/i.test(i.name)) ?? catalog.indicators[0])?.global_id ?? null);
+                  }
+                }}
+              >
+                {catalog.years.map((y) => <option key={y} value={y}>{yearLabel(catalog, y)}</option>)}
               </select>
             </Field>
             <Field label="Level">
@@ -693,6 +713,12 @@ export default function App() {
               </button>
             )}
           </section>
+          {isNowcast(catalog, year) && (
+            <p className="muted small">
+              {year} is a now-cast: EXIOBASE projects it from earlier years and newer statistics, so treat it as an estimate.
+              {(catalog.unavailable?.[String(year)] ?? []).length > 0 && ' Land use and deforestation are not available for this year.'}
+            </p>
+          )}
 
           <p className="scenario-note">{scenarioNote}</p>
           {level === 'nuts2' && controlCodes.length === 0 && (
@@ -852,7 +878,7 @@ export default function App() {
           )}
 
           <p className="footnote">
-            Source: EXIOBASE 3.3, RaMa-Scene dataset v4. NUTS2 values are a placeholder split of the country total until
+            Source: EXIOBASE 3.11.2 (industry by industry), RaMa-Scene dataset v5. NUTS2 values are a placeholder split of the country total until
             regional EXIOBASE data is loaded. Changes compare the scenario with the baseline and show only when the scenario is applied.
             Values are shown in the most readable unit for their size{unit ? ` (indicator unit: ${quantityParts(1, unit).unit || unit})` : ''}; hover a value for the exact number.
           </p>

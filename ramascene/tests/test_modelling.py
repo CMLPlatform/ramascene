@@ -1,9 +1,9 @@
 """
 Tests for Modelling.apply_model on small synthetic matrices.
 
-The index manager maps product and country ids onto EXIOBASE layout (200 products per country).
-Using only countries 0 and 1 and products below 200 keeps every index below 400, so a
-400 x 400 technology matrix is enough to exercise the full intervention path.
+The index manager maps product and country ids onto EXIOBASE layout (the number of industries per country comes from settings).
+Using only countries 0 and 1 and products below the industry count keeps every index below twice that, so a
+small technology matrix is enough to exercise the full intervention path.
 """
 import copy
 from unittest import mock
@@ -11,10 +11,11 @@ from unittest import mock
 import numpy as np
 from django.test import SimpleTestCase
 
-from ramascene import woodbury
+from ramascene import dimensions, woodbury
 from ramascene.modelling import Modelling
 
-N = 400  # 2 countries x 200 products
+P = dimensions.n_products()  # industries per country
+N = 2 * P  # 2 countries
 Y_SHAPE = (N, 49)
 
 
@@ -29,8 +30,8 @@ def _dense_reference(A, interventions):
     """Apply the same block scalings directly to A and invert."""
     A_mod = A.copy()
     for intervention in interventions:
-        rows = [p + o * 200 for o in intervention["originReg"] for p in intervention["product"]]
-        cols = [p + r * 200 for r in intervention["consumedReg"] for p in intervention["consumedBy"]]
+        rows = [p + o * P for o in intervention["originReg"] for p in intervention["product"]]
+        cols = [p + r * P for r in intervention["consumedReg"] for p in intervention["consumedBy"]]
         factor = 1 + intervention["techChange"][0] / 100
         A_mod[np.ix_(rows, cols)] *= factor
     return np.linalg.inv(np.identity(N) - A_mod)

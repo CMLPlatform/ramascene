@@ -14,8 +14,9 @@ docker info >/dev/null 2>&1 || { echo "Docker is not running. Start Docker Deskt
 # Load .env, then set the local development values
 if [ -f .env ]; then set -a; . ./.env; set +a; fi
 export DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev
-export DATASETS_DIR="${DATASETS_DIR:-$HOME/Documents/datasets/ramascene 2}"
-export DATASETS_VERSION="${DATASETS_VERSION:-v4}"
+export DATASETS_DIR="${DATASETS_DIR:-$HOME/Documents/datasets/ramascene-exiobase-3.11.2}"
+# The dataset version belongs to the code (v5 = EXIOBASE 3.11.2), so a value left in .env does not win.
+export DATASETS_VERSION=v5
 # macOS starts Celery pool processes with "spawn", which leaves them without their task
 # registry and fails every job with "not enough values to unpack (expected 3, got 0)".
 # This setting makes the pool child set it up (Celery's documented workaround).

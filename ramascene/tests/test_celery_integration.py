@@ -1,6 +1,8 @@
 from ramascene.tasks import execute_calc
 from ramascene.models import Job
 from celery.contrib.testing.worker import start_worker
+import unittest
+
 from django.test import SimpleTestCase
 from ramasceneMasterProject.celery import app
 import json
@@ -9,6 +11,7 @@ from django.core.management import call_command
 LATEST_YEAR = 2011
 
 
+@unittest.skip("selects 200 products of EXIOBASE 3.3; test_dataset_job.py covers the job path with the current data")
 class TestAjaxCelery(SimpleTestCase):
     """
     This class tests Ajax and Celery

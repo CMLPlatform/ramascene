@@ -19,6 +19,11 @@ LEGACY_VIEW_NAMES = {
     ("Consumption", "GeoMap"): ("Contribution", "Geographic"),
     ("Production", "TreeMap"): ("Hotspot", "Sectoral"),
 }
+# These reference values were computed from EXIOBASE 3.3 (product by product, 1995-2011). The app now runs on
+# EXIOBASE 3.11.2 (industry by industry), so they no longer apply. test_dataset_job.py checks the same path
+# (API -> job -> result) against the matrices themselves. Kept for reference.
+pytestmark = pytest.mark.skip(reason="reference values belong to EXIOBASE 3.3; see test_dataset_job.py")
+
 FILES_TO_TEST_AGAINST = ["validation_analytical_1_v3.csv",
                          "validation_analytical_2_v3.csv",
                          "validation_analytical_3_v3.csv",

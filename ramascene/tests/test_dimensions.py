@@ -7,13 +7,13 @@ from ramascene.productindexmanger import ProductIndexManager
 
 
 class DimensionTests(SimpleTestCase):
-    def test_defaults_match_the_earlier_dataset(self):
-        self.assertEqual((dimensions.n_products(), dimensions.n_countries()), (200, 49))
-        self.assertEqual(dimensions.n_rows(), 9800)
-
-    @override_settings(N_PRODUCTS=163, N_COUNTRIES=49)
-    def test_industry_by_industry_sizes(self):
+    def test_defaults_match_the_current_dataset(self):
+        self.assertEqual((dimensions.n_products(), dimensions.n_countries()), (163, 49))
         self.assertEqual(dimensions.n_rows(), 7987)
+
+    @override_settings(N_PRODUCTS=200, N_COUNTRIES=49)
+    def test_the_earlier_product_by_product_sizes_still_work(self):
+        self.assertEqual(dimensions.n_rows(), 9800)
 
     @override_settings(N_PRODUCTS=163, N_COUNTRIES=49)
     def test_row_index_uses_the_configured_product_count(self):

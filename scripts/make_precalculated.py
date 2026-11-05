@@ -25,7 +25,7 @@ django.setup()
 
 from django.conf import settings  # noqa: E402
 
-from ramascene import dimensions, querymanagement  # noqa: E402
+from ramascene import dataset, dimensions, querymanagement  # noqa: E402
 from ramascene.analyze import Analyze  # noqa: E402
 from ramascene.models import Country, Indicator, Product  # noqa: E402
 
@@ -48,10 +48,10 @@ def trend_years(years, selected):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--sector", default="Electricity nec")
+    parser.add_argument("--sector", default="Production of electricity by coal")
     parser.add_argument("--country", default="Netherlands")
     parser.add_argument("--indicator", default="GHG emissions: Total")
-    parser.add_argument("--year", type=int, default=2011)
+    parser.add_argument("--year", type=int, default=2023)
     parser.add_argument("--out", default="frontend/public/precalculated.json")
     args = parser.parse_args()
 
@@ -66,7 +66,7 @@ def main():
     n_countries = len(country_names)
     sector_rows = np.arange(n_countries) * PRODUCTS + s_idx
 
-    years = sorted(int(y) for y in os.listdir(settings.DATASET_DIR) if y.isdigit())
+    years = dataset.years() or sorted(int(y) for y in os.listdir(settings.DATASET_DIR) if y.isdigit())
     chosen = trend_years(years, args.year)
 
     def envelope(values):

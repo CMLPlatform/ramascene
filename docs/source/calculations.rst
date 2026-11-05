@@ -100,7 +100,7 @@ selected region and sector where the emission takes place.
 
 There is one last step to make. The user does not specify the geographical origin of a product. For instance
 if the user selects “rice” the actual product selected are “rice from Italy”, “rice from Taiwan”. The **m** vector with a
-length of 49 countries times 200 products needs to be aggregated into 200 product groups:
+length of 49 countries times 163 industries needs to be aggregated into 163 industry groups:
 
 .. image:: ystatic/image037.png
 
@@ -219,7 +219,7 @@ The output needed to satisfy this final demand is subsequently calculated accord
 
 .. image:: ystatic/image047.png
 
-The vector **x** contains all possible product outputs and has a length of 49 countries times 200 products.
+The vector **x** contains all possible product outputs and has a length of 49 countries times 163 industries.
 The emissions or impact indicators are calculated by multiplying selected emission coefficients or selected indicator
 coefficients with the diagonalised output vector:
 
@@ -271,7 +271,7 @@ The output needed to satisfy this final demand is subsequently calculated accord
 
 .. image:: ystatic/image047.png
 
-The vector **x** contains all possible product outputs and has a length of 49 countries times 200 products.
+The vector **x** contains all possible product outputs and has a length of 49 countries times 163 industries.
 The emissions or impact indicators are calculated by multiplying selected emission coefficients or selected indicator
 coefficients with the diagonalised output vector:
 
