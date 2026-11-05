@@ -83,3 +83,36 @@ def test_rank_limit_is_enforced(monkeypatch):
     except ValueError:
         return
     raise AssertionError("expected the rank limit to be enforced")
+
+
+def test_many_rows_single_column_uses_the_column_side_and_matches_full_inversion():
+    """A change to one sector across all its suppliers: many touched rows, one column (rank 1)."""
+    rng = np.random.default_rng(4)
+    n = 150
+    A = random_technology_matrix(n, rng)
+    L = np.linalg.inv(np.eye(n) - A)
+    col = 7
+    rows = np.nonzero(A[:, col])[0]
+    assert len(rows) > 10
+    D = block_scale(sp.csr_matrix((n, n)), A, rows, [col], 0.6)
+    W = WoodburyL(L, D)
+    assert W.k == 1
+    L_full = np.linalg.inv(np.eye(n) - A - D.toarray())
+    np.testing.assert_allclose(W.to_dense(), L_full, rtol=1e-9, atol=1e-10)
+    y = rng.random((n, 2))
+    np.testing.assert_allclose(W @ y, L_full @ y, rtol=1e-9, atol=1e-10)
+    idx = np.array([0, col, 90])
+    np.testing.assert_allclose(W[:, idx], L_full[:, idx], rtol=1e-9, atol=1e-10)
+
+
+def test_column_side_with_several_columns_and_chunking(monkeypatch):
+    import ramascene.woodbury as wb
+    monkeypatch.setattr(wb, "_CHUNK", 16)
+    rng = np.random.default_rng(5)
+    n = 100
+    A = random_technology_matrix(n, rng)
+    L = np.linalg.inv(np.eye(n) - A)
+    D = block_scale(sp.csr_matrix((n, n)), A, rng.choice(n, 40, replace=False), rng.choice(n, 5, replace=False), 1.5)
+    W = WoodburyL(L, D)
+    assert W.k <= 5
+    np.testing.assert_allclose(W.to_dense(), np.linalg.inv(np.eye(n) - A - D.toarray()), rtol=1e-9, atol=1e-10)

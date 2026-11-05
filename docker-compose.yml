@@ -40,6 +40,8 @@ services:
       DATABASES_DEFAULT_NAME: /srv/data/db.sqlite3
       DATASETS_DIR: /datasets
     command: celery -A ramasceneMasterProject worker -l info --concurrency 1 --max-tasks-per-child 1 --queues modelling -n modelling@%h
+    # a scenario that needs a full inversion takes about 2.3 GB on top of the mapped matrices; cap it so it cannot starve the server
+    mem_limit: ${MODELLING_MEM_LIMIT:-6g}
     volumes:
       - data:/srv/data
       - ${DATASETS_DIR}:/datasets:ro

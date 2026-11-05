@@ -466,19 +466,22 @@ def convert_to_numpy(list_obj):
     return numpy_array
 
 
-def get_numpy_objects(year, object_name):
+def get_numpy_objects(year, object_name, mmap=False):
     """
     Retrieve numpy objects per year.
             Args:
             year (int): selected year
             object_name (str): L, A, B, or Y
+            mmap (bool): open read-only and memory-mapped instead of reading the whole file. Use it for
+                the big matrices that are only read (L): the operating system keeps the pages cached,
+                so later tasks and other workers do not pay the roughly 2 s load again.
 
         Returns:
             numpy object: numpy object of the given object_name
     """
     location = os.path.join(settings.DATASET_DIR, '') + os.path.join(str(year), '')
-    object = np.load(location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy"))
-    return object
+    path = location + os.path.join(os.path.join(object_name + str('_') + settings.DATASET_VERSION) + ".npy")
+    return np.load(path, mmap_mode="r" if mmap else None)
 
 
 def get_leaf_product_names():

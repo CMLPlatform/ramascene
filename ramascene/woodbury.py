@@ -8,17 +8,27 @@ modelling.Modelling applies intermediate interventions as block scalings of the 
     A[np.ix_(rows, cols)] *= factor          (factor = 1 + tech_change / 100)
 
 Interventions compose sequentially, so the total change D = A' - A is sparse. Let Rs and Cs be the
-rows and columns touched by D, and Dsub = D[Rs, Cs] (k x |Cs|, with k = |Rs|). With L = (I - A)^-1:
+rows and columns touched by D and Dsub = D[Rs, Cs] (nr x nc). With L = (I - A)^-1, D has rank at most
+min(nr, nc), and the update can be written on either side:
 
-    L' = (I - A - D)^-1 = L + L[:, Rs] (I_k - Dsub L[Cs, Rs])^-1 Dsub L[Cs, :]
+    rows side (nr <= nc):  L' = L + L[:, Rs] (I_nr - Dsub L[Cs, Rs])^-1 Dsub L[Cs, :]
+    columns side (nc < nr): L' = L + (L[:, Rs] Dsub) (I_nc - L[Cs, Rs] Dsub)^-1 L[Cs, :]
 
-Only the rows and columns of L that are touched are needed, so L' is never materialised.
+The two are equal (push-through identity). The smaller side is used, so a change to one sector across
+all its suppliers (many rows, one column) is a rank-1 update. In both cases L' = L + U (W L[Cs, :]);
+L' itself is never materialised.
 """
 import numpy as np
 import scipy.sparse as sp
 
-# Above this many touched rows the correction costs more than a full inversion; the caller falls back.
-MAX_WOODBURY_RANK = 2000
+# Above this rank (the smaller of touched rows and touched columns) the caller falls back to a full inversion
+# (about 20 s and 2.3 GB). Measured on 2011 data (random blocks, 200 columns read):
+#   rank  881: setup 0.4 s   rank 2640: setup 1.7 s   rank 3985: setup 4.4 s, U+W 440 MB, error 6e-15
+# so up to this value the update is still several times cheaper than a full inversion. Re-measure on the server.
+MAX_WOODBURY_RANK = 4000
+
+# Rows of L read at a time when forming L[:, Rs] @ Dsub, to bound memory
+_CHUNK = 1024
 
 
 def block_scale(D, A, rows, cols, factor):
@@ -51,30 +61,43 @@ class WoodburyL:
         rows, cols = D.nonzero()
         self.L = L
         self.shape = L.shape
+        n = L.shape[0]
         self.Rs = np.unique(rows)
         self.Cs = np.unique(cols)
-        self.k = len(self.Rs)
+        nr, nc = len(self.Rs), len(self.Cs)
+        self.k = min(nr, nc)
         if self.k > MAX_WOODBURY_RANK:
             raise ValueError(f"Woodbury rank {self.k} exceeds {MAX_WOODBURY_RANK}; use a full inversion")
-        self.Dsub = np.asarray(D[self.Rs][:, self.Cs].todense())            # k x |Cs|
-        self.LRs = np.asarray(L[:, self.Rs])                                  # n x k
-        LCsRs = np.asarray(L[np.ix_(self.Cs, self.Rs)])                       # |Cs| x k
-        self.Kinv = np.linalg.inv(np.eye(self.k) - self.Dsub @ LCsRs)        # k x k
-        # correction operator G (n x |Cs|) so that L' = L + G @ L[Cs, :]
-        self.G = self.LRs @ (self.Kinv @ self.Dsub)
+        if self.k == 0:
+            self.U = np.zeros((n, 0))
+            self.W = np.zeros((0, nc))
+            return
+        Dsub = np.asarray(D[self.Rs][:, self.Cs].todense())                   # nr x nc
+        LCsRs = np.asarray(L[np.ix_(self.Cs, self.Rs)])                       # nc x nr
+        if nr <= nc:
+            self.U = np.asarray(L[:, self.Rs])                                # n x nr
+            self.W = np.linalg.inv(np.eye(nr) - Dsub @ LCsRs) @ Dsub         # nr x nc
+        else:
+            U = np.empty((n, nc))
+            for start in range(0, n, _CHUNK):
+                block = np.asarray(L[start:start + _CHUNK])[:, self.Rs]
+                U[start:start + _CHUNK] = block @ Dsub
+            self.U = U                                                        # n x nc
+            self.W = np.linalg.inv(np.eye(nc) - LCsRs @ Dsub)                 # nc x nc
 
     def __matmul__(self, M):
         LM = np.asarray(self.L @ M)
-        return LM + self.G @ LM[self.Cs]
+        return LM + self.U @ (self.W @ LM[self.Cs])
 
     def __getitem__(self, key):
         rows, cols = key
         if not (isinstance(rows, slice) and rows == slice(None)):
             raise IndexError("WoodburyL supports column selection only: L[:, idx]")
         Lc = np.asarray(self.L[:, cols])
-        return Lc + self.G @ np.asarray(self.L[np.ix_(self.Cs, cols)])
+        return Lc + self.U @ (self.W @ np.asarray(self.L[np.ix_(self.Cs, cols)]))
 
     def to_dense(self):
         """Materialise L' (for tests and small matrices only)."""
-        return np.asarray(self.L) + self.G @ np.asarray(self.L)[self.Cs]
+        Ld = np.asarray(self.L)
+        return Ld + self.U @ (self.W @ Ld[self.Cs])
 

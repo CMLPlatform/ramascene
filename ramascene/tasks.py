@@ -80,7 +80,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
                 Y, L = model.apply_model()
             else:
                 Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
-                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L", mmap=True)
             # instantiate Analyze class
             p2 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -102,7 +102,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
                 Y, L = model.apply_model()
             else:
                 Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
-                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L", mmap=True)
             # instantiate Analyze class
             p3 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -124,7 +124,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
                 Y, L = model.apply_model()
             else:
                 Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
-                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L", mmap=True)
             # instantiate Analyze class
             p1 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)
@@ -146,7 +146,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
                 Y, L = model.apply_model()
             else:
                 Y = querymanagement.get_numpy_objects(query_selection["year"], "Y")
-                L = querymanagement.get_numpy_objects(query_selection["year"], "L")
+                L = querymanagement.get_numpy_objects(query_selection["year"], "L", mmap=True)
             # instantiate Analyze class
             p4 = Analyze(product_calc_indices, country_calc_indices, indicator_calc_indices, query_selection, idx_units,
                          job_name, job_id, s_country_idx, Y, B, L)

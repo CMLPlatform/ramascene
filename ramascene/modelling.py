@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 import scipy.sparse as sp
 from ramascene import productindexmanger as pim
@@ -28,7 +29,7 @@ class Modelling:
             self.A = querymanagement.get_numpy_objects(self.year, "A")
         # L is always needed: it is the base for the Woodbury update or the unmodified inverse
         if self.L is None:
-            self.L = querymanagement.get_numpy_objects(self.year, "L")
+            self.L = querymanagement.get_numpy_objects(self.year, "L", mmap=True)
         # sparse change to A accumulated over the intermediate interventions
         self.D = sp.csr_matrix(self.L.shape)
 
@@ -91,8 +92,9 @@ class Modelling:
             try:
                 # Woodbury update of the original inverse: only touched rows and columns of L are used
                 self.L = WoodburyL(self.L, self.D)
-            except ValueError:
-                # too many touched rows for the update to be cheaper than a full inversion
+            except ValueError as error:
+                # rank too high for the update to be cheaper than a full inversion (about 20 s, 2.3 GB)
+                logging.getLogger(__name__).warning("Falling back to full inversion: %s", error)
                 self.L = np.linalg.inv(np.identity(self.L.shape[0]) - self.A - self.D.toarray())
 
         return self.Y, self.L
