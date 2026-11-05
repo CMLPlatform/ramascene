@@ -82,24 +82,44 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
 /* Layout */
 .layout { display: flex; flex: 1 1 auto; min-height: 0; flex-wrap: wrap; }
 .side {
-  flex: 0 0 300px; max-width: 100%; padding: 20px 18px; background: var(--bg-side);
-  display: flex; flex-direction: column; gap: 12px;
+  position: relative; flex: 0 0 300px; max-width: 100%; background: var(--bg-side);
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: flex-basis 0.22s ease;
+}
+.side-body {
+  padding: 20px 18px; display: flex; flex-direction: column; gap: 12px;
+  min-width: 300px; overflow-y: auto; transition: opacity 0.15s ease;
+}
+/* the toggle sits in the top corner next to the heading: left panel on its right, right panel on its left */
+.side:first-child .side-head { padding-right: 34px; }
+.side:last-child .side-head { padding-left: 34px; }
+.side.collapsed { flex-basis: 44px; }
+.side.collapsed .side-body { opacity: 0; pointer-events: none; }
+.panel-toggle {
+  position: absolute; top: 14px; z-index: 2; width: 28px; height: 28px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--muted); cursor: pointer;
+}
+.side:first-child .panel-toggle.is-open { right: 12px; }
+.side:last-child .panel-toggle.is-open { left: 12px; }
+.panel-toggle:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.panel-toggle:focus-visible { outline: 2px solid var(--ring, var(--primary)); outline-offset: 2px; }
+/* closed: the whole strip is the button */
+.panel-toggle.is-closed {
+  inset: 0; width: auto; height: auto; border: 0; border-radius: 0; background: transparent;
+  flex-direction: column; justify-content: flex-start; gap: 12px; padding-top: 18px; color: var(--primary);
+}
+.panel-toggle.is-closed:hover { background: var(--primary-soft); }
+.panel-toggle-label {
+  writing-mode: vertical-rl; font-weight: 600; font-size: 13px; letter-spacing: 0.02em; white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .side, .side-body { transition: none; }
 }
 .side:first-child { border-right: 1px solid var(--border); }
 .side:last-child { border-left: 1px solid var(--border); }
 .side-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .side h2 { margin: 0; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.rail {
-  flex: 0 0 44px; display: flex; flex-direction: column; align-items: center; padding: 14px 0;
-  background: var(--bg-side);
-}
-.rail:first-child { border-right: 1px solid var(--border); }
-.rail:last-child { border-left: 1px solid var(--border); }
-.rail-button {
-  writing-mode: vertical-rl; border: 0; background: transparent; color: var(--primary);
-  font-weight: 600; padding: 10px 6px; border-radius: 6px;
-}
-.rail-button:hover { background: var(--primary-soft); }
 
 .main { flex: 1 1 520px; min-width: 0; padding: 24px 28px; display: flex; flex-direction: column; gap: 20px; }
 
@@ -206,11 +226,17 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
 @media (max-width: 720px) {
   .topbar { padding: 12px 16px; }
   .main { padding: 16px; }
-  .side, .rail { flex: 1 1 100%; }
-  .side:first-child, .rail:first-child { border-right: 0; border-bottom: 1px solid var(--border); }
-  .side:last-child, .rail:last-child { border-left: 0; border-top: 1px solid var(--border); }
-  .rail { flex-direction: row; justify-content: center; padding: 8px; }
-  .rail-button { writing-mode: horizontal-tb; }
+  .side { flex: 1 1 100%; transition: none; }
+  .side:first-child { border-right: 0; border-bottom: 1px solid var(--border); }
+  .side:last-child { border-left: 0; border-top: 1px solid var(--border); }
+  .side-body { min-width: 0; }
+  .side:first-child .side-head, .side:last-child .side-head { padding: 0 34px 0 0; }
+  .side:last-child .panel-toggle.is-open, .side:first-child .panel-toggle.is-open { left: auto; right: 12px; }
+  /* collapsed on a phone: a slim bar with the label, tap anywhere on it to open */
+  .side.collapsed { flex-basis: auto; height: 44px; }
+  .side.collapsed .side-body { display: none; }
+  .panel-toggle.is-closed { flex-direction: row; justify-content: center; align-items: center; padding: 0; gap: 8px; }
+  .panel-toggle-label { writing-mode: horizontal-tb; }
   .bar-name { flex-basis: 110px; }
   .primary { margin-left: 0; width: 100%; }
 }
@@ -355,3 +381,6 @@ button:disabled { cursor: not-allowed; opacity: 0.5; }
 .about-list { padding-left: 20px; }
 .about a { color: var(--primary); }
 .layout[hidden] { display: none; }
+
+/* Definition note under the result tiles */
+.definition { margin: 0; line-height: 1.5; max-width: 80ch; }

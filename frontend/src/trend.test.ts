@@ -34,4 +34,15 @@ describe('chartGeometry', () => {
     expect(geometry.base.split(' ')).toHaveLength(1);
     expect(geometry.scenario).toBe('');
   });
+
+  it('spreads the chart over a wider canvas when asked', () => {
+    const years = [2000, 2005, 2010];
+    const small = chartGeometry(years, [1, 2, 3], null);
+    const wide = chartGeometry(years, [1, 2, 3], null, { width: 720, height: 220 });
+    expect(small.labels[2].x).toBe(240);
+    expect(wide.labels[2].x).toBe(700);
+    // the highest value sits at the top margin and the lowest above the bottom margin
+    expect(wide.base.split(' ')[0]).toBe('30.0,195.0');
+    expect(wide.base.split(' ')[2]).toBe('700.0,15.0');
+  });
 });

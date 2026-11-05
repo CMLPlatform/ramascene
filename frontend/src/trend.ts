@@ -18,13 +18,26 @@ export interface ChartGeometry {
   labels: { year: number; x: number }[];
 }
 
+export interface ChartSize {
+  width: number;
+  height: number;
+}
+
+export const SMALL_CHART: ChartSize = { width: 260, height: 130 };
+
 const X0 = 30;
-const X1 = 240;
-const Y_BOTTOM = 105;
 const Y_TOP = 15;
 
-// Points of the two polylines in a 260 x 130 viewBox. Years without a value are skipped.
-export function chartGeometry(years: number[], base: (number | null)[], scenario: (number | null)[] | null): ChartGeometry {
+// Points of the two polylines in a viewBox of the given size (260 x 130 by default).
+// Years without a value are skipped.
+export function chartGeometry(
+  years: number[],
+  base: (number | null)[],
+  scenario: (number | null)[] | null,
+  size: ChartSize = SMALL_CHART,
+): ChartGeometry {
+  const X1 = size.width - 20;
+  const Y_BOTTOM = size.height - 25;
   const values = [...base, ...(scenario ?? [])].filter((v): v is number => v !== null);
   const lo = Math.min(...values);
   const hi = Math.max(...values);

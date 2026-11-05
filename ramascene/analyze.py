@@ -33,10 +33,14 @@ class Analyze:
         """Perform calculations according to route one.
 
         The footprint of the selected products, consumed in the selected countries, split up
-        by where the footprint arises. Three views of the same total are returned:
+        by where the footprint arises. Four views of the same total are returned:
 
         rawResultData: one value per supplying product (summed over supplying countries)
         consumed: one value per selected consumed product (summed over the consuming countries)
+        origins: one value per country that makes the selected products (summed over the consumed
+            products). With all consuming countries selected this is the production-side footprint:
+            the footprint of what each country's sector delivers to final demand, at home and abroad
+            (final demand is aggregated over all categories, so exports of final goods are included).
         supply: the largest cells of the supplying product by supplying country matrix (cells),
             and the total per supplying country (countries)
 
@@ -97,6 +101,9 @@ class Analyze:
         country_names = querymanagement.get_leaf_country_names()
         result = {product_names[idx]: float(value) for idx, value in enumerate(by_product)}
         consumed = {product_names[int(idx)]: float(value) for idx, value in zip(self.product_calc_indices, by_consumed)}
+        # consumed_cols lists the selling countries outer and the selected products inner
+        by_origin = consumed_cols.reshape(-1, n_selected_c).sum(axis=1)
+        origins = {country_names[int(idx)]: float(value) for idx, value in zip(self.s_country_idx, by_origin)}
 
         top = np.argsort(cells, axis=None)[::-1][:SUPPLY_CELLS]
         top_cells = []
@@ -112,6 +119,7 @@ class Analyze:
         # save the final dict result in rawResultData
         data['rawResultData'] = result
         data['consumed'] = consumed
+        data['origins'] = origins
         by_country = cells.sum(axis=1)
         data['supply'] = {
             'cells': top_cells,

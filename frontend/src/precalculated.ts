@@ -17,6 +17,7 @@ export interface Precalculated {
     contributions: JobResult;
     topSectors: JobResult;
     topRegions: JobResult;
+    produced?: JobResult; // older files lack it
     trend: Record<string, number | null>;
   };
 }

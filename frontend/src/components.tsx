@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { chartGeometry } from './trend';
+import { chartGeometry, SMALL_CHART, type ChartSize } from './trend';
 import { exactQuantity, formatQuantity, quantityParts } from './units';
 import type { LegendItem, StackRow } from './stacks';
 
@@ -97,15 +97,17 @@ export function TrendChart({
   base,
   scenario,
   unit,
+  size = SMALL_CHART,
 }: {
   title: string;
   years: number[];
   base: (number | null)[];
   scenario: (number | null)[] | null;
   unit: string;
+  size?: ChartSize;
 }) {
   const hasData = base.some((v) => v !== null);
-  const geometry = hasData ? chartGeometry(years, base, scenario) : null;
+  const geometry = hasData ? chartGeometry(years, base, scenario, size) : null;
   const shown = [...base, ...(scenario ?? [])].filter((v): v is number => v !== null);
   const lo = Math.min(...shown);
   const hi = Math.max(...shown);
@@ -116,14 +118,14 @@ export function TrendChart({
     <div className="chart-card">
       <span className="field-label">{title}</span>
       {geometry ? (
-        <svg viewBox="0 0 260 130" width="100%" role="img" aria-label={`${summary} Baseline dashed${scenario ? ', scenario solid' : ''}.`}>
-          <line x1="20" y1="110" x2="250" y2="110" stroke="var(--border-strong)" strokeWidth="1" />
+        <svg viewBox={`0 0 ${size.width} ${size.height}`} width="100%" role="img" aria-label={`${summary} Baseline dashed${scenario ? ', scenario solid' : ''}.`}>
+          <line x1="20" y1={size.height - 20} x2={size.width - 10} y2={size.height - 20} stroke="var(--border-strong)" strokeWidth="1" />
           <polyline points={geometry.base} fill="none" stroke="var(--bar)" strokeWidth="2" strokeDasharray="4 3" />
           {geometry.scenario && <polyline points={geometry.scenario} fill="none" stroke="var(--primary)" strokeWidth="2.5" />}
           <text x="2" y="18" fontSize="9" fill="var(--muted)">{quantityParts(hi, unit).number}</text>
-          {lo !== hi && <text x="2" y="108" fontSize="9" fill="var(--muted)">{quantityParts(lo, unit).number}</text>}
+          {lo !== hi && <text x="2" y={size.height - 22} fontSize="9" fill="var(--muted)">{quantityParts(lo, unit).number}</text>}
           {geometry.labels.map((l) => (
-            <text key={l.year} x={l.x} y="124" fontSize="10" fill="var(--muted)" textAnchor="middle">{l.year}</text>
+            <text key={l.year} x={l.x} y={size.height - 6} fontSize="10" fill="var(--muted)" textAnchor="middle">{l.year}</text>
           ))}
         </svg>
       ) : (

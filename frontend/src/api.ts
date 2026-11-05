@@ -57,6 +57,7 @@ export interface JobResult {
   unit: Record<string, string>;
   rawResultData: Record<string, number>;
   consumed?: Record<string, number>; // route one: footprint per consumed sector
+  origins?: Record<string, number>; // route one: footprint per country that makes the selected sectors
   supply?: Supply; // route one: where the supply chain sits
 }
 

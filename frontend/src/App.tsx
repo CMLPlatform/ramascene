@@ -19,14 +19,17 @@ import {
 import { buildStacks } from './stacks';
 import { trendYears } from './trend';
 import About from './About';
+import PanelToggle from './PanelToggle';
+import { loadPanels, savePanels, type PanelState } from './panels';
 
 const DEFAULT_COUNTRY = 'Netherlands';
 const DEFAULT_YEAR = 2011;
 const TOP_N = 5;
 const DIRECT_ROWS = 10; // rows of the direct-impact table shown before "Show all"
 const TASK_LABELS: Record<string, string> = {
-  footprintCountry: 'Footprint in country',
-  footprintAll: 'Footprint, all regions',
+  footprintCountry: 'Consumption footprint in country',
+  footprintAll: 'Consumption footprint, all regions',
+  produced: 'Production footprint, all regions',
   direct: 'Direct impacts, all regions',
   contributions: 'Contributing sectors',
   topSectors: 'Top sectors, all regions',
@@ -35,8 +38,9 @@ const TASK_LABELS: Record<string, string> = {
 const TREND_LABEL = 'Footprint trend (years)';
 
 interface Results {
-  footprintCountry: JobResult;
+  footprintCountry: JobResult; // final demand of the country: what it buys, domestic and imported
   footprintAll: JobResult;
+  produced: JobResult; // origins: footprint of each country's output to final demand, at home and abroad
   direct: JobResult;
   contributions: JobResult;
   topSectors: JobResult;
@@ -106,7 +110,6 @@ interface TaskState {
   failed: boolean;
 }
 
-type Panel = 'left' | 'right';
 type Level = 'country' | 'nuts2';
 
 async function cachedQuery(
@@ -146,7 +149,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [runError, setRunError] = useState<string | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
-  const [open, setOpen] = useState<Record<Panel, boolean>>({ left: true, right: true });
+  const [open, setOpen] = useState<PanelState>(() => loadPanels(window.innerWidth));
   const [helpOpen, setHelpOpen] = useState(false);
   const [showAllRows, setShowAllRows] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
@@ -155,6 +158,8 @@ export default function App() {
   const nextId = useRef(1);
   const controllers = useRef(new Map<number, AbortController>());
   const runs = useRef(new Map<number, RunRecord>());
+
+  useEffect(() => savePanels(open), [open]);
 
   useEffect(() => {
     const onHash = () => setPage(window.location.hash === '#about' ? 'about' : 'analysis');
@@ -183,6 +188,7 @@ export default function App() {
           setYear(pre.context.year);
           const baselineResults: Results = {
             ...pre.results,
+            produced: pre.results.produced ?? { unit: {}, rawResultData: {}, origins: {} },
             trend: Object.fromEntries(Object.entries(pre.results.trend).map(([y, v]) => [Number(y), v])),
           };
           const trendCount = pre.context.years.filter((y) => y !== pre.context.year).length;
@@ -300,6 +306,7 @@ export default function App() {
     const requests: Record<QueryKey, Selection> = {
       footprintCountry: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: [spec.countryId] },
       footprintAll: { ...one, dimType: 'Contribution', vizType: 'Geographic', nodesReg: spec.allCountries },
+      produced: { ...one, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: spec.allCountries },
       direct: { ...one, dimType: 'Hotspot', vizType: 'Geographic', nodesReg: spec.allCountries },
       contributions: { ...one, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: [spec.countryId] },
       topSectors: { ...everySector, dimType: 'Contribution', vizType: 'Sectoral', nodesReg: spec.allCountries },
@@ -356,10 +363,12 @@ export default function App() {
     const all = sortedEntries(base.footprintAll.rawResultData);
     const global = all.reduce((sum, [, value]) => sum + value, 0);
     const position = all.findIndex(([name]) => name === spec.countryName) + 1;
+    const made = base.produced?.origins?.[spec.countryName];
     const lines = [
-      `Footprint in ${spec.countryName}: ${formatQuantity(own, spec.unit)}`,
+      `Consumption footprint in ${spec.countryName}: ${formatQuantity(own, spec.unit)}`,
       `${percent(own, global)} of global${position > 0 ? ` · rank #${position}` : ''}`,
     ];
+    if (made !== undefined) lines.push(`Production footprint: ${formatQuantity(made, spec.unit)}`);
     const top = sortedEntries((scen ?? base).contributions.rawResultData)[0];
     if (top) lines.push(`Top supplying sector: ${top[0]}`);
     if (scen) {
@@ -509,6 +518,14 @@ export default function App() {
     Object.values(r?.footprintAll.rawResultData ?? {}).reduce((sum, value) => sum + value, 0);
   const baseGlobal = globalOf(baseline);
   const viewGlobal = globalOf(view);
+  const producedFootprint = (r: Results | null) => {
+    const value = r?.produced?.origins?.[shownCountry];
+    return value === undefined ? null : value * share;
+  };
+  const producedRank = (r: Results | null) =>
+    r ? sortedEntries(r.produced?.origins ?? {}).findIndex(([name]) => name === shownCountry) + 1 : 0;
+  const baseProduced = producedFootprint(baseline);
+  const viewProduced = producedFootprint(view);
   const regionCount = view ? Object.keys(view.footprintAll.rawResultData).length : 0;
   const rank = view
     ? sortedEntries(view.footprintAll.rawResultData).findIndex(([name]) => name === shownCountry) + 1
@@ -573,11 +590,12 @@ export default function App() {
 
       {page === 'about' && <About />}
       <div className="layout" hidden={page === 'about'}>
-        {open.left ? (
-          <aside className="side" id="scenario">
+        <aside className={`side${open.left ? '' : ' collapsed'}`} id="scenario">
+          <PanelToggle side="left" open={open.left} label="Scenario modelling" controls="scenario-body"
+            onToggle={() => setOpen((p) => ({ ...p, left: !p.left }))} />
+          <div className="side-body" id="scenario-body" inert={!open.left}>
             <div className="side-head">
               <h2>Scenario modelling</h2>
-              <button className="ghost small" onClick={() => setOpen({ ...open, left: false })}>Close ◂</button>
             </div>
             <label className="check">
               <input type="checkbox" checked={applyScenario} onChange={(e) => setApplyScenario(e.target.checked)} />
@@ -586,13 +604,6 @@ export default function App() {
             <p className="muted small side-note">
               Each intervention changes the model before it runs. Results show the change against the baseline.
             </p>
-            <TrendChart
-              title={`${shownSector} footprint over time`}
-              unit={unit}
-              years={outcome?.years ?? []}
-              base={trendBase}
-              scenario={trendScenario}
-            />
             {drafts.map((draft, index) => (
               <InterventionCard
                 key={draft.id}
@@ -624,12 +635,8 @@ export default function App() {
               <button className="ghost" aria-expanded={presetsOpen} onClick={() => setPresetsOpen(!presetsOpen)}>Load preset</button>
               <button className="primary" onClick={() => run(true)} disabled={busy}>Run scenario</button>
             </div>
-          </aside>
-        ) : (
-          <aside className="rail">
-            <button className="rail-button" onClick={() => setOpen({ ...open, left: true })}>Scenario modelling ▸</button>
-          </aside>
-        )}
+          </div>
+        </aside>
 
         <main className="main" id="analysis">
           <section className="controls">
@@ -713,12 +720,23 @@ export default function App() {
                 <h2>1. What are the footprint impacts of {shownSector} in {unitName}?</h2>
                 <div className="cards">
                   <Stat
-                    label={`Footprint in ${unitName}`}
+                    label={`Consumption footprint, ${unitName}`}
                     value={quantityParts(viewFootprint, unit).number}
                     unit={quantityParts(viewFootprint, unit).unit}
                     title={exactQuantity(viewFootprint, unit)}
-                    sub={scenario ? `${deltaText(baseFootprint, viewFootprint)} vs baseline` : `Baseline, ${shownYear}`}
+                    sub={scenario ? `${deltaText(baseFootprint, viewFootprint)} vs baseline` : `What ${unitName} buys: domestic + imports`}
                   />
+                  {viewProduced !== null && (
+                    <Stat
+                      label={`Production footprint, ${unitName}`}
+                      value={quantityParts(viewProduced, unit).number}
+                      unit={quantityParts(viewProduced, unit).unit}
+                      title={exactQuantity(viewProduced, unit)}
+                      sub={scenario && baseProduced !== null
+                        ? `${deltaText(baseProduced, viewProduced)} vs baseline`
+                        : `What ${unitName} delivers: domestic + exports`}
+                    />
+                  )}
                   <Stat
                     label={`Global footprint of ${shownSector}`}
                     value={quantityParts(viewGlobal, unit).number}
@@ -729,15 +747,27 @@ export default function App() {
                   <Stat
                     label="Share of global footprint"
                     value={percent(viewFootprint, viewGlobal)}
-                    sub={`${unitName} as share of global`}
+                    sub={viewProduced !== null
+                      ? `Consumption · production side: ${percent(viewProduced, viewGlobal)}`
+                      : `${unitName} as share of global`}
                   />
                   <Stat
                     label="Rank among regions"
                     value={useNuts2 ? '—' : rank > 0 ? `#${rank}` : '—'}
                     unit={!useNuts2 && rank > 0 ? `of ${regionCount}` : undefined}
-                    sub={useNuts2 ? 'Rank shown at country level' : `For ${shownSector}, 1 is highest`}
+                    sub={useNuts2
+                      ? 'Rank shown at country level'
+                      : `Consumption, 1 is highest${!useNuts2 && producedRank(view) > 0 ? ` · production side: #${producedRank(view)}` : ''}`}
                   />
                 </div>
+                <p className="muted small definition">
+                  Both footprints count the greenhouse gases (or the chosen indicator) emitted anywhere in the world along
+                  the supply chain of the final demand for {shownSector}. Final demand covers all categories (households,
+                  government, investment) and is counted by where the product is made and where it is bought.{' '}
+                  <strong>Consumption</strong>: what {unitName} itself buys, wherever it is made.{' '}
+                  <strong>Production</strong>: what {shownSector} made in {unitName} delivers to final demand, at home and abroad.
+                  Both add up to the same global total.
+                </p>
                 <div className="split">
                   <RankList
                     title="Top sectors, global footprint"
@@ -753,7 +783,19 @@ export default function App() {
               </section>
 
               <section className="card">
-                <h2>2. What is the contribution of other sectors to {shownSector} in {shownCountry}, and where are they located?</h2>
+                <h2>2. How did the footprint of {shownSector} in {unitName} evolve through time?</h2>
+                <TrendChart
+                  title={`Consumption footprint in ${unitName}`}
+                  unit={unit}
+                  years={outcome?.years ?? []}
+                  base={trendBase}
+                  scenario={trendScenario}
+                  size={{ width: 720, height: 220 }}
+                />
+              </section>
+
+              <section className="card">
+                <h2>3. What is the contribution of other sectors to {shownSector} in {shownCountry}, and where are they located?</h2>
                 {stacks ? (
                   <div className="split">
                     <StackedBars title="Top contributing sectors (stacks by country)" rows={stacks.sectors} legend={stacks.countryLegend} unit={unit} />
@@ -767,8 +809,8 @@ export default function App() {
               <section className="card">
                 <h2>
                   {useNuts2
-                    ? `3. What are the direct impacts of ${shownSector} in each NUTS2 region of ${shownCountry}?`
-                    : `3. What are the direct impacts of ${shownSector} in each region?`}
+                    ? `4. What are the direct impacts of ${shownSector} in each NUTS2 region of ${shownCountry}?`
+                    : `4. What are the direct impacts of ${shownSector} in each region?`}
                 </h2>
                 <table className="table">
                   <thead>
@@ -827,11 +869,12 @@ export default function App() {
           )}
         </main>
 
-        {open.right ? (
-          <aside className="side">
+        <aside className={`side${open.right ? '' : ' collapsed'}`} id="queue">
+          <PanelToggle side="right" open={open.right} label="Analysis queue" controls="queue-body"
+            onToggle={() => setOpen((p) => ({ ...p, right: !p.right }))} />
+          <div className="side-body" id="queue-body" inert={!open.right}>
             <div className="side-head">
               <h2>Analysis queue</h2>
-              <button className="ghost small" onClick={() => setOpen({ ...open, right: false })}>Close ▸</button>
             </div>
             {queue.length === 0 && <p className="muted small">No analyses yet.</p>}
             {queue.map((item) => (
@@ -907,12 +950,8 @@ export default function App() {
                 <span className="muted small">{item.detail}</span>
               </div>
             ))}
-          </aside>
-        ) : (
-          <aside className="rail">
-            <button className="rail-button" onClick={() => setOpen({ ...open, right: true })}>◂ Analysis queue</button>
-          </aside>
-        )}
+          </div>
+        </aside>
       </div>
     </Shell>
   );

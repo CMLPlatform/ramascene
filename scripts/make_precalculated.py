@@ -98,9 +98,11 @@ def main():
         return json.loads(analysis.route_one())
 
     contributions = route_one([s_idx], [c_idx])
+    produced = route_one([s_idx], list(range(n_countries)))
     everything = route_one(list(range(PRODUCTS)), list(range(n_countries)))
 
-    # The three views of the same footprint must agree
+    # The views of the same footprint must agree; consumption and production side add up to one global total
+    assert abs(sum(produced["origins"].values()) - sum(footprint_all.values())) <= 1e-9 * abs(sum(footprint_all.values())), "production side differs"
     total_sector = sum(footprint_all.values())
     assert abs(everything["consumed"][args.sector] - total_sector) <= 1e-9 * abs(total_sector), "sector totals differ"
     assert abs(sum(footprint_regions.values()) - sum(everything["consumed"].values())) <= 1e-9 * abs(total_sector * 1e3 + 1)
@@ -115,6 +117,7 @@ def main():
         "results": {
             "footprintCountry": envelope({args.country: footprint_all[args.country]}),
             "footprintAll": envelope(footprint_all),
+            "produced": {"unit": unit, "rawResultData": produced["rawResultData"], "origins": produced["origins"]},
             "direct": envelope(direct),
             "contributions": {"unit": unit, "rawResultData": contributions["rawResultData"],
                               "consumed": contributions["consumed"], "supply": contributions["supply"]},
