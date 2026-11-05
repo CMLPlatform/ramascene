@@ -1,61 +1,133 @@
 name	unit	global_id	parent_id	local_id	level
-Product Output: Total	M.EUR	1	0	51	1
-Value Added: Total	M.EUR	2	0	1	1
-Employment: Total	1000 p	3	0	2	1
-Employment hours: Total	M.hr	4	0	3	1
-GHG emissions: Total	kg CO2 eq	5	0	4	1
-Domestic Extraction Used - Total	kt	6	0	5	1
-Domestic Extraction Used - Metal Ores - Total	kt	7	0	6	1
-Domestic Extraction Used - Non-Metallic Minerals - Total	kt	8	0	7	1
-Taxes less subsidies on products purchased	M.EUR	9	2	1	2
-Other net taxes on production	M.EUR	10	2	2	2
-Compensation of employees; wages, salaries, & employers' social contributions: Low-skilled	M.EUR	11	2	3	2
-Compensation of employees; wages, salaries, & employers' social contributions: Medium-skilled	M.EUR	12	2	4	2
-Compensation of employees; wages, salaries, & employers' social contributions: High-skilled	M.EUR	13	2	5	2
-Operating surplus: Consumption of fixed capital	M.EUR	14	2	6	2
-Operating surplus: Remaining net operating surplus	M.EUR	15	2	7	2
-Employment: Low-skilled male	1000 p	16	3	8	2
-Employment: Low-skilled female	1000 p	17	3	9	2
-Employment: Medium-skilled male	1000 p	18	3	10	2
-Employment: Medium-skilled female	1000 p	19	3	11	2
-Employment: High-skilled male	1000 p	20	3	12	2
-Employment: High-skilled female	1000 p	21	3	13	2
-Employment hours: Low-skilled male	M.hr	22	4	14	2
-Employment hours: Low-skilled female	M.hr	23	4	15	2
-Employment hours: Medium-skilled male	M.hr	24	4	16	2
-Employment hours: Medium-skilled female	M.hr	25	4	17	2
-Employment hours: High-skilled male	M.hr	26	4	18	2
-Employment hours: High-skilled female	M.hr	27	4	19	2
-Employment: Vulnerable employment	1000 p	28	0	8	1
-Employment hours: Vulnerable employment	M.hr	29	0	9	1
-CO2 - combustion	kg	30	5	20	2
-CH4 - combustion	kg	31	5	21	2
-N2O - combustion	kg	32	5	22	2
-CO2 - waste	kg	33	5	23	2
-CH4 - Waste	kg	34	5	24	2
-CO2 - non combustion	kg	35	5	25	2
-CH4 - non combustion	kg	36	5	26	2
-N2O - non - combustion	kg	37	5	27	2
-SF6	kg	38	5	28	2
-HFC	kg CO2-eq	39	5	29	2
-PFC	kg CO2-eq	40	5	30	2
-Domestic Extraction Used - Metal Ores - Uranium and thorium ores	kt	41	7	31	2
-Domestic Extraction Used - Metal Ores - Iron ores	kt	42	7	32	2
-Domestic Extraction Used - Metal Ores - Copper ores	kt	43	7	33	2
-Domestic Extraction Used - Metal Ores - Nickel ores	kt	44	7	34	2
-Domestic Extraction Used - Metal Ores - Bauxite and aluminium ores	kt	45	7	35	2
-Domestic Extraction Used - Metal Ores - Gold ores	kt	46	7	36	2
-Domestic Extraction Used - Metal Ores - PGM ores	kt	47	7	37	2
-Domestic Extraction Used - Metal Ores - Silver ores	kt	48	7	38	2
-Domestic Extraction Used - Metal Ores - Lead ores	kt	49	7	39	2
-Domestic Extraction Used - Metal Ores - Tin ores	kt	50	7	40	2
-Domestic Extraction Used - Metal Ores - Zinc ores	kt	51	7	41	2
-Domestic Extraction Used - Metal Ores - Other non-ferrous metal ores	kt	52	7	42	2
-Domestic Extraction Used - Non-Metallic Minerals - Other minerals	kt	53	8	43	2
-Domestic Extraction Used - Non-Metallic Minerals - Limestone, gypsum, chalk, dolomite	kt	54	8	44	2
-Domestic Extraction Used - Non-Metallic Minerals - Slate	kt	55	8	45	2
-Domestic Extraction Used - Non-Metallic Minerals - Building stones	kt	56	8	46	2
-Domestic Extraction Used - Non-Metallic Minerals - Clays and kaolin	kt	57	8	47	2
-Domestic Extraction Used - Non-Metallic Minerals - Gravel and sand	kt	58	8	48	2
-Domestic Extraction Used - Non-Metallic Minerals - Salt	kt	59	8	49	2
-Domestic Extraction Used - Non-Metallic Minerals - Chemical and fertilizer minerals	kt	60	8	50	2
+Product Output: Total	M.EUR	1	0	1	1
+Value Added: Total	M.EUR	2	0	2	1
+Employment: Total	1000 p	3	0	3	1
+Employment hours: Total	M.hr	4	0	4	1
+GHG emissions: Total	kg CO2 eq	5	0	5	1
+Domestic Extraction Used - Total	kt	6	0	6	1
+Domestic Extraction Used - Biomass - Total	kt	7	0	7	1
+Domestic Extraction Used - Fossil Fuels - Total	kt	8	0	8	1
+Domestic Extraction Used - Metal Ores - Total	kt	9	0	9	1
+Domestic Extraction Used - Non-Metallic Minerals - Total	kt	10	0	10	1
+Energy use - Emission relevant	TJ	11	0	11	1
+Energy use - Gross	TJ	12	0	12	1
+Energy use - Net	TJ	13	0	13	1
+Land use: Total	km2	14	0	14	1
+Water consumption: Total	Mm3	15	0	15	1
+Water withdrawal: Blue	Mm3	16	0	16	1
+Nitrogen emissions: Total	kg	17	0	17	1
+Phosphorus emissions: Total	kg	18	0	18	1
+Deforestation attribution, unamortized	km2	19	0	19	1
+Deforestation risk, amortized	km2	20	0	20	1
+Deforestation emissions incl. peat drainage, amortized	kg	21	0	21	1
+Taxes less subsidies on products purchased: Total	M.EUR	22	2	1	2
+Other net taxes on production	M.EUR	23	2	2	2
+Compensation of employees; wages, salaries, & employers' social contributions: Low-skilled	M.EUR	24	2	3	2
+Compensation of employees; wages, salaries, & employers' social contributions: Medium-skilled	M.EUR	25	2	4	2
+Compensation of employees; wages, salaries, & employers' social contributions: High-skilled	M.EUR	26	2	5	2
+Operating surplus: Consumption of fixed capital	M.EUR	27	2	6	2
+Operating surplus: Rents on land	M.EUR	28	2	7	2
+Operating surplus: Royalties on resources	M.EUR	29	2	8	2
+Operating surplus: Remaining net operating surplus	M.EUR	30	2	9	2
+Employment: Low-skilled male	1000 p	31	3	10	2
+Employment: Low-skilled female	1000 p	32	3	11	2
+Employment: Medium-skilled male	1000 p	33	3	12	2
+Employment: Medium-skilled female	1000 p	34	3	13	2
+Employment: High-skilled male	1000 p	35	3	14	2
+Employment: High-skilled female	1000 p	36	3	15	2
+Employment hours: Low-skilled male	M.hr	37	4	16	2
+Employment hours: Low-skilled female	M.hr	38	4	17	2
+Employment hours: Medium-skilled male	M.hr	39	4	18	2
+Employment hours: Medium-skilled female	M.hr	40	4	19	2
+Employment hours: High-skilled male	M.hr	41	4	20	2
+Employment hours: High-skilled female	M.hr	42	4	21	2
+CO2 - combustion	kg	43	5	22	2
+CH4 - combustion	kg	44	5	23	2
+N2O - combustion	kg	45	5	24	2
+CO2 - waste	kg	46	5	25	2
+CH4 - waste	kg	47	5	26	2
+CO2 - non combustion	kg	48	5	27	2
+CH4 - non combustion	kg	49	5	28	2
+CO2 - agriculture	kg	50	5	29	2
+CH4 - agriculture	kg	51	5	30	2
+N2O - agriculture	kg	52	5	31	2
+SF6	kg	53	5	32	2
+HFC	kg CO2-eq	54	5	33	2
+PFC	kg CO2-eq	55	5	34	2
+NF3	kg	56	5	35	2
+Domestic Extraction Used - Primary Crops - Rice	kt	57	7	36	2
+Domestic Extraction Used - Primary Crops - Wheat	kt	58	7	37	2
+Domestic Extraction Used - Primary Crops - Cereals n.e.c.	kt	59	7	38	2
+Domestic Extraction Used - Primary Crops - Roots and tubers	kt	60	7	39	2
+Domestic Extraction Used - Primary Crops - Pulses	kt	61	7	40	2
+Domestic Extraction Used - Primary Crops - Nuts	kt	62	7	41	2
+Domestic Extraction Used - Primary Crops - Vegetables	kt	63	7	42	2
+Domestic Extraction Used - Primary Crops - Fruits	kt	64	7	43	2
+Domestic Extraction Used - Primary Crops - Oil bearing crops	kt	65	7	44	2
+Domestic Extraction Used - Primary Crops - Sugar crops	kt	66	7	45	2
+Domestic Extraction Used - Primary Crops - Fibres	kt	67	7	46	2
+Domestic Extraction Used - Primary Crops - Spice - beverage - pharmaceutical crops	kt	68	7	47	2
+Domestic Extraction Used - Primary Crops - Tobacco	kt	69	7	48	2
+Domestic Extraction Used - Crop residues - Straw	kt	70	7	49	2
+Domestic Extraction Used - Crop residues - Other crop residues (sugar and fodder beet leaves etc)	kt	71	7	50	2
+Domestic Extraction Used - Fodder crops (including biomass harvest from grassland)	kt	72	7	51	2
+Domestic Extraction Used - Grazed biomass	kt	73	7	52	2
+Domestic Extraction Used - Forestry - Other crops n.e.c	kt	74	7	53	2
+Domestic Extraction Used - Forestry - Timber (Industrial roundwood)	kt	75	7	54	2
+Domestic Extraction Used - Forestry - Wood fuel and other extraction	kt	76	7	55	2
+Domestic Extraction Used - Fishery - Wild fish catch	kt	77	7	56	2
+Domestic Extraction Used - Fishery - All other aquatic animals	kt	78	7	57	2
+Domestic Extraction Used - Fishery - Aquatic plants	kt	79	7	58	2
+Domestic Extraction Used - Fossil Fuels - Anthracite	kt	80	8	59	2
+Domestic Extraction Used - Fossil Fuels - Coking Coal	kt	81	8	60	2
+Domestic Extraction Used - Fossil Fuels - Other Bituminous Coal	kt	82	8	61	2
+Domestic Extraction Used - Fossil Fuels - Other Sub-Bituminous Coal	kt	83	8	62	2
+Domestic Extraction Used - Fossil Fuels - Lignite (brown coal)	kt	84	8	63	2
+Domestic Extraction Used - Fossil Fuels - Peat	kt	85	8	64	2
+Domestic Extraction Used - Fossil Fuels - Crude oil	kt	86	8	65	2
+Domestic Extraction Used - Fossil Fuels - Oil shale and tar sands	kt	87	8	66	2
+Domestic Extraction Used - Fossil Fuels - Natural gas	kt	88	8	67	2
+Domestic Extraction Used - Fossil Fuels - Natural gas liquids	kt	89	8	68	2
+Domestic Extraction Used - Metal Ores - Uranium ores	kt	90	9	69	2
+Domestic Extraction Used - Metal Ores - Iron ores	kt	91	9	70	2
+Domestic Extraction Used - Metal Ores - Copper ores	kt	92	9	71	2
+Domestic Extraction Used - Metal Ores - Nickel ores	kt	93	9	72	2
+Domestic Extraction Used - Metal Ores - Bauxite and other aluminium ores - gross ore	kt	94	9	73	2
+Domestic Extraction Used - Metal Ores - Silver ores	kt	95	9	74	2
+Domestic Extraction Used - Metal Ores - Gold ores	kt	96	9	75	2
+Domestic Extraction Used - Metal Ores - Platinum group metal ores	kt	97	9	76	2
+Domestic Extraction Used - Metal Ores - Lead ores	kt	98	9	77	2
+Domestic Extraction Used - Metal Ores - Tin ores	kt	99	9	78	2
+Domestic Extraction Used - Metal Ores - Zinc ores	kt	100	9	79	2
+Domestic Extraction Used - Metal Ores - Chromium ores	kt	101	9	80	2
+Domestic Extraction Used - Metal Ores - Manganese ores	kt	102	9	81	2
+Domestic Extraction Used - Metal Ores - Other metal ores	kt	103	9	82	2
+Domestic Extraction Used - Metal Ores - Titanium ores	kt	104	9	83	2
+Domestic Extraction Used - Non-Metallic Minerals - Ornamental or building stone	kt	105	10	84	2
+Domestic Extraction Used - Non-Metallic Minerals - Chalk	kt	106	10	85	2
+Domestic Extraction Used - Non-Metallic Minerals - Dolomite	kt	107	10	86	2
+Domestic Extraction Used - Non-Metallic Minerals - Limestone	kt	108	10	87	2
+Domestic Extraction Used - Non-Metallic Minerals - Gypsum	kt	109	10	88	2
+Domestic Extraction Used - Non-Metallic Minerals - Structural clays	kt	110	10	89	2
+Domestic Extraction Used - Non-Metallic Minerals - Specialty clays	kt	111	10	90	2
+Domestic Extraction Used - Non-Metallic Minerals - Industrial sand and gravel	kt	112	10	91	2
+Domestic Extraction Used - Non-Metallic Minerals - Sand gravel and crushed rock for construction	kt	113	10	92	2
+Domestic Extraction Used - Non-Metallic Minerals - Fertilizer minerals n.e.c.	kt	114	10	93	2
+Domestic Extraction Used - Non-Metallic Minerals - Chemical minerals n.e.c.	kt	115	10	94	2
+Domestic Extraction Used - Non-Metallic Minerals - Industrial minerals n.e.c	kt	116	10	95	2
+Domestic Extraction Used - Non-Metallic Minerals - Salt	kt	117	10	96	2
+Domestic Extraction Used - Non-Metallic Minerals - Other non-metallic minerals n.e.c.	kt	118	10	97	2
+Land use - Artificial surfaces	km2	119	14	98	2
+Land use - Cropland, cropped area	km2	120	14	99	2
+Land use - Cropland, fallowed area	km2	121	14	100	2
+Land use - Permanent pastures	km2	122	14	101	2
+Land use - Forest, naturally generating	km2	123	14	102	2
+Land use - Forest, planted	km2	124	14	103	2
+Water consumption - Green	Mm3	125	15	104	2
+Water consumption - Blue	Mm3	126	15	105	2
+Water consumption - Capillary	Mm3	127	15	106	2
+N - agriculture - water	kg	128	17	107	2
+N - waste - water	kg	129	17	108	2
+P - agriculture - soil	kg	130	18	109	2
+P - agriculture - water	kg	131	18	110	2
+P - waste - water	kg	132	18	111	2
