@@ -71,7 +71,7 @@ def cells(js):
 
 def income(codes, year):
     js, url = fetch("nama_10r_2hhinc", {"format": "JSON", "lang": "EN", "na_item": "B5N", "direct": "BAL",
-                                        "unit": "MIO_EUR", "time": str(year), "geo": codes})
+                                        "unit": "MIO_EUR", "time": str(year), "geo": codes + [codes[0][:2]]})
     return {c["geo"]: v for c, v in cells(js)}, url
 
 
@@ -102,6 +102,61 @@ def write_employment(path, codes, nace, data):
                 fh.write(code + "\t" + "\t".join(str(data[code].get(n, 0)) for n in nace) + "\n")
 
 
+# Eurostat publishes the two tables in different NUTS editions (checked with --list-codes 2019). Our region list
+# (nuts2_map.json, circumat_regions.csv) is the one the map geometry uses, so the published codes are bridged to it.
+EXTRA_CODES = {"HR": ["HR02", "HR05", "HR06"], "NL": ["NL35", "NL36"],
+               "PT": ["PT19", "PT1A", "PT1B", "PT1C", "PT1D"]}
+RENAMED = {"NL35": "NL31", "NL36": "NL33"}                      # same regions, new codes (NUTS 2024)
+MERGED = {"HR04": ["HR02", "HR05", "HR06"]}                     # three NUTS 2021 regions form our HR04
+PT_AML = ["PT1A", "PT1B"]                                       # = PT17
+PT_REST = ["PT19", "PT1C", "PT1D"]                              # = PT16 + PT18 (borders moved in NUTS 2024)
+
+
+def bridge(cc, income_data, employment_data):
+    """Return the names of regions that had to be derived. Changes the dictionaries in place."""
+    notes = []
+    for new, old in RENAMED.items():
+        if new in income_data and old not in income_data:
+            income_data[old] = income_data.pop(new)
+            notes.append(f"{old} income from {new}")
+    for table in (income_data, employment_data or {}):
+        for ours, parts in MERGED.items():
+            if all(p in table for p in parts) and ours not in table:
+                if table is income_data:
+                    table[ours] = sum(table[p] for p in parts)
+                else:
+                    table[ours] = {n: sum(table[p].get(n, 0) for p in parts)
+                                   for n in sorted({n for p in parts for n in table[p]})}
+                if table is income_data:
+                    notes.append(f"{ours} income = {' + '.join(parts)}")
+    if cc == "PT" and "PT17" not in income_data and all(c in income_data for c in PT_AML + PT_REST):
+        income_data["PT17"] = income_data[PT_AML[0]] + income_data[PT_AML[1]]
+        rest = sum(income_data[c] for c in PT_REST)
+        weight = {c: sum((employment_data or {}).get(c, {}).values()) for c in ("PT16", "PT18")}
+        if sum(weight.values()) > 0:
+            for c in ("PT16", "PT18"):
+                income_data[c] = round(rest * weight[c] / sum(weight.values()))
+            notes.append("PT17 = PT1A + PT1B; PT16 and PT18 split from PT19 + PT1C + PT1D by employment")
+    return notes
+
+
+def fill_income(codes, income_data, employment_data):
+    """Eurostat leaves some regions out (e.g. NL31, NL33). If the country total is there, the rest is
+    split over the missing regions in proportion to their employment. Returns the names of the filled regions."""
+    country = codes[0][:2]
+    missing = [c for c in codes if c not in income_data]
+    if not missing or country not in income_data or not income_data[country] > 0:
+        return []
+    weight = {c: sum((employment_data or {}).get(c, {}).values()) for c in missing}
+    rest = income_data[country] - sum(income_data[c] for c in codes if c in income_data)
+    total = sum(weight.values())
+    if rest <= 0 or total <= 0:
+        return []
+    for c in missing:
+        income_data[c] = round(rest * weight[c] / total)
+    return missing
+
+
 def with_fallback(get, year, codes):
     """Try the requested year, then earlier years; returns (year used, result) or (None, None)."""
     for used in range(year, year - MAX_FALLBACK - 1, -1):
@@ -116,14 +171,51 @@ def with_fallback(get, year, codes):
     return None, None
 
 
+def list_codes(year, output):
+    """Which NUTS2 regions does each table publish, and how do they differ from nuts2_map.json?"""
+    regions = json.load(open(NUTS2_MAP))
+    ours = {key.split("_", 1)[0]: {e["code"] if isinstance(e, dict) else e for e in entries}
+            for key, entries in regions.items()}
+    income_js, _ = fetch("nama_10r_2hhinc", {"format": "JSON", "lang": "EN", "na_item": "B5N", "direct": "BAL",
+                                              "unit": "MIO_EUR", "time": str(year)})
+    sbs_js, _ = fetch("sbs_r_nuts06_r2", {"format": "JSON", "lang": "EN", "indic_sb": "V16110", "time": str(year)})
+    published = {"income": {}, "employment": {}}
+    labels = {}
+    for c, _v in cells(income_js):
+        published["income"].setdefault(c["geo"][:2], set()).add(c["geo"])
+    for c, _v in cells(sbs_js):
+        published["employment"].setdefault(c["geo"][:2], set()).add(c["geo"])
+    for js in (income_js, sbs_js):
+        labels.update(js["dimension"]["geo"]["category"].get("label", {}))
+    report = {}
+    for cc in sorted(ours):
+        row = {"ours": sorted(ours[cc])}
+        for table, got in published.items():
+            codes = {g for g in got.get(cc, set()) if len(g) == 4}   # NUTS2 codes only
+            row[table] = sorted(codes)
+            row[table + "_not_in_ours"] = sorted(codes - ours[cc])
+            row[table + "_ours_missing"] = sorted(ours[cc] - codes)
+        report[cc] = row
+        flag = "" if not any(row[t + "_not_in_ours"] or row[t + "_ours_missing"] for t in published) else "  <-- differs"
+        print(f"{cc}: ours {len(ours[cc])}, income {len(row['income'])}, employment {len(row['employment'])}{flag}")
+    output.mkdir(parents=True, exist_ok=True)
+    with open(output / f"published_nuts2_codes_{year}.json", "w") as fh:
+        json.dump({"labels": {k: v for k, v in labels.items() if len(k) == 4}, "report": report}, fh, indent=1)
+    print("written", output / f"published_nuts2_codes_{year}.json")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("output", type=Path)
     ap.add_argument("--years", nargs="+", type=int, default=[2019])
     ap.add_argument("--countries", nargs="*", help="two-letter codes, default all countries in nuts2_map.json")
+    ap.add_argument("--list-codes", type=int, metavar="YEAR",
+                    help="only list the NUTS2 codes both tables publish for YEAR and compare them with nuts2_map.json")
     ap.add_argument("--dry-run", action="store_true", help="print the first request and stop")
     args = ap.parse_args()
 
+    if args.list_codes:
+        return list_codes(args.list_codes, args.output)
     regions = json.load(open(NUTS2_MAP))
     manifest, problems = [], []
     for key, entries in regions.items():
@@ -142,9 +234,17 @@ def main():
                 return
             inc_path.parent.mkdir(parents=True, exist_ok=True)
             emp_path.parent.mkdir(parents=True, exist_ok=True)
-            used_inc, got_inc = with_fallback(income, year, codes)
-            used_emp, got_emp = with_fallback(employment, year, codes)
+            request = codes + EXTRA_CODES.get(cc, [])
+            used_inc, got_inc = with_fallback(income, year, request)
+            used_emp, got_emp = with_fallback(employment, year, request)
             record = {"country": cc, "year": year, "income_year": used_inc, "employment_year": used_emp}
+            derived = bridge(cc, got_inc[0], got_emp[0] if got_emp else None) if got_inc else []
+            if derived:
+                record["bridged"] = derived
+                print(f"  {cc}: " + "; ".join(derived))
+            filled = fill_income(codes, got_inc[0], got_emp[0] if got_emp else None) if got_inc else []
+            if filled:
+                record["income_filled_from_country_total"] = filled
             if got_inc:
                 write_income(inc_path, codes, got_inc[0])
                 record["income_regions"] = len(got_inc[0])
@@ -152,6 +252,9 @@ def main():
                 write_employment(emp_path, codes, got_emp[1], got_emp[0])
                 record["employment_regions"] = len(got_emp[0])
                 record["nace_columns"] = len(got_emp[1])
+            missing = [c for c in codes if not got_inc or c not in got_inc[0]] if got_inc else codes
+            if filled:
+                print(f"  {cc}: income for {', '.join(filled)} not published, filled from the country total")
             missing = [c for c in codes if not got_inc or c not in got_inc[0]] if got_inc else codes
             if not got_inc or not got_emp or missing:
                 problems.append(f"{cc} {year}: income {used_inc}, employment {used_emp}, "

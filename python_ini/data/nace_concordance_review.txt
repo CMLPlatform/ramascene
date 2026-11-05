@@ -1,0 +1,23 @@
+Industries with no employment proxy (regional split by household income):
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 114, 128, 129, 130, 136, 137, 138, 159, 162, 163]
+
+Industries fed by more than one NACE row:
+  21: B06, B09
+  22: B06, B09
+  23: B06, B09
+  55: C18, J58
+  63: C20, C21
+  85: C25, C33
+  86: C28, C33
+  90: C26, C32
+  93: C31, C32
+  94: E38, E39
+  113: F41, F42, F43
+  119: I55, I56
+  126: H52, N79
+  127: H53, J61
+  133: J62, J63
+  135: M69, M70, M71, M73, M74, M75, N78, N80, N81, N82
+  160: J59, J60
+
+Judgement calls to review: C21 (pharmaceuticals) -> Chemicals nec; C33 (repair of machinery) -> fabricated metal and machinery; J59/J60 (film, broadcasting) -> Recreational, cultural; E38 waste collection and treatment -> recycling and all incineration, biogas, compost, landfill industries; D35 electricity, gas and steam -> all generation, transmission, distribution, gas, steam.
