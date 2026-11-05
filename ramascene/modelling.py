@@ -1,5 +1,6 @@
 import logging
 import numpy as np
+from ramascene import dimensions
 import scipy.sparse as sp
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
@@ -48,8 +49,8 @@ class Modelling:
         for intervention_idx, value in enumerate(products):
             product = value
 
-            product_idx = np.arange(0, 200)
-            country_idx = np.arange(0, 49)
+            product_idx = np.arange(0, dimensions.n_products())
+            country_idx = np.arange(0, dimensions.n_countries())
 
             # convert to numpy arrays explicitly
             calc_ready_product = querymanagement.convert_to_numpy(product)

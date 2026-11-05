@@ -2,54 +2,30 @@
 Performance
 ###########
 
+.. note::
+    The load tests below were run in 2018 on the earlier version of the application, which used websockets and a
+    full matrix inversion for every scenario. Since then, scenarios use a Woodbury update of the Leontief
+    inverse (see :doc:`modelling`), which is much faster and uses less memory. Run the tests again on your own
+    server before you size it. The worker settings below are still valid.
 
-======================
-Specs of tested server
-======================
-
-* Brand: Dell PowerEdge R320
-* CPU: Intel Xeon E5-1410 v2 @ 2.80 GHz
-* Memory: 8 GiB DIMM DDR3 Synchronous 1600 MHz
-* Number of cores: 8
-
-===============
-Load test setup
+Worker settings
 ===============
 
-websocket-tester
-================
+* ``--max-tasks-per-child 1``: a worker process ends after one task. This returns its memory to the system.
+* ``--concurrency 1`` for each worker: one task at a time. Users wait in a first-in, first-out queue.
+* One worker for the ``calc_default`` queue and one worker for the ``modelling`` queue.
+* ``OPENBLAS_NUM_THREADS``: limits the cores that numpy uses. Use a low value for default calculations and a
+  higher value for scenarios.
+* ``MODELLING_MEM_LIMIT`` (default 6 GB): a memory cap for the ``modelling`` container in ``docker-compose.yml``.
+  A scenario that needs a full inversion uses about 2.3 GB on top of the memory-mapped matrices.
+* ``RAMASCENE_MAX_ACTIVE_JOBS`` (default 50): the API returns HTTP 429 above this number of active jobs.
 
-A custom websocket-tester is developed to simulate queries to the server. Multiple request are send using
-a simple loop. For more information on the exact queries see description on testing scenarios further down this page.
+To watch the queues, use Celery Flower or the RabbitMQ management page (the ``broker`` container includes it).
 
-Celery flower
-=============
+Load tests (2018)
+=================
 
-For assessing performance of calculations the library Celery Flower is used. Refer to the official docs for more information.
-To setup Flower on a remote server with Django you have to use the proxy server. For safety setup a htpasswd file in the nginx configuration.
-See example configuration here for nginx with Celery Flower (adjust to your needs)
-:download:`example_nginx_flower <ystatic/example_nginx_with_flower.conf>`
-
-For RabbitMQ the management plugin has to be enabled:
-``$ sudo rabbitmq-plugins enable rabbitmq_management``
-
-An example to start flower (make sure you are in the project root):
-
-$ flower -A ramasceneMasterProject --port=5555 -Q modelling,calc_default --broker=amqp://guest:guest@localhost:5672// --broker_api=http://guest:guest@localhost:15672/api/ --url_prefix=flower
-
-In turn you can access flower via the web browser with <domain>/flower/.
-
-Settings for Celery
-===================
-The following settings are in place:
-
-* [Django settings] CELERY_WORKER_MAX_TASKS_PER_CHILD = 1
-* [env. variable] OPENBLAS_NUM_THREADS=2 for default calculations
-* [env. variable] OPENBLAS_NUM_THREADS=5 for modelling calculations
-* [Celery] --concurrency 1 for default calculations
-* [Celery] --concurrency 1 for modelling calculations
-
-Each Celery queue has its own dedicated worker (1 worker for default and 1 worker for modelling)
+Server: Dell PowerEdge R320, Intel Xeon E5-1410 v2 at 2.80 GHz, 8 cores, 8 GiB memory.
 
 Testing scenarios and simultaneous requests
 ===========================================

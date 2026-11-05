@@ -1,0 +1,4 @@
+# Used by Read the Docs (.readthedocs.yaml). The app dependencies are needed because autodoc imports the code.
+-r ../requirements.txt
+sphinx==8.2.3
+sphinx-rtd-theme==3.0.2

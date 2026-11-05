@@ -2,6 +2,7 @@ from .models import Job
 import logging
 import json
 import numpy as np
+from ramascene import dimensions
 from celery import shared_task
 from ramascene import querymanagement
 from ramascene.analyze import Analyze
@@ -67,7 +68,7 @@ def execute_calc(job_name, job_id, ready_query_selection, query_selection):
     # retrieve standard matrix
     B = querymanagement.get_numpy_objects(query_selection["year"], "B")
     # set constant for country selling product ("total")
-    s_country_idx = np.arange(0, 49)
+    s_country_idx = np.arange(0, dimensions.n_countries())
     try:
         # selection state No 2:  - country of consumption - multiple select
         if query_selection["vizType"] == "Geographic" and query_selection["dimType"] == "Contribution":

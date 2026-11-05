@@ -109,6 +109,25 @@ where **G** is an appropriate aggregation matrix.
 In practice for the consumption based view the sector and region where the emission takes place is always set to all
 sectors and all regions. However the code allows to make sub selections.
 
+Result of route 1 in the application
+------------------------------------
+
+The application returns three views of the same total for route 1.
+
+``rawResultData``
+    One value for each supplying product. The values are summed over the supplying countries.
+
+``consumed``
+    One value for each selected consumed product. The values are summed over the consuming countries.
+
+``supply``
+    The largest cells (400 at most) of the supplying product by supplying country matrix, and the total for each
+    supplying country. The frontend uses it for the stacked bars.
+
+The code processes the columns of **L** in chunks of 500. A selection of all products in all countries then stays
+within a few tens of megabytes.
+
+
 Route 2
 =======
 In route 2 the environmental impacts of final consumption is compared between countries for a selected set of products.
@@ -263,3 +282,25 @@ The vector **m** is subsequently aggregated into emission or indicators per coun
 .. image:: ystatic/image038.png
 
 where **G** is an appropriate aggregation matrix.
+
+Which route answers which question
+==================================
+
+.. list-table::
+    :header-rows: 1
+
+    * - Route
+      - ``dimType`` and ``vizType``
+      - Result per
+    * - 1
+      - Contribution, Sectoral
+      - supplying product (also per consumed product and per supplying country)
+    * - 2
+      - Contribution, Geographic
+      - consuming country
+    * - 3
+      - Hotspot, Geographic
+      - producing country
+    * - 4
+      - Hotspot, Sectoral
+      - produced product

@@ -15,7 +15,7 @@ jobs:
       - run: >
           python -m pytest -q ramascene/tests/test_api_catalog.py ramascene/tests/test_api_jobs.py
           ramascene/tests/test_nuts2.py ramascene/tests/test_database_integration.py
-          ramascene/tests/test_woodbury.py
+          ramascene/tests/test_woodbury.py ramascene/tests/test_dimensions.py ramascene/tests/test_modelling.py
         env:
           DJANGO_SETTINGS_MODULE: ramasceneMasterProject.config.dev
 

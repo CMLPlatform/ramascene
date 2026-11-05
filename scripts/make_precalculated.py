@@ -25,11 +25,11 @@ django.setup()
 
 from django.conf import settings  # noqa: E402
 
-from ramascene import querymanagement  # noqa: E402
+from ramascene import dimensions, querymanagement  # noqa: E402
 from ramascene.analyze import Analyze  # noqa: E402
 from ramascene.models import Country, Indicator, Product  # noqa: E402
 
-PRODUCTS = 200
+PRODUCTS = dimensions.n_products()
 TREND_POINTS = 5
 
 

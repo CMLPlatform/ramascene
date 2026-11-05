@@ -25,8 +25,8 @@ module so to output results.
 Settings
 ========
 
-Through the interface, under “Scenario Modelling”, users are able to specify the coordinates of the IO elements that
-they wish to modify and the magnitude of the change for these intersected values.
+Through the interface, in the “Scenario modelling” panel, users add *interventions*. Each intervention gives the
+coordinates of the IO elements to change and the magnitude of the change for these intersected values.
 
 The coordinates are defined by row-wise and column-wise items:
 
@@ -44,11 +44,11 @@ The magnitude of the change by which the intersected values are modified is spec
 Coefficient”. Here both negative and positive relative values can be specified. A negative relative value defines the
 reduction that need to be calculated relative to the baseline data while a positive one defines an increase.
 
-Once a set of coordinates and a technical change coefficient are specified, users can add the change.
-This can be done iteratively until one is satisfied with the scenario settings. A wrong addition can also be removed through the “Remove last” button.
+Once the coordinates and the change are set, the user can add more interventions, remove one, or load a preset.
+The editor accepts changes from -50 % to 50 %. The API accepts changes from -100 % to 100 %.
 
-One the user is satisfied with the settings, they can be saved and applied by pressing the M icon on one of the
-previous analyses available under the “Analysis queue” menu.
+When the user is satisfied, they select “Apply scenario to results” and press “Run scenario”. The results then show
+the scenario and the change against the baseline.
 
 Processing the settings
 =======================
@@ -88,3 +88,15 @@ From the counter-factual **A** :sup:`alt` the counterfactual **L** :sup:`alt` is
 The total product output is then calculated through the IO equation employing **L** :sup:`alt` and  **Y** :sup:`alt` :
 
 .. image:: ystatic/eq_8.PNG
+
+Fast update of the Leontief inverse
+===================================
+
+A full inversion of **I** - **A** takes about 20 seconds and 2.3 GB of memory. Most interventions change only a small
+part of **A**. The change **D** = **A** :sup:`alt` - **A** is then sparse and has a low rank. In that case, the
+ramascene.woodbury module updates the stored **L** with the Sherman-Morrison-Woodbury identity. It never builds
+**L** :sup:`alt` in full. It reads only the rows and columns of **L** that the calculation needs.
+
+The update uses the smaller of the touched rows and the touched columns. A change to one sector across all its
+suppliers is a rank-1 update. When the rank is above ``MAX_WOODBURY_RANK`` (4000), the code falls back to a full
+inversion. A change to final demand does not need **L** to change at all. It changes only **Y**.

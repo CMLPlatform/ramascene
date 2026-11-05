@@ -17,8 +17,8 @@ import sys
 import django
 sys.path.insert(0, os.path.abspath('../..'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'ramasceneMasterProject.config.dev'
-os.environ['DATASETS_VERSION'] = 'v3'
-os.environ['DATASETS_DIR'] = './'
+os.environ.setdefault('DATASETS_VERSION', 'v4')
+os.environ.setdefault('DATASETS_DIR', './')
 
 django.setup()
 
@@ -29,13 +29,13 @@ django.setup()
 # -- Project information -----------------------------------------------------
 
 project = 'RaMa-Scene'
-copyright = '2018, Sidney Niccolson'
-author = 'Sidney Niccolson'
+copyright = '2018-2026, RaMa-Scene contributors'
+author = 'RaMa-Scene contributors'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '0.3-beta'
+release = '0.4'
 
 
 # -- General configuration ---------------------------------------------------
@@ -49,15 +49,13 @@ release = '0.3-beta'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinxcontrib.napoleon',
+    'sphinx.ext.napoleon',
     'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
 ]
 
-autodoc_mock_imports = ['numpy', 'B_data', 'Y_data','L_data', 'Country', 'Product', 'Indicator', 'django']
+autodoc_mock_imports = ['numpy', 'scipy']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['ytemplates']
@@ -76,7 +74,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -151,7 +149,6 @@ texinfo_documents = [
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
 
 # -- Options for todo extension ----------------------------------------------
 

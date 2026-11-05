@@ -1,6 +1,7 @@
 import logging
 import json
 import numpy as np
+from ramascene import dimensions
 from ramascene import productindexmanger as pim
 from ramascene import querymanagement
 
@@ -45,8 +46,8 @@ class Analyze:
         Returns:
             json: json result data
         """
-        p_product_idx = np.arange(0, 200)
-        p_country_idx = np.arange(0, 49)
+        p_product_idx = np.arange(0, dimensions.n_products())
+        p_country_idx = np.arange(0, dimensions.n_countries())
 
         # Expand selected ids ranges
         ids = pim.ProductIndexManager(self.product_calc_indices, self.s_country_idx, p_product_idx, p_country_idx)
@@ -126,8 +127,8 @@ class Analyze:
         Returns:
             json: json result data
         """
-        p_product_idx = np.arange(0, 200)
-        p_country_idx = np.arange(0, 49)
+        p_product_idx = np.arange(0, dimensions.n_products())
+        p_country_idx = np.arange(0, dimensions.n_countries())
 
         # Expand selected ranges
         ids = pim.ProductIndexManager(self.product_calc_indices, self.s_country_idx, p_product_idx, p_country_idx)
@@ -192,8 +193,8 @@ class Analyze:
         Returns:
             json: json result data
         """
-        c_product_idx = np.arange(0, 200)
-        c_country_idx = np.arange(0, 49)
+        c_product_idx = np.arange(0, dimensions.n_products())
+        c_country_idx = np.arange(0, dimensions.n_countries())
 
         # Expand selected ranges
         ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices,
@@ -267,8 +268,8 @@ class Analyze:
         Returns:
             json: json result data
         """
-        c_product_idx = np.arange(0, 200)
-        c_country_idx = np.arange(0, 49)
+        c_product_idx = np.arange(0, dimensions.n_products())
+        c_country_idx = np.arange(0, dimensions.n_countries())
 
         # Expand selected ranges
         ids = pim.ProductIndexManager(c_product_idx, self.s_country_idx, self.product_calc_indices,

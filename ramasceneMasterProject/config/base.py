@@ -139,3 +139,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+# Size of the dataset the matrices come from (see ramascene/dimensions.py).
+# EXIOBASE 3.3 product-by-product: 200 products, 49 regions. EXIOBASE 3.11 industry-by-industry: 163, 49.
+N_PRODUCTS = int(os.environ.get('DATASET_N_PRODUCTS', 200))
+N_COUNTRIES = int(os.environ.get('DATASET_N_COUNTRIES', 49))

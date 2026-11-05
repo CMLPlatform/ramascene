@@ -2,39 +2,47 @@
 Testing
 #############
 
-Various tests are implemented for websocket communication, celery background processing, AJAX, views, and the models.
-See ramascene/tests/ folder.
+Backend tests are in ``ramascene/tests/`` and run with pytest. Frontend tests are in ``frontend/src/*.test.ts``
+and run with Vitest.
 
-============
-Unit testing
-============
+Backend
+=======
 
-Perform unit tests in the root folder:
+Run all tests in the root folder:
 
-``$ python3 manage.py test -v2``
+``$ pytest``
 
+``pytest.ini`` selects the test files and reuses the test database.
 
-================
-Integration test
-================
+* ``test_api_jobs.py`` and ``test_api_catalog.py``: the REST API. They need no dataset.
+* ``test_modelling.py`` and ``test_woodbury.py``: scenario changes and the Woodbury update.
+* ``test_dimensions.py``, ``test_nuts2.py``, ``test_models.py``, ``test_database_integration.py``: smaller units.
+* ``test_validation_analytical.py``: the validation test (see below). It needs the dataset.
+* ``test_celery_integration.py``: starts a real Celery worker. It needs RabbitMQ.
 
-A more extensive validation tests is performed with pytest. Several validation files (CSV)
-are prepared from results computed outside of the web-application.
-Please refer to ramascene/tests/validation_files for the structure of these files.
-Each file contains information to generate a query, send a websocket query, receive results back from Celery.
-These results are in turn matched against the validation files expected results with a given tolerance.
-Lastly refer to confttest.py to see which scripts are called for performing the test.
+The CI workflow (``.github/workflows/ci.yml``) runs the tests that need no dataset and no broker.
 
-*Please be aware that at the moment only EXIOBASE v3 can be tested this way*
+Validation test
+===============
 
-To test over the full life cycle of the back-end you can run the following command in the root folder:
+The validation test checks results against values computed outside the application. The files in
+``ramascene/tests/validation_files`` hold one query and the expected result for each of the four routes.
+The test sends each query to the job API, runs Celery eagerly, and compares the result with the expected values
+within a tolerance.
 
-``$ pytest -vs``
+Only EXIOBASE v3 reference values exist for 2011. Set these variables first:
 
-Make sure to run a celery worker:
+* ``DJANGO_SETTINGS_MODULE=ramasceneMasterProject.config.dev``
+* ``DATASETS_DIR``: the folder with the dataset.
+* ``DATASETS_VERSION``: the dataset version.
 
-``$ celery -A ramasceneMasterProject worker -l info  --concurrency 1 --queue calc_default -n worker1.%h``
+After a test run, restore the database with ``python manage.py populateHierarchies``.
 
-If the test has succeeded, you'll need to repopulate the database with the following command:
+Frontend
+========
 
-``$ python3 manage.py populateHierarchies``
+In ``frontend/``:
+
+* ``npm test``: unit tests.
+* ``npm run typecheck``: TypeScript check.
+* ``npm run build``: production build.

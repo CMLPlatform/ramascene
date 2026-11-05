@@ -18,6 +18,7 @@ import {
 } from './scenario';
 import { buildStacks } from './stacks';
 import { trendYears } from './trend';
+import About from './About';
 
 const DEFAULT_COUNTRY = 'Netherlands';
 const DEFAULT_YEAR = 2011;
@@ -150,9 +151,16 @@ export default function App() {
   const [showAllRows, setShowAllRows] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
   const [consent, setConsent] = useState<Consent | null>(() => loadConsent());
+  const [page, setPage] = useState<'analysis' | 'about'>(() => (window.location.hash === '#about' ? 'about' : 'analysis'));
   const nextId = useRef(1);
   const controllers = useRef(new Map<number, AbortController>());
   const runs = useRef(new Map<number, RunRecord>());
+
+  useEffect(() => {
+    const onHash = () => setPage(window.location.hash === '#about' ? 'about' : 'analysis');
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   useEffect(() => {
     fetchCatalog()
@@ -548,8 +556,9 @@ export default function App() {
         <span className="brand"><span className="brand-mark" aria-hidden="true" />RaMa-Scene</span>
         <div className="spacer" />
         <nav className="nav" aria-label="Main">
-          <a href="#analysis" aria-current="page">Analysis</a>
-          <a href="/docs/">Docs</a>
+          <a href="#analysis" aria-current={page === 'analysis' ? 'page' : undefined}>Analysis</a>
+          <a href="#about" aria-current={page === 'about' ? 'page' : undefined}>About</a>
+          <a href="https://rama-scene.readthedocs.io/en/latest/" target="_blank" rel="noopener noreferrer">Docs</a>
         </nav>
         <span className="pill">EXIOBASE 3.3 · dataset v4</span>
         <button className="ghost" aria-expanded={helpOpen} onClick={() => setHelpOpen(!helpOpen)}>Help</button>
@@ -562,7 +571,8 @@ export default function App() {
         </section>
       )}
 
-      <div className="layout">
+      {page === 'about' && <About />}
+      <div className="layout" hidden={page === 'about'}>
         {open.left ? (
           <aside className="side" id="scenario">
             <div className="side-head">

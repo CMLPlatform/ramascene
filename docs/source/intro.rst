@@ -1,65 +1,65 @@
-#############
+############
 Introduction
-#############
+############
 
-RaMa-Scene is a Django+React web-application that allows for analyzing Environmentally Extended Input-Output (EEIO) tables from EXIOBASE v3.3.
-
-
-Several on-the-fly calculations are performed to generate EEIO results.
-The on-the-fly calculations are made possible by loading in EXIOBASE raw data into memory
-and employing background processing using Celery.
+RaMa-Scene is a Django and React web application. It analyses Environmentally Extended Input-Output (EEIO)
+tables from EXIOBASE v3.3. The application calculates results on request. It loads the EXIOBASE matrices
+into memory and runs the calculations in background workers (Celery).
 
 Implementation overview
 =======================
-The back-end can receive two main types of requests from the front-end. A websocket-based request
-and an Ajax-based request.
 
-Websockets are used for notifying the user and sending queries to the back-end, while Ajax is used to retrieve final results from the back-end.
+The application has four parts:
+
+* **Frontend.** A single-page application in ``frontend/`` (React, TypeScript, Vite). nginx serves it.
+* **API.** Django REST Framework serves the API under ``/api/``. Gunicorn runs it.
+* **Workers.** Celery workers run the calculations. RabbitMQ is the message broker.
+* **Database.** SQLite stores the classifications and the jobs. A job holds the result of one calculation.
+
+The frontend and the back end talk through HTTP and JSON only. There are no websockets.
 
 Terminology:
 
-* “Tasks” are used for front-end notifications of a given query and a “task” is a calculation process in Celery.
-* “Jobs” are the database objects used by the back-end to remember which calculation (task) is started by which user.
+* A **job** is a database record. It stores the name, the status, and the result of one calculation.
+* A **task** is the Celery process that does the calculation for one job.
 
- See figure below for an overview of the back-end processes.
+Life of a request
+=================
 
-.. image:: ystatic/graph_overview.png
-   :width: 300pt
+1. The frontend sends ``POST /api/jobs/`` with the selection of the user.
+2. The API checks the request. It rejects a request that is not valid with HTTP 400.
+3. The API refuses new work with HTTP 429 when too many jobs are active.
+4. :mod:`ramascene.services` creates a job with status ``started`` and sends a task to Celery.
+   Scenario requests go to the ``modelling`` queue. All other requests go to the ``calc_default`` queue.
+5. The API returns HTTP 202 with the job id.
+6. The worker loads the matrices, runs one of the four routes, and stores the result on the job.
+   The status changes to ``completed``, or to ``failed`` when an error occurs.
+7. The frontend polls ``GET /api/jobs/<id>/`` until the status is ``completed`` or ``failed``.
 
-Consumers
-=========
-The module consumers is a Django Channels implementation that handles websockets.
-Meaning that the consumers module is one of the core communication methods between front-end and back-end.
-This module also invokes query management to process the queries.
-
-Query Management
-================
-Any query received from the front-end needs to be processed in order to perform calculations and generate result data
-in a proper format using the query management module.
-
-Tasks
-=====
-This module is the heart of the EEIO calculations. The Tasks module implements the Celery background processing implementation that allows to process multiple
-calculations at the same time, but also calculations that take a long time.
-
-Models
-======
-Models allows to insert and fetch database objects. It contains mapping coordinates for front-end and back-end communication as well
-as the calculation status and results per user.
-
-Views
-=====
-The views module handles the AJAX POST and JSON result response.
-
-Analyze
+Modules
 =======
-For performing the actual IO calculations the analyze module is used.
 
-Modelling
-=========
-This module is used for implementation of modelling features in the application
+:mod:`ramascene.api` and :mod:`ramascene.serializers`
+    The REST views and the validation of requests.
 
-.. _modules: modules.html
-.. _python: python-ini.html
-.. _initialize: python-ini.html
-.. _scripts: python-ini.html
+:mod:`ramascene.services`
+    Turns a validated request into a job and sends the task to Celery.
+
+:mod:`ramascene.querymanagement`
+    Converts the global ids of the frontend into the indices that the calculations use.
+    It also loads the numpy matrices from disk.
+
+:mod:`ramascene.tasks`
+    The Celery task. It selects the analysis route and stores the result.
+
+:mod:`ramascene.analyze`
+    The four analysis routes. See :doc:`calculations`.
+
+:mod:`ramascene.modelling` and :mod:`ramascene.woodbury`
+    Scenario changes and the fast update of the Leontief inverse. See :doc:`modelling`.
+
+:mod:`ramascene.models`
+    The database models: the classifications and the jobs.
+
+:mod:`ramascene.nuts2`
+    The regional (NUTS2) split used by the CircuMAT regions.

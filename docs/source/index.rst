@@ -1,56 +1,73 @@
-.. RaMa-Scene documentation master file, created by
-   sphinx-quickstart on Wed May  9 16:07:09 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+==========================
+RaMa-Scene documentation
+==========================
 
-===================================
-RaMa-Scene developers documentation
-===================================
-Welcome to RaMa-Scene's docs. This documentation is split into several parts:
+RaMa-Scene is the RAw MAterials SCENario Efficiency improvement assessment tool and blended learning package.
+It is a web application for Environmentally Extended Input-Output (EEIO) analysis with EXIOBASE. It helps
+students, experts, and decision makers analyse the global economy and improvements to the circular economy.
 
-1. Introduction_. An overview of the application inner workings.
-2. API_ descriptors_. The front-end, back-end payloads.
-3. Calculations_ overview_. Overview of calculations performed.
-4. Modelling_. Overview of modelling procedures.
-5. Frontend_. Frontend description.
-6. Deployment_. Details for deploying the application.
-7. Python_ initialise_ scripts_. Independent scripts used for constructing files used by the application.
-8. Testing_. Unittests and integration tests.
-9. Performance_. Performance of the application and load test results.
-10. Modules_. Technical details.
+The application began as an EIT Raw Materials project. The RaMa-Scene, Circumat, and Getting the Data Right
+projects funded this work.
 
+This documentation has three parts.
 
-.. _Introduction: intro.html
-.. _modules: modules.html
-.. _Python: python-ini.html
-.. _initialise: python-ini.html
-.. _scripts: python-ini.html
-.. _API: API-descriptors.html
-.. _descriptors: API-descriptors.html
-.. _deployment: deployment.html
-.. _Calculations: calculations.html
-.. _overview: calculations.html
-.. _modelling: modelling.html
-.. _Testing: testing.html
-.. _Performance: performance.html
-.. _Frontend: frontend.html
+**For users**
+
+* :doc:`user-guide`: how to run an analysis and build a scenario.
+* :doc:`data`: the data behind the tool.
+* :doc:`calculations`: how each result is calculated.
+* :doc:`modelling`: how a scenario changes the model.
+
+**For developers**
+
+* :doc:`intro`: how the parts of the application work together.
+* :doc:`API-descriptors`: the REST API.
+* :doc:`frontend`: the React application.
+* :doc:`testing`: unit tests and validation tests.
+* :doc:`modules`: the Python modules, from their docstrings.
+
+**For operators**
+
+* :doc:`deployment`: how to run the application with Docker.
+* :doc:`python-ini`: management commands and data files.
+* :doc:`performance`: memory, workers, and load tests.
 
 .. toctree::
+    :caption: Users
     :maxdepth: 2
-    :numbered:
-    :titlesonly:
-    :glob:
     :hidden:
 
-    intro.rst
-    API-descriptors.rst
-    calculations.rst
-    modelling.rst
-    frontend.rst
-    deployment.rst
-    python-ini.rst
-    testing.rst
-    performance.rst
-    modules.rst
+    user-guide
+    data
+    calculations
+    modelling
 
+.. toctree::
+    :caption: Developers
+    :maxdepth: 2
+    :hidden:
 
+    intro
+    API-descriptors
+    frontend
+    testing
+    modules
+
+.. toctree::
+    :caption: Operators
+    :maxdepth: 2
+    :hidden:
+
+    deployment
+    python-ini
+    performance
+
+Project partners
+================
+
+* `Leiden University, CML <https://www.universiteitleiden.nl/en/science/environmental-sciences>`_
+* `TU Delft <https://www.tudelft.nl/io/>`_
+* `Fraunhofer IBP <https://www.ibp.fraunhofer.de/>`_
+* `VITO <https://vito.be/en>`_
+
+The source code is on `GitHub <https://github.com/CMLPlatform/ramascene>`_. The licence is GPL-3.0.

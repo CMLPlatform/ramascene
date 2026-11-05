@@ -1,5 +1,6 @@
 from ramascene.models import Country, Product, Indicator, ModellingProduct
 import numpy as np
+from ramascene import dimensions
 import math
 import os
 from django.conf import settings
@@ -490,15 +491,16 @@ def get_leaf_product_names():
         Calculation index i (0-based) is the product with local_id i + 1.
 
         Returns:
-            list: 200 product names, ordered by calculation index
+            list: product names, ordered by calculation index
 
     """
     OFFSET = -1
-    names = [None] * 200
+    count = dimensions.n_products()
+    names = [None] * count
     for local_id, name in Product.objects.filter(identifier="LEAF").values_list("local_id", "name"):
         names[int(local_id) + OFFSET] = name
     if any(name is None for name in names):
-        raise ValueError("expected 200 leaf products with local ids 1 to 200")
+        raise ValueError(f"expected {count} leaf products with local ids 1 to {count}")
     return names
 
 
@@ -509,13 +511,14 @@ def get_leaf_country_names():
         Calculation index i (0-based) is the country with local_id i + 1.
 
         Returns:
-            list: 49 country names, ordered by calculation index
+            list: country names, ordered by calculation index
 
     """
     OFFSET = -1
-    names = [None] * 49
+    count = dimensions.n_countries()
+    names = [None] * count
     for local_id, name in Country.objects.filter(identifier="LEAF").values_list("local_id", "name"):
         names[int(local_id) + OFFSET] = name
     if any(name is None for name in names):
-        raise ValueError("expected 49 leaf countries with local ids 1 to 49")
+        raise ValueError(f"expected {count} leaf countries with local ids 1 to {count}")
     return names

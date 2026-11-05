@@ -1,53 +1,28 @@
 ramascene package
 =================
 
-Submodules
-----------
+The modules below are documented from their docstrings.
 
-ramascene.analyze module
-------------------------
+ramascene.api module
+--------------------
 
-.. automodule:: ramascene.analyze
+.. automodule:: ramascene.api
     :members:
     :undoc-members:
     :show-inheritance:
 
-ramascene.consumers module
---------------------------
+ramascene.serializers module
+----------------------------
 
-.. automodule:: ramascene.consumers
+.. automodule:: ramascene.serializers
     :members:
     :undoc-members:
     :show-inheritance:
 
-ramascene.modelling module
---------------------------
+ramascene.services module
+-------------------------
 
-.. automodule:: ramascene.modelling
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-ramascene.models module
------------------------
-
-.. automodule:: ramascene.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-ramascene.productindexmanger module
------------------------------------
-
-.. automodule:: ramascene.productindexmanger
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-ramascene.querymanagement module
---------------------------------
-
-.. automodule:: ramascene.querymanagement
+.. automodule:: ramascene.services
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,19 +35,66 @@ ramascene.tasks module
     :undoc-members:
     :show-inheritance:
 
-ramascene.views module
-----------------------
+ramascene.analyze module
+------------------------
 
-.. automodule:: ramascene.views
+.. automodule:: ramascene.analyze
     :members:
     :undoc-members:
     :show-inheritance:
 
+ramascene.modelling module
+--------------------------
 
-Module contents
----------------
+.. automodule:: ramascene.modelling
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-.. automodule:: ramascene
+ramascene.woodbury module
+-------------------------
+
+.. automodule:: ramascene.woodbury
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.querymanagement module
+--------------------------------
+
+.. automodule:: ramascene.querymanagement
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.productindexmanger module
+-----------------------------------
+
+.. automodule:: ramascene.productindexmanger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.dimensions module
+---------------------------
+
+.. automodule:: ramascene.dimensions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.nuts2 module
+----------------------
+
+.. automodule:: ramascene.nuts2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+ramascene.models module
+-----------------------
+
+.. automodule:: ramascene.models
     :members:
     :undoc-members:
     :show-inheritance:

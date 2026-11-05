@@ -1,4 +1,5 @@
 import numpy as np
+from ramascene import dimensions
 
 
 class ProductIndexManager:
@@ -22,10 +23,6 @@ class ProductIndexManager:
                 1D array containing integers indicating the ids of the selected producing countries
 
         """
-
-    # class variable
-    __prd_cnt = 200
-    __cntr_cnt = 49
 
     def __init__(self, c_prd_ids, s_cntr_ids, p_prd_ids, p_cntr_ids):
         self.c_prd_ids = c_prd_ids
@@ -59,7 +56,7 @@ class ProductIndexManager:
         for cntr_idx in range(0, self.selected_s_cntr_cnt):
             start_idx = cntr_idx * self.selected_c_prd_cnt
             end_idx = cntr_idx * self.selected_c_prd_cnt + self.selected_c_prd_cnt
-            expanded_idx[start_idx:end_idx, ] = self.c_prd_ids + (self.s_cntr_ids[cntr_idx] * self.__prd_cnt)
+            expanded_idx[start_idx:end_idx, ] = self.c_prd_ids + (self.s_cntr_ids[cntr_idx] * dimensions.n_products())
         return expanded_idx
 
     def get_produced_product_ids(self):
@@ -81,7 +78,7 @@ class ProductIndexManager:
         for cntr_idx in range(0, self.selected_p_cntr_cnt):
             start_idx = cntr_idx * self.selected_p_prd_cnt
             end_idx = cntr_idx * self.selected_p_prd_cnt + self.selected_p_prd_cnt
-            expanded_idx[start_idx:end_idx, ] = self.p_prd_ids + (self.p_cntr_ids[cntr_idx] * self.__prd_cnt)
+            expanded_idx[start_idx:end_idx, ] = self.p_prd_ids + (self.p_cntr_ids[cntr_idx] * dimensions.n_products())
         return expanded_idx
 
     def get_product_count(self):
@@ -91,7 +88,7 @@ class ProductIndexManager:
                 integer object with the number of products.
 
         """
-        return self.__prd_cnt
+        return dimensions.n_products()
 
     def get_country_count(self):
         """Get the number of countries and regions in EXIOBASE
@@ -100,7 +97,7 @@ class ProductIndexManager:
                 integer object with the number of countries/regions.
 
         """
-        return self.__cntr_cnt
+        return dimensions.n_countries()
 
     def get_full_selected_c_product_count(self):
         """Get the full number of consuming products selected.

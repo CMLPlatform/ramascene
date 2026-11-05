@@ -1,238 +1,156 @@
 ###############
 API descriptors
 ###############
-The React front-end has access to mapping coordinates reflecting product categories, countries and indicators.
-See project root static_assets:
 
-1. final_countryTree_exiovisuals.csv
-2. final_productTree_exiovisuals.csv
-3. mod_indicators.csv
+The frontend uses a JSON API over HTTP. All endpoints are under ``/api/``. No login is needed.
+A live description (OpenAPI) is available from the running server:
 
-These mapping coordinates are not only used to render tree selectables, but also to transmit the global id's of the product categories, countries and indicators
-over the websocket channel. In turn the back-end handles these messages to perform calculations and store results. For example all countries and all products in the world represent the global id
-[1]. The indicator [1] represents product output. For further reference see the mapping CSV files.
+* ``/api/docs/``: interactive Swagger page.
+* ``/api/schema/``: the OpenAPI schema.
 
-API routing:
+Global ids
+==========
 
-* API URL Websockets: ``<domain-ip>/ramascene/``
-* API URL AJAX:  ``<domain-ip>/ajaxhandling/``
-* Interface format: JSON
+Products, countries and indicators have a *global id*. The catalog endpoint lists them.
+A global id can stand for one item or for a group. For example, the id for "world" selects all countries.
+The back end resolves a group to its leaf items before it calculates.
+The classification files in ``python_ini/data/`` define the ids.
 
-Default calculations
-====================
+GET /api/catalog/
+=================
 
-The following queries denote the communication between front-end and back-end for performing default calculations.
+Returns the items that a user can select.
 
-Interface descriptors [websocket message to back-end]:
+.. code-block:: json
 
-+---------------------------+-------------------------+------------------------------------------+
-| Stage                     | Instances relation      | Variable name, dataType, example         |
-+===========================+=========================+==========================================+
-| Calculation type          |  Default calculation    | **var name: action**                     |
-|                           |                         |  *JSON key: action, JSON value:  String* |
-|                           |                         |       ex.:  \"action\":\"default\"       |
-+---------------------------+-------------------------+------------------------------------------+
-| Dimension                 | Production, Consumption | **var name: querySelection**             |
-|                           |                         |  *JSON key: dimType, JSON value:  String*|
-|                           |                         |       ex.:  \"dimType\":\"Production\"   |
-+---------------------------+-------------------------+------------------------------------------+
-| Visualization             | TreeMap, GeoMap         | **var name: querySelection**             |
-|                           |                         |  *JSON key: vizType, JSON value:  String*|
-|                           |                         |       ex.:  \"vizType\":\"TreeMap\"      |
-+---------------------------+-------------------------+------------------------------------------+
-| Filter                    | Product                 | **var name: querySelection**             |
-|                           |                         |  *JSON key: nodesSec, JSON value: array* |
-|                           |                         |       ex.:  \"nodesSec\":\"[3,4,7]\"     |
-+---------------------------+-------------------------+------------------------------------------+
-| Filter                    | Country                 | **var name: querySelection**             |
-|                           |                         |  *JSON key: nodesReg, JSON value: array* |
-|                           |                         |       ex.:  \"nodesReg\":\"[1]\"         |
-+---------------------------+-------------------------+------------------------------------------+
-| Filter                    | Indicator               | **var name: querySelection**             |
-|                           |                         |  *JSON key: extn, JSON value: array*     |
-|                           |                         |       ex.:  \"extn\":\"[2]\"             |
-+---------------------------+-------------------------+------------------------------------------+
-| Year                      | Default reference year  | **var name: querySelection**             |
-|                           |                         |  *JSON key: year, JSON value: array*     |
-|                           |                         |       ex.:  \"year\":\"[2011]\"          |
-+---------------------------+-------------------------+------------------------------------------+
-| All                       | → to back-end           | **var name: querySelection & action**    |
-|                           |    [WS send]            |  *JSON : querySelection, JSON: action*   |
-|                           |                         |       ex.:see table below                |
-+---------------------------+-------------------------+------------------------------------------+
+    {
+      "years": [1995, 1996, "...", 2011],
+      "products": [{"global_id": 12, "name": "Wheat", "code": "i01.a"}],
+      "countries": [{"global_id": 3, "name": "Netherlands", "code": "NL"}],
+      "indicators": [{"global_id": 2, "name": "GHG emissions", "unit": "kg CO2 eq"}],
+      "consumers": [{"global_id": 7, "name": "Final consumption", "final": true}],
+      "nuts2": {"Netherlands": [{"code": "NL11", "name": "Groningen"}]}
+    }
 
-**→ to back-end complete payload example:**
+``consumers`` lists the things that can consume a product in a scenario: the final consumption node
+(``final: true``) and the sectors. ``nuts2`` lists the regions per country for the CircuMAT regional view.
 
-| {
-|           \"action\":
-|               \"default\",
-|           \"querySelection\":{
-|                \"dimType\":\"Production\",
-|                \"vizType\":\"TreeMap\",
-|                \"nodesSec\":[3,4,7],
-|                \"nodesReg\":[1],
-|                \"extn\":[2],
-|                \"year\":[2011],
-|                }
-|  }
+POST /api/jobs/
+===============
 
+Starts a calculation. The body has an ``action`` and a ``querySelection``.
 
+.. code-block:: json
 
-Interface descriptors [websocket messages from back-end]:
+    {
+      "action": "default",
+      "querySelection": {
+        "dimType": "Contribution",
+        "vizType": "Sectoral",
+        "nodesSec": [3, 4, 7],
+        "nodesReg": [1],
+        "extn": [2],
+        "year": [2011]
+      }
+    }
 
-+---------------------------+-------------------------+------------------------------------------+
-| Stage                     | Instances relation      | Variable name, dataType, example         |
-+===========================+=========================+==========================================+
-+---------------------------+-------------------------+------------------------------------------+
-| Action request status     | from Back-end →         | **var name: action**                     |
-|                           |   [WS response]         |  *JSON key: action, JSON value: string*  |
-|                           |                         |       ex.:  {\"action\":\"started\"}     |
-+---------------------------+-------------------------+------------------------------------------+
-| Job status                | from Back-end →         |**var name: job_status**                  |
-|                           |   [WS response]         | *JSON key: job_status,JSON value: string*|
-|                           |                         |       ex.:  {\"job_status\":\"started\"} |
-+---------------------------+-------------------------+------------------------------------------+
-| Job status                | from Back-end →         |**var name: job_id**                      |
-|                           |   [WS response]         | *JSON key: job_id,JSON value: int*       |
-|                           |                         |       ex.:  {\"job_id\":\"176\"}         |
-+---------------------------+-------------------------+------------------------------------------+
-| Job name                  | from Back-end →         |**var name: job_name**                    |
-|                           |   [WS response]         | *JSON key: job_name,JSON value: JSON*    |
-|                           |                         |       ex.:  full querySelection as names |
-+---------------------------+-------------------------+------------------------------------------+
+.. list-table::
+    :header-rows: 1
+    :widths: 20 80
 
-**→ from back-end complete response example:**
+    * - Key
+      - Meaning
+    * - ``action``
+      - ``default`` for a baseline calculation. ``model`` for a scenario.
+    * - ``dimType``
+      - ``Contribution`` or ``Hotspot``. See :doc:`calculations`.
+    * - ``vizType``
+      - ``Sectoral`` or ``Geographic``. This selects the grouping of the result.
+    * - ``nodesSec``
+      - List of product global ids.
+    * - ``nodesReg``
+      - List of country global ids.
+    * - ``extn``
+      - List of indicator global ids.
+    * - ``year``
+      - List with one year. The calculation uses the first year.
 
-| {
-|  \"job_id\":176,
-|  \"action\":\"check status\",
-|  \"job_status\":\"completed\",
-|  \"job_name\":\{
-|                'nodesReg': ['Total'],
-|                'vizType': 'TreeMap',
-|                'nodesSec': ['Fishing', 'Mining and quarrying', 'Construction'],
-|                'dimType': 'Production',
-|                'extn': ['Value Added: Total'],
-|                'year': [2011]
-|               }
-| }
+The four combinations of ``dimType`` and ``vizType`` map to the four calculation routes:
 
-If the websocket message job_status is set to "completed", the front-end can perform a POST request for results via Ajax containing the job_id
-named as 'TaskID'. For example in the above websocket response we see that job_id is 176, the Ajax POST request is 'TaskID:176'.
+* ``Contribution`` and ``Sectoral``: route 1.
+* ``Contribution`` and ``Geographic``: route 2.
+* ``Hotspot`` and ``Geographic``: route 3.
+* ``Hotspot`` and ``Sectoral``: route 4.
 
-Interface descriptors [AJAX response]:
+Any other combination returns HTTP 400.
 
-+---------------------------+-------------------------+------------------------------------------+
-| Stage                     | Instances relation      | Variable name, dataType, example         |
-+===========================+=========================+==========================================+
-+---------------------------+-------------------------+------------------------------------------+
-| Retrieve calculation      | from Back-end →         | **var name: unit**                       |
-|                           |   [AJAX response]       |  *JSON key: name, JSON value: string*    |
-|                           |                         |       ex.:  {\"Value Added\":\"[M.EUR]\"}|
-+---------------------------+-------------------------+------------------------------------------+
-| All                       | from Back-end →         | **var name: job_id**                     |
-|                           |   [AJAX response]       |  *JSON key: job_id, JSON value: int*     |
-|                           |                         |       ex.:  {\"job_id\":\"176\"}         |
-+---------------------------+-------------------------+------------------------------------------+
-| All                       | from Back-end →         | **var name: rawResultData**              |
-|                           |  [AJAX response]        |  *JSON key: name, JSON value: array*     |
-|                           |                         |       ex.:  {\"Total\":\"[1256.67]\"}    |
-+---------------------------+-------------------------+------------------------------------------+
-| All                       | from Back-end →         | **var name: job_name**                   |
-|                           |   [AJAX response]       |  *JSON key: job_name, JSON value: JSON*  |
-|                           |                         |       ex.:  full querySelection as names |
-+---------------------------+-------------------------+------------------------------------------+
+Scenario jobs
+-------------
 
-**→ from back-end complete response example:**
+For ``action`` equal to ``model``, add ``model_details``. It is a list of interventions.
+At least one intervention is required.
 
-| {
-| \"job_id\":176,
-| \"unit\": {\"Value Added: Total":"M.EUR"\},
-| \"job_name\": {
-|           \"nodesReg\": [\"Total\"],
-|           \"nodesSec\": ["Fishing", "Mining and quarrying","Construction"],
-|           \"dimType\": \"Production\",
-|           \"extn\": ["Value Added: Total"],
-|           \"year\": [2011],
-|           \"vizType\": \"GeoMap\"
-|           },
-| \"rawResultData\":{
-|          Fishing":75172.94699626492, "Mining and quarrying":2151937.135835223, "Construction":3148250.604361363
-|          }
-| }
+.. code-block:: json
 
+    {
+      "originReg": [3],
+      "consumedReg": [3],
+      "product": [12],
+      "consumedBy": [7],
+      "techChange": [-20]
+    }
 
-An important aspect is that in the current version the back-end expects the websocket message to contain a single value for indicator and year. Additionally
-if the query selection contains "GeoMap" the "nodesReg" descriptor can be an array of multiple elements denoting multiple countries,
-while the "nodesSec" descriptor can only have a single indicator.
-On the other hand if the query selection contains "TreeMap" the "nodesSec" descriptor can be an array of multiple elements
-denoting multiple products, while the "nodesReg" descriptor can only have a single indicator.
+* ``originReg``: the region that supplies the product.
+* ``consumedReg``: the region that consumes the product.
+* ``product``: the product that changes.
+* ``consumedBy``: one consumer. It is the final consumption node or a sector.
+* ``techChange``: the relative change in percent. The value must be between -100 and 100.
 
-Modelling calculations
-======================
+Every id must exist. Otherwise the API returns HTTP 400. See :doc:`modelling` for the meaning of a change.
 
-The following table denotes the communication between front-end and back-end for modelling calculations. Modelling is applied on existing default query selections.
+Responses
+---------
 
-+---------------------------+-------------------------+---------------------------------------------+
-| Stage                     | Instances relation      | Variable name, dataType, example            |
-+===========================+=========================+=============================================+
-| Product of interest       |  Model details          | **var name: model_details**                 |
-|                           |  : Product              |  *JSON key: product, JSON value:  array*    |
-|                           |                         |       ex.:  \"product\":[1]                 |
-+---------------------------+-------------------------+---------------------------------------------+
-| Manufacturing region      |  Model details          | **var name: model_details**                 |
-|                           |  : Product origin region|  *JSON key: originReg,JSON value:  array*   |
-|                           |                         |       ex.:  \"originReg\":[3]               |
-+---------------------------+-------------------------+---------------------------------------------+
-| Model type of calculation |  Model details          | **var name: model_details**                 |
-|                           |  : Model type           |  *JSON key: consumedBy, JSON value: array*  |
-|                           |                         |    ex.:  \"consumedBy\":[4]"                |
-+---------------------------+-------------------------+---------------------------------------------+
-| Region consuming          |  Model details          | **var name: model_details**                 |
-|                           |  : Region of consumption|  *JSON key: consumedReg, JSON value:  array*|
-|                           |                         |       ex.:  \"consumedReg\":[5]             |
-+---------------------------+-------------------------+---------------------------------------------+
-| Technological change      |  Model details          | **var name: model_details**                 |
-|                           |  : Technical change     |  *JSON key: techChange, JSON value:  array* |
-|                           |                         |       ex.:  \"techChange\":[5]              |
-+---------------------------+-------------------------+---------------------------------------------+
+``202 Accepted``
+    The job is queued.
 
-The technological change is a single value denoting a percentage. See below for a full query example:
+    .. code-block:: json
 
-**→ from back-end complete response example:**
+        {"job_id": 41, "status": "started", "status_url": "/api/jobs/41/"}
 
-| {
-| "action": "model",
-| "querySelection": {
-|    "dimType": "Production",
-|    "vizType": "TreeMap",
-|    "nodesSec": [1],
-|    "nodesReg": [4,5],
-|    "ext": [8],
-|    "year": [2011]
-|    },
-|    "model_details": [
-|        {
-|            "product": [1],
-|            "originReg": [3],
-|            "consumedBy": [4],
-|            "consumedReg": [5],
-|            "techChange": [-15]
-|        },
-|        {
-|            "product": [6],
-|            "originReg": [5],
-|            "consumedBy": [7],
-|            "consumedReg": [18],
-|            "techChange": [20]
-|        }
-|    ]
-| }
+``400 Bad Request``
+    The body is not valid. The response lists the errors per field.
 
+``429 Too Many Requests``
+    The number of active jobs reached ``RAMASCENE_MAX_ACTIVE_JOBS`` (default 50).
+    The client must try again later.
 
-Multiple model selections can be added, however a user can only specify a single-selection per "product", "originReg",
-"consumedBy", "consumedReg" in the array for this version of the application.
-The websocket response contains the added model details specified by name.
+GET /api/jobs/<id>/
+===================
 
+Returns the status of a job. The ``result`` key is present only when the status is ``completed``.
 
+.. code-block:: json
 
+    {
+      "job_id": 41,
+      "name": "{'action': 'default', 'dimType': 'Contribution', ...}",
+      "status": "completed",
+      "created": "2026-11-05T10:12:09Z",
+      "result": {
+        "unit": {"2": "kg CO2 eq"},
+        "rawResultData": {"Wheat": 1.2e9}
+      }
+    }
+
+``name`` is the selection of the request, written as text. ``status`` is ``started``, ``completed`` or ``failed``. An unknown id returns HTTP 404.
+
+The ``result`` always holds ``job_name``, ``job_id``, ``unit`` and ``rawResultData``. The sectoral contribution route (route 1) adds
+``consumed`` (the footprint per consumed sector) and ``supply`` (the sectors and countries in the supply chain).
+
+Polling
+=======
+
+The client polls the job endpoint at a fixed interval until the status is ``completed`` or ``failed``.
+``frontend/src/api.ts`` implements this in ``pollJob``. It supports a timeout and cancel through an
+``AbortSignal``.
